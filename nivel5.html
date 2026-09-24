@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nivel 5: Me comunico en clase - Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sujeto:#3a86ff; --verbo:#ff006e; --objeto:#8338ec; --tiempo:#ffbe0b;
+    --fondo:#f8f9fa; --blanco:#fff; --gris-claro:#e9ecef; --exito:#06d6a0; --alerta:#ef233c;
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,Roboto,sans-serif;background:var(--fondo);margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+  .app-container{width:100%;max-width:900px;background:#fff;min-height:85vh;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.1);padding:30px;display:flex;flex-direction:column;position:relative}
+  .btn-volver-menu{position:absolute;top:20px;left:20px;background:var(--gris-claro);color:#495057;text-decoration:none;font-weight:700;padding:8px 14px;border-radius:10px;font-size:.95em;display:inline-flex;align-items:center;gap:6px;z-index:5}
+  h1{text-align:center;color:#333;margin:20px 0 5px;font-size:2em}
+  .instruccion{text-align:center;color:#666;margin:0 0 20px}
+  .arabe{direction:rtl;font-size:1.2em;color:#888}
+  .progreso-barra{width:100%;height:10px;background:var(--gris-claro);border-radius:5px;margin:12px 0 25px;overflow:hidden}
+  .progreso-relleno{height:100%;background:var(--exito);width:0%;transition:width .3s ease}
+  .zona-situacion{background:#eef4ff;border:2px solid #cfe0ff;border-radius:16px;padding:18px;margin-bottom:18px;text-align:center}
+  .zona-visual{font-size:4.8em;line-height:1.1;margin-bottom:8px}
+  .situacion-es{font-size:1.25em;font-weight:700;color:#1f2937}
+  .situacion-ar{font-family:'Cairo',sans-serif;font-size:1.05em;color:#64748b;direction:rtl;margin-top:5px}
+  .zona-controles{display:flex;justify-content:center;gap:20px;margin-bottom:22px}
+  .btn-audio{border:none;border-radius:15px;padding:14px 26px;font-size:1.15em;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;color:#fff}
+  .btn-audio:disabled{opacity:.6;cursor:not-allowed}.btn-escuchar{background:var(--sujeto);box-shadow:0 5px 0 #2a62c4}.btn-repetir{background:var(--tiempo);box-shadow:0 5px 0 #d49d00;color:#333}
+  .constructor{background:var(--gris-claro);border-radius:15px;padding:22px;margin-bottom:22px;min-height:88px;display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+  .hueco{background:rgba(0,0,0,.04);border:3px dashed #bbb;border-radius:10px;min-height:70px;min-width:115px;display:flex;justify-content:center;align-items:center;cursor:pointer}
+  .hueco.lleno{border:3px solid transparent;background:transparent}
+  .piezas-disponibles{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;min-height:80px}
+  .pieza{background:#fff;border:3px solid #ccc;border-radius:10px;padding:8px 18px;cursor:pointer;box-shadow:0 4px 0 #ccc;user-select:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px}
+  .pieza.sujeto{border-color:var(--sujeto)}.pieza.sujeto .texto-es{color:var(--sujeto)}
+  .pieza.verbo{border-color:var(--verbo)}.pieza.verbo .texto-es{color:var(--verbo)}
+  .pieza.objeto{border-color:var(--objeto)}.pieza.objeto .texto-es{color:var(--objeto)}
+  .texto-es{font-size:1.25em;font-weight:700}.texto-ar{font-size:1em;color:#666;margin-top:3px;direction:rtl}
+  .oculto{display:none!important}.incorrecto{animation:vibrar .4s}@keyframes vibrar{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-10px)}}
+  #overlay-exito{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:10;border-radius:20px;padding:25px;text-align:center}
+  .estrella{font-size:7em;animation:pop .5s cubic-bezier(.175,.885,.32,1.275)}@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+  .btn-empezar{background:var(--exito);color:#fff;border:none;padding:18px 34px;font-size:1.3em;border-radius:10px;cursor:pointer;font-weight:700;box-shadow:0 6px 0 #04a57b;margin:15px auto;display:block;text-decoration:none;text-align:center}
+  .pregunta-test{background:#fff8db;border:2px solid #ffe38a;border-radius:16px;padding:18px;text-align:center;margin-bottom:18px}
+  .pregunta-test .emoji{font-size:4em}.pregunta-test h2{margin:8px 0;font-size:1.35em;color:#333}.pregunta-test p{margin:4px 0;color:#6b7280}
+  .opciones{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 8px}.opcion{border:3px solid #d1d5db;background:#fff;border-radius:14px;padding:16px;cursor:pointer;font-size:1.15em;font-weight:700;min-height:78px}.opcion:hover{border-color:var(--sujeto)}.opcion.correcta{border-color:var(--exito);background:#ecfff8}.opcion.incorrecta{border-color:var(--alerta);background:#fff0f0}
+  .feedback{min-height:32px;text-align:center;font-weight:700;color:#555;margin:8px 0 12px}.feedback.ok{color:#138a63}.feedback.no{color:#c62828}
+  .resultados-grid{display:flex;justify-content:center;gap:20px;margin:30px 0}.caja-resultado{padding:25px;border-radius:15px;width:40%;flex-grow:1;max-width:300px;text-align:center}.acierto{background:#e8f5e9;border:2px solid var(--exito);color:#2e7d32}.error{background:#ffebee;border:2px solid var(--alerta);color:#c62828}.caja-resultado h3{margin:0;font-size:1.15em}.numero{font-size:3.2em;font-weight:800;margin:5px 0}.creditos{margin-top:auto;padding-top:26px;font-size:1em;color:#9aa5b1;text-align:center;font-weight:700;border-top:1px solid #e9ecef}
+  @media(max-width:650px){.app-container{padding:22px 16px;min-height:92vh}.btn-volver-menu{position:static;align-self:flex-start;margin-bottom:8px}.zona-controles{flex-direction:column;gap:12px}.btn-audio{width:100%;justify-content:center}.opciones{grid-template-columns:1fr}.constructor{padding:16px 8px}.pieza{min-width:88px;padding:8px 12px}.texto-es{font-size:1.1em}.resultados-grid{flex-direction:column;align-items:center}.caja-resultado{width:90%}}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <a href="index.html" class="btn-volver-menu">🏠 Inicio / الرئيسية</a>
+
+  <div id="pantalla-inicio">
+    <h1>Nivel 5: Me comunico en clase / أتواصل في القسم</h1>
+    <p class="instruccion arabe">١. استمع | ٢. كرر | ٣. رتب الجملة | ٤. تحدث</p>
+    <p class="instruccion">1º Escucha · 2º Repite · 3º Ordena la frase · 4º Comprende la situación</p>
+    <div class="zona-situacion">
+      <div class="zona-visual">🙋‍♂️🏫</div>
+      <div class="situacion-es">Aprender frases que puedes usar realmente en clase</div>
+      <div class="situacion-ar">تعلم جملا يمكنك استعمالها فعلا في القسم</div>
+    </div>
+    <div style="text-align:center;color:#666;font-size:1.08em;line-height:1.7;margin:25px 0;">
+      🆘 Pedir ayuda · ✏️ Pedir material · 👂 Decir que no entiendes<br>
+      🚻 Pedir permiso · 💧 Expresar una necesidad · 📖 Preguntar una página
+    </div>
+    <button class="btn-empezar" style="width:82%" onclick="iniciarAprendizaje()">Empezar / بدأ</button>
+  </div>
+
+  <div id="pantalla-juego" class="oculto" style="position:relative">
+    <div id="indicador-modo" style="text-align:center;font-weight:800;color:var(--alerta);margin-bottom:8px;font-size:1.15em" class="oculto">MODO TEST · ELIGE LA RESPUESTA</div>
+    <div class="progreso-barra"><div id="progreso" class="progreso-relleno"></div></div>
+    <div id="zona-situacion" class="zona-situacion">
+      <div id="zona-visual" class="zona-visual">🙋‍♂️✏️</div>
+      <div id="situacion-es" class="situacion-es"></div>
+      <div id="situacion-ar" class="situacion-ar"></div>
+    </div>
+    <div class="zona-controles">
+      <button id="btn-escuchar" class="btn-audio btn-escuchar" onclick="hablarNormal()">🔊 Escuchar / استمع</button>
+      <button id="btn-repetir" class="btn-audio btn-repetir" onclick="hablarLento()">🗣️ Repetir / كرر</button>
+    </div>
+
+    <div id="zona-practica">
+      <div id="constructor" class="constructor"></div>
+      <div id="piezas" class="piezas-disponibles"></div>
+    </div>
+
+    <div id="zona-test" class="oculto">
+      <div class="pregunta-test">
+        <div id="test-emoji" class="emoji">🙋</div>
+        <h2 id="test-pregunta">¿Qué dices?</h2>
+        <p id="test-pregunta-ar" class="arabe">ماذا تقول؟</p>
+      </div>
+      <div id="opciones" class="opciones"></div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <div id="overlay-exito" class="oculto">
+      <div class="estrella">⭐</div>
+      <h2 id="texto-exito" style="color:var(--exito);font-size:2.4em;margin:0 0 8px">¡Muy bien! ممتاز</h2>
+      <p id="texto-explicacion" style="font-size:1.15em;color:#555;max-width:650px"></p>
+      <button class="btn-empezar" onclick="siguienteNivel()">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <div id="pantalla-intermedia" class="oculto" style="text-align:center">
+    <h1 style="font-size:2.4em;color:var(--sujeto)">¡Práctica completada!</h1>
+    <p class="arabe" style="font-size:1.5em;margin-bottom:25px">اكتمل التدريب</p>
+    <p style="font-size:5em;margin:10px 0">👏</p>
+    <p style="font-size:1.15em;color:#555;max-width:700px;margin:0 auto 20px">Ahora intenta responder en español sin ver el árabe.</p>
+    <button class="btn-empezar" style="background:var(--alerta)" onclick="iniciarTest()">Hacer Test Final / الاختبار النهائي</button>
+    <a href="index.html" class="btn-empezar" style="background:var(--sujeto);width:75%">Volver al Menú Principal 🏠</a>
+  </div>
+
+  <div id="pantalla-final" class="oculto" style="text-align:center">
+    <h1 style="font-size:2.4em;color:#333">Resultados del Test</h1>
+    <p style="color:#666">Has practicado situaciones reales de comunicación en clase.</p>
+    <div class="resultados-grid">
+      <div class="caja-resultado acierto"><h3>Aciertos a la primera</h3><div class="numero" id="texto-aciertos">0 / 12</div></div>
+      <div class="caja-resultado error"><h3>Errores cometidos</h3><div class="numero" id="texto-errores">0</div></div>
+    </div>
+    <a href="index.html" class="btn-empezar" style="width:75%">Terminar y volver al Menú Principal</a>
+  </div>
+
+  <div class="creditos">App creada por Chety Moirón — Uso Educativo Libre</div>
+</div>
+<script>
+const situaciones = [
+ {emoji:'🙋‍♂️✏️', visual:'🙋‍♂️✏️', situacionEs:'No tienes lápiz. ¿Qué dices?', situacionAr:'ليس لديك قلم. ماذا تقول؟', frase:'Necesito un lápiz', fraseAr:'أحتاج قلما', piezas:[['Necesito','أحتاج','verbo'],['un','واحد','objeto'],['lápiz','قلم','objeto']], opciones:['Necesito un lápiz','Tengo un lápiz','Quiero un libro']},
+ {emoji:'🙋‍♀️📓', visual:'🙋‍♀️📓', situacionEs:'No tienes cuaderno. ¿Qué dices?', situacionAr:'ليس لديك دفتر. ماذا تقول؟', frase:'Necesito un cuaderno', fraseAr:'أحتاج دفترا', piezas:[['Necesito','أحتاج','verbo'],['un','واحد','objeto'],['cuaderno','دفتر','objeto']], opciones:['Tengo un cuaderno','Necesito un cuaderno','Quiero un lápiz']},
+ {emoji:'👦✏️❌', visual:'👦✏️❌', situacionEs:'No tienes lápiz. ¿Qué dices?', situacionAr:'ليس لديك قلم. ماذا تقول؟', frase:'No tengo lápiz', fraseAr:'ليس لدي قلم', piezas:[['No','لا','verbo'],['tengo','لدي','verbo'],['lápiz','قلم','objeto']], opciones:['No tengo lápiz','Tengo un lápiz','No quiero un libro']},
+ {emoji:'🙋‍♂️🧑‍🏫', visual:'🙋‍♂️🧑‍🏫', situacionEs:'Necesitas ayuda. ¿Qué dices?', situacionAr:'تحتاج إلى مساعدة. ماذا تقول؟', frase:'¿Me ayudas?', fraseAr:'هل تساعدني؟', piezas:[['¿Me','هل ...ني','verbo'],['ayudas?','تساعد','verbo']], opciones:['¿Me ayudas?','¿Qué página?','Aquí tienes']},
+ {emoji:'🤔📖', visual:'🤔📖', situacionEs:'No comprendes la explicación. ¿Qué dices?', situacionAr:'لا تفهم الشرح. ماذا تقول؟', frase:'No entiendo', fraseAr:'لا أفهم', piezas:[['No','لا','verbo'],['entiendo','أفهم','verbo']], opciones:['No entiendo','Estoy aquí','Tengo hambre']},
+ {emoji:'🔁👂', visual:'🔁👂', situacionEs:'No has oído bien. ¿Qué dices?', situacionAr:'لم تسمع جيدا. ماذا تقول؟', frase:'Otra vez, por favor', fraseAr:'مرة أخرى، من فضلك', piezas:[['Otra','مرة أخرى','objeto'],['vez,','مرة','objeto'],['por favor','من فضلك','objeto']], opciones:['Otra vez, por favor','Estoy en clase','Tengo un libro']},
+ {emoji:'📖❓', visual:'📖❓', situacionEs:'Quieres saber dónde leer. ¿Qué preguntas?', situacionAr:'تريد أن تعرف أين تقرأ. ماذا تسأل؟', frase:'¿Qué página?', fraseAr:'أي صفحة؟', piezas:[['¿Qué','أي','verbo'],['página?','صفحة؟','objeto']], opciones:['¿Qué página?','¿Me ayudas?','¿Puedo ir al baño?']},
+ {emoji:'🚻🙋', visual:'🚻🙋', situacionEs:'Necesitas ir al baño. ¿Qué dices?', situacionAr:'تحتاج إلى الذهاب إلى الحمام. ماذا تقول؟', frase:'¿Puedo ir al baño?', fraseAr:'هل يمكنني الذهاب إلى الحمام؟', piezas:[['¿Puedo','هل يمكنني','verbo'],['ir','الذهاب','verbo'],['al baño?','إلى الحمام؟','objeto']], opciones:['¿Puedo ir al baño?','Tengo sed','¿Qué página?']},
+ {emoji:'💧🙋', visual:'💧🙋', situacionEs:'Tienes sed. ¿Qué dices?', situacionAr:'أنت عطشان. ماذا تقول؟', frase:'Tengo sed', fraseAr:'أنا عطشان', piezas:[['Tengo','لدي','verbo'],['sed','عطش','objeto']], opciones:['Tengo sed','Tengo hambre','No entiendo']},
+ {emoji:'🍎🙋', visual:'🍎🙋', situacionEs:'Tienes hambre. ¿Qué dices?', situacionAr:'أنت جائع. ماذا تقول؟', frase:'Tengo hambre', fraseAr:'أنا جائع', piezas:[['Tengo','لدي','verbo'],['hambre','جوع','objeto']], opciones:['Tengo hambre','Tengo sed','Necesito un lápiz']},
+ {emoji:'👉📍', visual:'👉📍', situacionEs:'Señalas un lugar cercano. ¿Qué dices?', situacionAr:'تشير إلى مكان قريب. ماذا تقول؟', frase:'Está aquí', fraseAr:'إنه هنا', piezas:[['Está','هو','verbo'],['aquí','هنا','objeto']], opciones:['Está aquí','Está allí','Aquí tienes']},
+ {emoji:'🤲📘', visual:'🤲📘', situacionEs:'Entregas un libro a otra persona. ¿Qué dices?', situacionAr:'تعطي كتابا لشخص آخر. ماذا تقول؟', frase:'Aquí tienes', fraseAr:'تفضل', piezas:[['Aquí','هنا','objeto'],['tienes','لديك','verbo']], opciones:['Aquí tienes','No entiendo','Tengo hambre']}
+];
+let actual=0, slots=[], voces=[], modoTest=false, perfectos=0, errores=0, erroresSituacion=0, bloqueo=false;
+if('speechSynthesis' in window){voces=speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{voces=speechSynthesis.getVoices()}}
+function vozEs(texto,rate=.85){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(texto);u.lang='es-ES';u.rate=rate;const v=voces.find(x=>x.lang.toLowerCase().startsWith('es'));if(v)u.voice=v;speechSynthesis.speak(u)}
+function vozBi(ar,es,rate=.85){if(!('speechSynthesis'in window))return;const b1=document.getElementById('btn-escuchar'),b2=document.getElementById('btn-repetir');speechSynthesis.cancel();b1.disabled=true;b2.disabled=true;const ua=new SpeechSynthesisUtterance(ar);ua.lang='ar-SA';ua.rate=.9;const va=voces.find(x=>x.lang.toLowerCase().startsWith('ar'));if(va)ua.voice=va;const ue=new SpeechSynthesisUtterance(es);ue.lang='es-ES';ue.rate=rate;const ve=voces.find(x=>x.lang.toLowerCase().startsWith('es'));if(ve)ue.voice=ve;const liberar=()=>{b1.disabled=false;b2.disabled=false};ue.onend=liberar;ue.onerror=liberar;ua.onend=()=>setTimeout(()=>speechSynthesis.speak(ue),180);ua.onerror=()=>speechSynthesis.speak(ue);speechSynthesis.speak(ua)}
+function hablarNormal(){const s=situaciones[actual];modoTest?vozEs(s.frase,.85):vozBi(s.fraseAr,s.frase,.85)}
+function hablarLento(){const s=situaciones[actual];modoTest?vozEs(s.frase,.45):vozBi(s.fraseAr,s.frase,.45)}
+function ocultarTodo(){['pantalla-inicio','pantalla-juego','pantalla-intermedia','pantalla-final'].forEach(id=>document.getElementById(id).classList.add('oculto'))}
+function iniciarAprendizaje(){modoTest=false;actual=0;perfectos=0;errores=0;document.getElementById('indicador-modo').classList.add('oculto');document.getElementById('btn-escuchar').innerHTML='🔊 Escuchar / استمع';document.getElementById('btn-repetir').innerHTML='🗣️ Repetir / كرر';ocultarTodo();document.getElementById('pantalla-juego').classList.remove('oculto');document.getElementById('zona-practica').classList.remove('oculto');document.getElementById('zona-test').classList.add('oculto');cargarActividad()}
+function iniciarTest(){modoTest=true;actual=0;perfectos=0;errores=0;document.getElementById('indicador-modo').classList.remove('oculto');document.getElementById('btn-escuchar').innerHTML='🔊 Escuchar';document.getElementById('btn-repetir').innerHTML='🗣️ Repetir';ocultarTodo();document.getElementById('pantalla-juego').classList.remove('oculto');document.getElementById('zona-practica').classList.add('oculto');document.getElementById('zona-test').classList.remove('oculto');cargarActividad()}
+function barajar(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function cargarActividad(){bloqueo=false;erroresSituacion=0;const s=situaciones[actual];document.getElementById('progreso').style.width=((actual+1)/situaciones.length*100)+'%';document.getElementById('zona-visual').textContent=s.visual;document.getElementById('situacion-es').textContent=s.situacionEs;document.getElementById('situacion-ar').textContent=modoTest?'':s.situacionAr;if(modoTest)cargarTest();else cargarPractica();setTimeout(hablarNormal,700)}
+function cargarPractica(){const c=document.getElementById('constructor'),p=document.getElementById('piezas');c.innerHTML='';p.innerHTML='';slots=new Array(situaciones[actual].piezas.length).fill(null);situaciones[actual].piezas.forEach((_,i)=>{const h=document.createElement('div');h.className='hueco';h.id='hueco-'+i;h.onclick=()=>devolver(i);c.appendChild(h)});barajar(situaciones[actual].piezas.map((p,i)=>({...{tEs:p[0],tAr:p[1],c:p[2]},original:i}))).forEach((pieza,id)=>{const d=document.createElement('div');d.className='pieza '+pieza.c;d.id='pieza-'+id;d.innerHTML=`<span class="texto-es">${pieza.tEs}</span><span class="texto-ar">${pieza.tAr}</span>`;d.onclick=()=>encajar(pieza,d);p.appendChild(d)})}
+function encajar(datos,div){const i=slots.findIndex(x=>x===null);if(i<0)return;document.getElementById('hueco-'+i).appendChild(div);document.getElementById('hueco-'+i).classList.add('lleno');slots[i]={datos,div};div.onclick=()=>devolver(i);if(!slots.some(x=>x===null))setTimeout(comprobarOrden,280)}
+function devolver(i){if(!slots[i])return;const o=slots[i];document.getElementById('piezas').appendChild(o.div);o.div.onclick=()=>encajar(o.datos,o.div);document.getElementById('hueco-'+i).classList.remove('lleno');slots[i]=null}
+function comprobarOrden(){if(bloqueo)return;const esperado=situaciones[actual].piezas;const ok=slots.every((x,i)=>x&&x.datos.tEs===esperado[i][0]);const c=document.getElementById('constructor');if(ok){bloqueo=true;document.getElementById('texto-exito').textContent='¡Muy bien! ممتاز';document.getElementById('texto-explicacion').textContent=situaciones[actual].frase;cambiarOverlay(true)}else{c.classList.add('incorrecto');vozBi('حاول مرة أخرى','Inténtalo de nuevo',.9);setTimeout(()=>{c.classList.remove('incorrecto');for(let i=slots.length-1;i>=0;i--)devolver(i)},700)}}
+function cambiarOverlay(mostrar){document.getElementById('overlay-exito').classList.toggle('oculto',!mostrar)}
+function siguienteNivel(){cambiarOverlay(false);actual++;if(actual<situaciones.length){cargarActividad()}else{ocultarTodo();if(!modoTest)document.getElementById('pantalla-intermedia').classList.remove('oculto');else{document.getElementById('pantalla-final').classList.remove('oculto');document.getElementById('texto-aciertos').textContent=perfectos+' / '+situaciones.length;document.getElementById('texto-errores').textContent=errores}}}
+function cargarTest(){const s=situaciones[actual];document.getElementById('test-emoji').textContent=s.emoji;document.getElementById('test-pregunta').textContent=s.situacionEs;document.getElementById('test-pregunta-ar').textContent='';const cont=document.getElementById('opciones');const fb=document.getElementById('feedback');fb.textContent='';fb.className='feedback';cont.innerHTML='';const opts=barajar([...s.opciones]);opts.forEach(texto=>{const b=document.createElement('button');b.className='opcion';b.textContent=texto;b.onclick=()=>responderTest(b,texto,s);cont.appendChild(b)})}
+function responderTest(btn,texto,s){if(bloqueo)return;const cont=document.getElementById('opciones');if(texto===s.frase){bloqueo=true;btn.classList.add('correcta');if(erroresSituacion===0)perfectos++;const fb=document.getElementById('feedback');fb.textContent='✅ Correcto';fb.className='feedback ok';vozEs('¡Muy bien!',1);setTimeout(()=>{actual++;if(actual<situaciones.length){cargarActividad()}else{ocultarTodo();document.getElementById('pantalla-final').classList.remove('oculto');document.getElementById('texto-aciertos').textContent=perfectos+' / '+situaciones.length;document.getElementById('texto-errores').textContent=errores}},750)}else{errores++;erroresSituacion++;btn.classList.add('incorrecta');const fb=document.getElementById('feedback');fb.textContent='❌ Inténtalo de nuevo';fb.className='feedback no';vozEs('Inténtalo de nuevo',1)}}
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leo y comprendo - Nivel 1</title>
+<style>
+:root{
+  --azul:#3a86ff;--verde:#06d6a0;--rojo:#ef476f;--amarillo:#ffd166;
+  --fondo:#f4f6f9;--blanco:#fff;--texto:#263238;--gris:#e8edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fondo);color:var(--texto);min-height:100vh;padding:18px}
+.app{width:100%;max-width:1100px;margin:auto;background:var(--blanco);border-radius:22px;box-shadow:0 10px 35px rgba(0,0,0,.08);padding:24px;min-height:94vh;position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.home{display:inline-block;text-decoration:none;background:#eef2f7;color:#263238;font-weight:700;padding:10px 15px;border-radius:12px}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:5px}
+.subtitle{color:#667085;font-size:1.05rem}
+.hidden{display:none!important}
+.progress{height:12px;background:var(--gris);border-radius:8px;overflow:hidden;margin:12px 0 22px}
+.progress > div{height:100%;width:0;background:var(--verde);transition:width .3s}
+.start{text-align:center;padding:20px 10px 40px}
+.emoji-big{font-size:5rem;margin:12px 0}
+.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}
+.card{background:#f7f9fc;border:2px solid #e4eaf0;border-radius:16px;padding:18px;text-align:center}
+.card strong{display:block;margin-bottom:7px;font-size:1.15rem}
+.btn{border:0;border-radius:14px;padding:15px 24px;font-size:1.15rem;font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);transition:transform .1s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--azul);color:#fff}.green{background:var(--verde);color:#073b2f}.yellow{background:var(--amarillo);color:#3c3300}.red{background:var(--rojo);color:#fff}
+.game-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.badge{background:#eef4ff;color:#1550b5;padding:8px 12px;border-radius:999px;font-weight:800}
+.story{border:3px solid #dfe7f0;border-radius:20px;padding:25px;margin:16px 0;background:#fbfcfe}
+.story-emoji{font-size:4rem;text-align:center;margin-bottom:12px}
+.story p{font-size:1.7rem;line-height:1.55;text-align:left;max-width:900px;margin:auto}
+.audio-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:16px 0 22px}
+.question{font-size:1.55rem;font-weight:800;text-align:center;margin:12px 0 16px}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.option{background:#fff;border:3px solid #cfd8e3;border-radius:16px;padding:18px;font-size:1.35rem;font-weight:750;cursor:pointer;text-align:center;min-height:78px;display:flex;align-items:center;justify-content:center}
+.option:hover{border-color:var(--azul);background:#f7fbff}.option.correct{border-color:var(--verde);background:#e9fbf5}.option.wrong{border-color:var(--rojo);background:#fff0f3}
+.feedback{text-align:center;min-height:54px;padding:12px;font-size:1.3rem;font-weight:800}
+.next-wrap{text-align:center;margin-top:10px}.score{text-align:center;margin-top:18px;font-size:1.35rem;font-weight:800}
+.final{text-align:center;padding:45px 15px}.final .trophy{font-size:6rem}.final h2{font-size:2.3rem;margin:10px 0}.final p{font-size:1.35rem;color:#667085;margin-bottom:25px}
+.small-note{text-align:center;color:#7b8794;font-size:.95rem;margin-top:18px}
+@media(max-width:760px){
+  body{padding:8px}.app{padding:14px;min-height:98vh}.top{align-items:flex-start}.title{text-align:left}h1{font-size:1.65rem}.subtitle{font-size:.95rem}.instructions{grid-template-columns:1fr}.story p{font-size:1.35rem}.options{grid-template-columns:1fr}.option{font-size:1.15rem}.game-head{flex-direction:column;align-items:stretch}.home{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html">← Inicio</a>
+    <div class="title">
+      <h1>📖 Leo y comprendo</h1>
+      <div class="subtitle">Nivel 1 · Comprensión lectora</div>
+    </div>
+    <div style="width:90px"></div>
+  </div>
+
+  <section id="start" class="start">
+    <div class="emoji-big">🧠📚</div>
+    <h2 style="font-size:2rem;margin-bottom:10px">Leo · Escucho · Pienso · Respondo</h2>
+    <p style="font-size:1.2rem;color:#667085;max-width:760px;margin:auto">Textos cortos y situaciones cercanas para practicar la comprensión sin necesidad de escribir.</p>
+    <div class="instructions">
+      <div class="card">👀<strong>1. Lee</strong>Busca quién, qué hace y dónde.</div>
+      <div class="card">🔊<strong>2. Escucha</strong>Puedes escuchar el texto y la pregunta.</div>
+      <div class="card">👉<strong>3. Elige</strong>Toca la respuesta correcta.</div>
+    </div>
+    <button class="btn primary" onclick="startGame()">Empezar ▶️</button>
+    <div class="small-note">Pensado para alumnos que necesitan apoyo en lectura y comprensión.</div>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+    <div class="game-head">
+      <div class="badge" id="counter">Texto 1 de 12</div>
+      <button class="btn yellow" onclick="speakQuestion()">🔊 Escuchar pregunta</button>
+    </div>
+    <div class="story">
+      <div class="story-emoji" id="storyEmoji">🎒</div>
+      <p id="storyText"></p>
+    </div>
+    <div class="audio-row">
+      <button class="btn primary" onclick="speakText()">🔊 Escuchar texto</button>
+      <button class="btn green" onclick="speakTextSlow()">🗣️ Escuchar despacio</button>
+    </div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="next-wrap hidden" id="nextWrap"><button class="btn primary" onclick="nextItem()">Siguiente ➡️</button></div>
+    <div class="score" id="score">Aciertos: 0 · Errores: 0</div>
+  </section>
+
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Actividad terminada!</h2>
+    <p id="finalText"></p>
+    <a class="btn primary" href="index.html">Volver al inicio</a>
+    <button class="btn green" onclick="restart()" style="margin-left:10px">Repetir 🔄</button>
+  </section>
+</div>
+
+<script>
+const items=[
+ {e:'🎒',t:'Sara llega al colegio con una mochila azul. Dentro lleva un cuaderno y un lápiz. Deja la mochila junto a su mesa.',q:'¿De qué color es la mochila de Sara?',o:['Roja','Azul','Verde','Amarilla'],a:1},
+ {e:'📚',t:'Pablo entra en la biblioteca. Busca un libro de animales y se sienta en una silla para leerlo.',q:'¿Qué libro busca Pablo?',o:['De coches','De animales','De plantas','De fútbol'],a:1},
+ {e:'✏️',t:'Lucía está haciendo una ficha. Primero lee la pregunta y después escribe la respuesta con un lápiz.',q:'¿Qué hace Lucía después de leer la pregunta?',o:['Guarda el lápiz','Sale al patio','Escribe la respuesta','Cierra el cuaderno'],a:2},
+ {e:'🏫',t:'Suena el timbre. Los alumnos guardan los libros y salen al patio para el recreo.',q:'¿Adónde salen los alumnos?',o:['A la biblioteca','Al comedor','Al patio','A casa'],a:2},
+ {e:'💧',t:'Hassan termina la clase y tiene mucha sed. Coge su botella de agua y bebe un poco.',q:'¿Qué necesita Hassan?',o:['Agua','Un libro','Un balón','Un abrigo'],a:0},
+ {e:'🧥',t:'Hace frío por la mañana. Elena se pone el abrigo antes de salir al patio.',q:'¿Por qué se pone el abrigo?',o:['Porque tiene sueño','Porque hace frío','Porque tiene hambre','Porque va a leer'],a:1},
+ {e:'🍎',t:'En el recreo, Omar lleva una manzana. Se sienta con dos compañeros y comparte la fruta con ellos.',q:'¿Con quién comparte Omar la manzana?',o:['Con su profesor','Con dos compañeros','Con su familia','Con nadie'],a:1},
+ {e:'🖍️',t:'La profesora pide que cada alumno saque unas pinturas. Marta elige el color rojo y pinta una casa.',q:'¿Qué color elige Marta?',o:['Azul','Verde','Rojo','Amarillo'],a:2},
+ {e:'🧹',t:'Al terminar una actividad, hay papeles en el suelo. Diego recoge los papeles y los tira a la papelera.',q:'¿Dónde tira Diego los papeles?',o:['En la mochila','En la mesa','En la papelera','En la ventana'],a:2},
+ {e:'🚌',t:'A las cinco, termina el colegio. Ana guarda sus cosas, se despide de la profesora y espera el autobús.',q:'¿Qué espera Ana?',o:['El recreo','El autobús','La comida','A su profesora'],a:1},
+ {e:'🐶',t:'En una historia, un perro pequeño encuentra una pelota en el parque. La coge y corre detrás de su dueño.',q:'¿Qué encuentra el perro?',o:['Una mochila','Una pelota','Un libro','Una bicicleta'],a:1},
+ {e:'🌧️',t:'Nora mira por la ventana. Está lloviendo mucho, así que guarda el paraguas en su mochila y espera un rato.',q:'¿Por qué espera Nora un rato?',o:['Porque está lloviendo','Porque tiene hambre','Porque ha terminado el libro','Porque quiere jugar'],a:0}
+];
+let i=0,ok=0,bad=0,answered=false;
+const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+function say(text,rate=0.85){if(!synth)return;synth.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-ES';u.rate=rate;const voices=synth.getVoices();const v=voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith('es'));if(v)u.voice=v;synth.speak(u)}
+if(synth)synth.onvoiceschanged=()=>{};
+function startGame(){document.getElementById('start').classList.add('hidden');document.getElementById('final').classList.add('hidden');document.getElementById('game').classList.remove('hidden');i=0;ok=0;bad=0;load()}
+function load(){answered=false;const x=items[i];document.getElementById('counter').textContent=`Texto ${i+1} de ${items.length}`;document.getElementById('bar').style.width=((i+1)/items.length*100)+'%';document.getElementById('storyEmoji').textContent=x.e;document.getElementById('storyText').textContent=x.t;document.getElementById('question').textContent=x.q;document.getElementById('feedback').textContent='';document.getElementById('nextWrap').classList.add('hidden');document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;const box=document.getElementById('options');box.innerHTML='';x.o.forEach((txt,n)=>{const b=document.createElement('button');b.className='option';b.textContent=txt;b.onclick=()=>answer(n,b);box.appendChild(b)});setTimeout(()=>say(x.t,0.82),450)}
+function answer(n,btn){if(answered)return;answered=true;const x=items[i];document.querySelectorAll('.option').forEach((b,j)=>{b.disabled=true;if(j===x.a)b.classList.add('correct')});if(n===x.a){ok++;btn.classList.add('correct');document.getElementById('feedback').textContent='✅ ¡Muy bien! Has comprendido el texto.';say('Muy bien. Has comprendido el texto.',0.9)}else{bad++;btn.classList.add('wrong');document.getElementById('feedback').textContent=`❌ No pasa nada. La respuesta correcta es: ${x.o[x.a]}`;say(`La respuesta correcta es ${x.o[x.a]}.`,0.8)}document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;document.getElementById('nextWrap').classList.remove('hidden')}
+function nextItem(){i++;if(i<items.length)load();else finish()}
+function finish(){document.getElementById('game').classList.add('hidden');document.getElementById('final').classList.remove('hidden');document.getElementById('finalText').textContent=`Has conseguido ${ok} aciertos de ${items.length}. Errores: ${bad}.`}
+function restart(){document.getElementById('final').classList.add('hidden');document.getElementById('game').classList.remove('hidden');i=0;ok=0;bad=0;load()}
+function speakText(){say(items[i].t,0.85)}
+function speakTextSlow(){say(items[i].t,0.55)}
+function speakQuestion(){say(items[i].q,0.78)}
+</script>
+</body>
+</html>

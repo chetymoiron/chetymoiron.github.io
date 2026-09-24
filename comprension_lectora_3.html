@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leo y comprendo - Nivel 3</title>
+<style>
+:root{
+  --azul:#3a86ff;--verde:#06d6a0;--rojo:#ef476f;--amarillo:#ffd166;
+  --morado:#8338ec;--fondo:#f4f6f9;--blanco:#fff;--texto:#263238;--gris:#e8edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);min-height:100vh;padding:18px;
+}
+.app{
+  width:100%;max-width:1120px;margin:auto;background:var(--blanco);
+  border-radius:22px;box-shadow:0 10px 35px rgba(0,0,0,.08);
+  padding:24px;min-height:94vh;position:relative;
+}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.home{
+  display:inline-block;text-decoration:none;background:#eef2f7;color:#263238;
+  font-weight:700;padding:10px 15px;border-radius:12px;white-space:nowrap
+}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:5px}
+.subtitle{color:#667085;font-size:1.05rem}
+.hidden{display:none!important}
+.progress{height:12px;background:var(--gris);border-radius:8px;overflow:hidden;margin:12px 0 22px}
+.progress>div{height:100%;width:0;background:var(--verde);transition:width .3s}
+.start{text-align:center;padding:20px 10px 40px}
+.emoji-big{font-size:5rem;margin:12px 0}
+.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}
+.card{background:#f7f9fc;border:2px solid #e4eaf0;border-radius:16px;padding:18px;text-align:center}
+.card strong{display:block;margin-bottom:7px;font-size:1.15rem}
+.btn{
+  border:0;border-radius:14px;padding:15px 24px;font-size:1.1rem;
+  font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--azul);color:#fff}
+.green{background:var(--verde);color:#073b2f}
+.yellow{background:var(--amarillo);color:#3c3300}
+.red{background:var(--rojo);color:#fff}
+.morado{background:var(--morado);color:#fff}
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px
+}
+.badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{
+  background:#eef4ff;color:#1550b5;padding:8px 12px;border-radius:999px;font-weight:800
+}
+.type-badge{
+  background:#f1efff;color:#5b21b6;padding:8px 12px;border-radius:999px;font-weight:800
+}
+.story{
+  border:3px solid #dfe7f0;border-radius:20px;padding:28px 30px;margin:16px 0;
+  background:#fbfcfe
+}
+.story-emoji{text-align:center;font-size:4rem;margin-bottom:14px}
+.story-number{text-align:center;color:#6b7280;font-size:.95rem;margin-bottom:10px;font-weight:800}
+.story p{
+  font-size:1.42rem;line-height:1.8;max-width:960px;margin:auto;
+  letter-spacing:.05px
+}
+.audio-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:16px 0 22px}
+.question{
+  font-size:1.5rem;font-weight:800;text-align:center;margin:12px 0 16px
+}
+.question-help{
+  text-align:center;color:#667085;font-size:1rem;margin-top:-8px;margin-bottom:12px
+}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.option{
+  background:#fff;border:3px solid #cfd8e3;border-radius:16px;padding:18px;
+  font-size:1.24rem;font-weight:750;cursor:pointer;text-align:center;min-height:88px;
+  display:flex;align-items:center;justify-content:center;line-height:1.3
+}
+.option:hover{border-color:var(--azul);background:#f7fbff}
+.option.correct{border-color:var(--verde);background:#e9fbf5}
+.option.wrong{border-color:var(--rojo);background:#fff0f3}
+.feedback{
+  text-align:center;min-height:58px;padding:12px;font-size:1.2rem;font-weight:800
+}
+.next-wrap{text-align:center;margin-top:10px}
+.score{text-align:center;margin-top:18px;font-size:1.2rem;font-weight:800;color:#344054}
+.hint{
+  margin:14px auto 0;max-width:900px;background:#fff8dc;border:2px solid #f5d96b;
+  border-radius:14px;padding:14px;font-size:1.03rem;color:#665400;display:none
+}
+.hint.show{display:block}
+.final{text-align:center;padding:45px 15px}
+.final .trophy{font-size:6rem}
+.final h2{font-size:2.3rem;margin:10px 0}
+.final p{font-size:1.35rem;color:#667085;margin-bottom:25px}
+.final-score{
+  display:grid;grid-template-columns:repeat(2,minmax(180px,260px));justify-content:center;
+  gap:18px;margin:25px 0
+}
+.result-box{padding:22px;border-radius:18px;border:2px solid #dfe7f0;background:#f8fafc}
+.result-number{font-size:3rem;font-weight:900}
+.tip{
+  max-width:850px;margin:20px auto 0;background:#eef8ff;border:2px solid #cfe7ff;
+  border-radius:16px;padding:16px;font-size:1.05rem;text-align:left
+}
+.footer-note{text-align:center;color:#94a3b8;font-size:.9rem;margin-top:22px}
+@media(max-width:760px){
+  body{padding:8px}.app{padding:14px;min-height:98vh}.top{align-items:flex-start}
+  .title{text-align:left}h1{font-size:1.65rem}.subtitle{font-size:.95rem}
+  .instructions{grid-template-columns:1fr}.story{padding:20px 18px}.story p{font-size:1.2rem;line-height:1.65}
+  .options{grid-template-columns:1fr}.option{font-size:1.1rem}.game-head{flex-direction:column;align-items:stretch}
+  .home{font-size:.95rem}.final-score{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html">← Inicio</a>
+    <div class="title">
+      <h1>📖 Leo y comprendo</h1>
+      <div class="subtitle">Nivel 3 · Comprendo, relaciono e infiero</div>
+    </div>
+    <div style="width:90px"></div>
+  </div>
+
+  <section id="start" class="start">
+    <div class="emoji-big">📚🔎🧠</div>
+    <h2 style="font-size:2rem;margin-bottom:10px">Leo · Busco pistas · Relaciono ideas · Respondo</h2>
+    <p style="font-size:1.18rem;color:#667085;max-width:840px;margin:auto;line-height:1.5">
+      En este nivel las lecturas son más largas. Algunas preguntas tienen la respuesta
+      escrita en el texto y otras requieren pensar a partir de varias pistas.
+    </p>
+
+    <div class="instructions">
+      <div class="card">👀<strong>1. Lee todo</strong>No respondas solo con una palabra que hayas visto.</div>
+      <div class="card">🔎<strong>2. Busca pistas</strong>Relaciona frases y recuerda el orden de los hechos.</div>
+      <div class="card">🧠<strong>3. Piensa</strong>En algunas preguntas tendrás que hacer una pequeña inferencia.</div>
+    </div>
+
+    <div class="tip">
+      <strong>Consejo:</strong> primero entiende qué pregunta te hacen y después vuelve al texto para buscar las pistas.
+    </div>
+
+    <button class="btn primary" onclick="startGame()" style="margin-top:24px">Empezar ▶️</button>
+    <div class="footer-note">Nivel 3: lectura comprensiva con preguntas literales, de secuencia e inferencia sencilla.</div>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badges">
+        <div class="badge" id="counter">Lectura 1 de 12</div>
+        <div class="type-badge" id="typeBadge">Pregunta</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="btn yellow" onclick="speakQuestion()">🔊 Escuchar pregunta</button>
+        <button class="btn morado" onclick="toggleHint()">💡 Pista</button>
+      </div>
+    </div>
+
+    <div class="story">
+      <div class="story-number" id="storyNumber">LECTURA 1</div>
+      <div class="story-emoji" id="storyEmoji">🏫</div>
+      <p id="storyText"></p>
+    </div>
+
+    <div class="audio-row">
+      <button class="btn primary" onclick="speakText()">🔊 Escuchar texto</button>
+      <button class="btn green" onclick="speakTextSlow()">🗣️ Escuchar despacio</button>
+    </div>
+
+    <div id="hint" class="hint"></div>
+
+    <div class="question" id="question"></div>
+    <div class="question-help" id="questionHelp"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextItem()">Siguiente ➡️</button>
+    </div>
+
+    <div class="score" id="score">Aciertos: 0 · Errores: 0</div>
+  </section>
+
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Has terminado el Nivel 3!</h2>
+    <p id="finalText"></p>
+
+    <div class="final-score">
+      <div class="result-box">
+        <div style="font-weight:800">Aciertos</div>
+        <div class="result-number" id="finalOk">0</div>
+      </div>
+      <div class="result-box">
+        <div style="font-weight:800">Errores</div>
+        <div class="result-number" id="finalBad">0</div>
+      </div>
+    </div>
+
+    <a class="btn primary" href="index.html">Volver al inicio</a>
+    <button class="btn green" onclick="restart()" style="margin-left:10px">Repetir 🔄</button>
+  </section>
+</div>
+
+<script>
+const items = [
+  {
+    e:'🏫',
+    type:'Idea principal',
+    t:'A primera hora, el patio del colegio estaba casi vacío porque todavía no había sonado el timbre. Lucía llegó pronto y vio que la biblioteca estaba abierta. Entró para devolver un libro que había terminado el día anterior. Antes de salir, observó en una mesa varios carteles sobre una campaña para recoger alimentos. Al leerlos, decidió preguntar a su tutora si su clase podía participar. Cuando sonó el timbre, fue corriendo al aula con la idea de hablar con sus compañeros durante el recreo.',
+    q:'¿Cuál es la idea principal de la lectura?',
+    o:['Lucía llega pronto y encuentra una biblioteca abierta donde ve información sobre una campaña solidaria.','Lucía pierde un libro en la biblioteca y tiene que buscarlo durante el recreo.','La tutora organiza una excursión antes de que empiece la clase.','Lucía decide quedarse toda la mañana en la biblioteca.'],
+    a:0,
+    h:'Piensa en qué hecho hace que Lucía tenga una nueva idea al final.'
+  },
+  {
+    e:'🐦',
+    type:'Inferencia',
+    t:'Mario cuidaba cada tarde un pequeño huerto que había plantado su abuelo en el jardín. Una semana notó que varias hojas estaban mordidas y pensó que algún insecto se las estaba comiendo. Una mañana se quedó observando desde la ventana. No vio insectos, pero sí descubrió un grupo de gorriones que bajaba al huerto. Mario habló con su abuelo y juntos colocaron una pequeña malla sobre las plantas más jóvenes. Dos días después, las hojas nuevas estaban enteras y el huerto seguía creciendo.',
+    q:'¿Qué fue lo más probable que estuviera dañando las plantas?',
+    o:['Los gorriones','La lluvia','El abuelo','Las herramientas del jardín'],
+    a:0,
+    h:'Mario no encontró insectos, pero sí observó a unos animales entrar en el huerto.'
+  },
+  {
+    e:'🚌',
+    type:'Secuencia',
+    t:'El martes, Sara salió de casa con bastante prisa porque había apagado el despertador sin darse cuenta. Cogió la mochila, desayunó un vaso de leche y salió hacia la parada del autobús. Cuando llegó, vio que el autobús todavía no había aparecido. Aprovechó esos minutos para revisar el estuche y descubrió que había olvidado el lápiz azul. Pensó en volver a casa, pero entonces vio llegar el autobús. Subió y se sentó junto a su amiga Elena. Durante el camino, Elena le prestó un lápiz azul para la clase de Plástica.',
+    q:'¿Qué ocurrió justo antes de que Sara subiera al autobús?',
+    o:['Elena le prestó un lápiz.','Sara descubrió que no tenía lápiz azul.','Sara desayunó en la parada.','Sara llegó al colegio.'],
+    a:1,
+    h:'Busca la acción que ocurre inmediatamente antes de que llegue el autobús.'
+  },
+  {
+    e:'🌧️',
+    type:'Causa y efecto',
+    t:'Durante varios días, el cielo había estado cubierto de nubes. El jueves, justo cuando terminaba la jornada escolar, comenzó a llover con fuerza. Andrés había pensado ir al parque a jugar al balón con su vecino, pero cambió de plan. En casa preparó una pequeña pista de coches con cajas y cinta adhesiva. Mientras jugaba, su madre abrió la ventana un momento para que entrara aire fresco. Andrés escuchó la lluvia contra el cristal y comprendió que aquella tarde la pista de coches había sido una buena alternativa.',
+    q:'¿Por qué Andrés preparó una pista de coches en casa?',
+    o:['Porque quería ordenar sus juguetes.','Porque su vecino se había ido de viaje.','Porque la lluvia impidió que fuera al parque.','Porque su madre se lo pidió.'],
+    a:2,
+    h:'Relaciona la lluvia con el cambio de plan de Andrés.'
+  },
+  {
+    e:'📖',
+    type:'Inferencia',
+    t:'En la clase de Lengua, la profesora leyó en voz alta una historia y después pidió a los alumnos que escribieran una frase sobre el personaje principal. Pablo escribió: «Al principio tenía miedo, pero después decidió intentarlo». Su compañera Nora había escrito una frase parecida. Cuando la profesora preguntó qué parte de la historia les había ayudado a elegir esas palabras, los dos alumnos señalaron el momento en que el personaje dejó de esconderse y salió a ayudar a otra persona.',
+    q:'¿Cómo cambia el personaje principal durante la historia?',
+    o:['Pasa de tener miedo a atreverse a actuar.','Pasa de estar contento a enfadarse.','Pasa de estar cansado a quedarse dormido.','Pasa de estar solo a irse de vacaciones.'],
+    a:0,
+    h:'Fíjate en las palabras «al principio» y «después».'
+  },
+  {
+    e:'🥪',
+    type:'Información',
+    t:'El viernes, la clase de Marta organizó un desayuno saludable. Cada alumno podía llevar una fruta y una botella de agua. Marta llevó una pera y una botella reutilizable. Su amigo Diego había olvidado la fruta, así que Marta partió la pera y compartió una mitad con él. Después, la profesora explicó que también era importante recoger los restos y dejar las mesas limpias. Antes de volver al aula, todos revisaron el suelo y colocaron las botellas en sus mochilas.',
+    q:'¿Qué dos cosas hizo Marta durante el desayuno?',
+    o:['Compartió su fruta y guardó su botella.','Limpió todas las mesas y salió al patio.','Llevó dos bocadillos y regaló uno.','Preparó el desayuno para toda la clase.'],
+    a:0,
+    h:'Busca una acción al principio y otra casi al final del texto.'
+  },
+  {
+    e:'🚲',
+    type:'Inferencia',
+    t:'Nadia quería aprender a montar en bicicleta sin ruedas pequeñas. Su hermano mayor la acompañó al parque un domingo por la mañana. Durante los primeros minutos, Nadia se cayó dos veces sobre el césped, pero no se hizo daño. En lugar de volver a casa, pidió probar de nuevo. Su hermano corrió a su lado y le recordó que mirara hacia delante. Al cabo de un rato, Nadia consiguió avanzar varios metros sin ayuda. Antes de irse, levantó los brazos y dijo que quería practicar otra vez al domingo siguiente.',
+    q:'¿Qué podemos deducir de Nadia?',
+    o:['Que se rinde en cuanto algo sale mal.','Que quiere mejorar y sigue practicando.','Que no le gusta estar con su hermano.','Que ya sabía montar perfectamente.'],
+    a:1,
+    h:'Observa qué hace Nadia después de caerse.'
+  },
+  {
+    e:'🐶',
+    type:'Orden temporal',
+    t:'Al salir del colegio, Iván encontró un perro pequeño junto a una papelera. El animal llevaba collar, pero no había nadie cerca. Iván no intentó cogerlo. Primero avisó al profesor que estaba en la puerta. Después, el profesor llamó a la policía local para preguntar si alguien había comunicado la pérdida de un perro. Mientras esperaban una respuesta, Iván y el profesor permanecieron cerca del animal para que no saliera corriendo hacia la carretera. Al cabo de unos minutos, una mujer llegó buscando a su perro y enseñó una fotografía para demostrar que era suyo.',
+    q:'¿Qué ocurrió después de que Iván avisara al profesor?',
+    o:['La mujer llegó inmediatamente con una fotografía.','El profesor llamó a la policía local.','Iván llevó al perro a su casa.','El perro salió corriendo hacia la carretera.'],
+    a:1,
+    h:'Sigue el orden de las acciones: encontrar, avisar, llamar, esperar, llegar.'
+  },
+  {
+    e:'🌱',
+    type:'Conclusión',
+    t:'En una esquina del aula había una planta que parecía estar cada vez más inclinada hacia la ventana. La profesora propuso moverla a otro lugar y observar qué sucedía. Durante varios días, los alumnos la giraron un poco cada mañana. Al cabo de una semana, la planta seguía inclinándose hacia la zona por donde entraba más luz. La clase escribió sus observaciones en un cuaderno y después colocó la planta cerca de la ventana, donde quedó más derecha y con las hojas orientadas hacia la luz.',
+    q:'¿Qué conclusión sacó la clase?',
+    o:['Que la planta necesitaba más espacio para crecer.','Que la planta buscaba la zona con más luz.','Que la planta no necesitaba agua.','Que la ventana estaba siempre cerrada.'],
+    a:1,
+    h:'Fíjate en hacia dónde se inclina la planta y qué sucede al final.'
+  },
+  {
+    e:'🎒',
+    type:'Problema y solución',
+    t:'Antes de comenzar una actividad de Ciencias, la profesora pidió a los alumnos que sacaran sus cuadernos y un lápiz. Hugo abrió la mochila y descubrió que no encontraba el estuche. Miró dentro del bolsillo pequeño, debajo de los libros y junto a la carpeta, pero nada. Entonces recordó que el día anterior había usado el estuche en la biblioteca. Se lo dijo a la profesora, que le permitió compartir material con su compañero durante la actividad. Al terminar la clase, Hugo fue a la biblioteca y encontró el estuche sobre una mesa.',
+    q:'¿Cómo consiguió Hugo resolver el problema durante la actividad?',
+    o:['Pidió permiso para compartir material con un compañero.','Salió del colegio para comprar otro estuche.','Dejó la actividad para buscarlo en casa.','La profesora le regaló un estuche nuevo.'],
+    a:0,
+    h:'Busca la solución que utilizó Hugo antes de recuperar el estuche.'
+  },
+  {
+    e:'🏠',
+    type:'Inferencia',
+    t:'Cuando Paula volvió del colegio, encontró la puerta de casa cerrada y no oyó ningún ruido dentro. Su padre le había dicho por la mañana que llegaría antes que ella, pero Paula recordó que ese día tenía una reunión. Miró la hora y vio que todavía faltaban veinte minutos para la salida habitual de la reunión. En lugar de preocuparse, se sentó un momento en el banco de la entrada y sacó un libro de la mochila. Poco después, su padre apareció y explicó que la reunión se había alargado unos minutos.',
+    q:'¿Por qué Paula decidió esperar tranquila?',
+    o:['Porque sabía que su padre podía tardar por la reunión.','Porque pensaba que la casa estaba vacía para siempre.','Porque había perdido las llaves.','Porque quería quedarse a dormir en la calle.'],
+    a:0,
+    h:'Relaciona la hora con la reunión que tenía su padre.'
+  },
+  {
+    e:'🎨',
+    type:'Idea principal',
+    t:'La clase de Arte preparó una exposición con trabajos de todo el trimestre. Algunos alumnos habían pintado paisajes, otros habían hecho collages y varios habían construido pequeñas figuras con materiales reciclados. El viernes, antes de que llegaran las familias, los alumnos colocaron las obras, escribieron los nombres de los autores y revisaron que no faltara ninguna. Cuando terminó la exposición, la profesora felicitó a la clase porque todos habían colaborado, incluso quienes al principio no sabían qué trabajo hacer. Para cerrar la actividad, cada alumno contó cuál había sido su obra favorita y por qué.',
+    q:'¿Qué destaca principalmente la lectura?',
+    o:['La colaboración de la clase para preparar una exposición.','La dificultad de pintar paisajes.','Los problemas que tuvieron las familias para entrar.','El material reciclado como único recurso artístico.'],
+    a:0,
+    h:'No te fijes solo en un tipo de obra: piensa en lo que hicieron todos.'
+  }
+];
+
+let i=0,ok=0,bad=0,answered=false;
+const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+
+function say(text,rate=0.82){
+  if(!synth)return;
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='es-ES';u.rate=rate;
+  const v=synth.getVoices().find(x=>x.lang && x.lang.toLowerCase().startsWith('es'));
+  if(v)u.voice=v;
+  synth.speak(u);
+}
+
+function startGame(){
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i=0;ok=0;bad=0;load();
+}
+
+function load(){
+  answered=false;
+  const x=items[i];
+  document.getElementById('counter').textContent=`Lectura ${i+1} de ${items.length}`;
+  document.getElementById('storyNumber').textContent=`LECTURA ${i+1}`;
+  document.getElementById('typeBadge').textContent=x.type;
+  document.getElementById('bar').style.width=((i+1)/items.length*100)+'%';
+  document.getElementById('storyEmoji').textContent=x.e;
+  document.getElementById('storyText').textContent=x.t;
+  document.getElementById('question').textContent=x.q;
+  document.getElementById('questionHelp').textContent='Lee todas las respuestas antes de elegir.';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;
+  document.getElementById('hint').textContent=x.h;
+  document.getElementById('hint').classList.remove('show');
+
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  x.o.forEach((txt,n)=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.textContent=txt;
+    b.onclick=()=>answer(n,b);
+    box.appendChild(b);
+  });
+
+  setTimeout(()=>say(x.t,0.8),450);
+}
+
+function answer(n,btn){
+  if(answered)return;
+  answered=true;
+  const x=items[i];
+
+  document.querySelectorAll('.option').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===x.a)b.classList.add('correct');
+  });
+
+  if(n===x.a){
+    ok++;
+    btn.classList.add('correct');
+    document.getElementById('feedback').textContent='✅ ¡Muy bien! Has comprendido y relacionado las pistas.';
+    say('Muy bien. Has comprendido y relacionado las pistas.',0.88);
+  }else{
+    bad++;
+    btn.classList.add('wrong');
+    document.getElementById('feedback').textContent=`❌ La respuesta correcta es: ${x.o[x.a]}`;
+    say(`La respuesta correcta es ${x.o[x.a]}.`,0.8);
+  }
+
+  document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextItem(){
+  i++;
+  if(i<items.length)load();
+  else finish();
+}
+
+function finish(){
+  if(synth)synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  const pct=Math.round(ok/items.length*100);
+  document.getElementById('finalText').textContent=
+    `Has completado las ${items.length} lecturas y has conseguido ${ok} aciertos (${pct}%).`;
+  document.getElementById('finalOk').textContent=ok;
+  document.getElementById('finalBad').textContent=bad;
+}
+
+function restart(){
+  if(synth)synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i=0;ok=0;bad=0;load();
+}
+
+function speakText(){say(items[i].t,0.82)}
+function speakTextSlow(){say(items[i].t,0.55)}
+function speakQuestion(){say(items[i].q,0.75)}
+
+function toggleHint(){
+  if(answered)return;
+  document.getElementById('hint').classList.toggle('show');
+}
+</script>
+</body>
+</html>

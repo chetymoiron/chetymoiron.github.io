@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mira, piensa y elige - Nivel 1</title>
+<style>
+:root{
+  --azul:#3a86ff;
+  --verde:#06d6a0;
+  --rojo:#ef476f;
+  --amarillo:#ffd166;
+  --morado:#8338ec;
+  --fondo:#f4f6f9;
+  --blanco:#fff;
+  --texto:#263238;
+  --gris:#e8edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);
+  color:var(--texto);
+  min-height:100vh;
+  padding:18px;
+}
+.app{
+  width:100%;
+  max-width:1120px;
+  margin:auto;
+  background:var(--blanco);
+  border-radius:22px;
+  box-shadow:0 10px 35px rgba(0,0,0,.08);
+  padding:24px;
+  min-height:94vh;
+}
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:16px;
+}
+.home{
+  display:inline-block;
+  text-decoration:none;
+  background:#eef2f7;
+  color:#263238;
+  font-weight:700;
+  padding:10px 15px;
+  border-radius:12px;
+  white-space:nowrap;
+}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:5px}
+.subtitle{color:#667085;font-size:1.05rem}
+.hidden{display:none!important}
+
+.progress{
+  height:12px;
+  background:var(--gris);
+  border-radius:8px;
+  overflow:hidden;
+  margin:12px 0 20px;
+}
+.progress>div{
+  height:100%;
+  width:0;
+  background:var(--verde);
+  transition:width .3s;
+}
+
+.start{
+  text-align:center;
+  padding:22px 10px 40px;
+}
+.emoji-big{font-size:5rem;margin:10px 0 18px}
+.start h2{font-size:2rem;margin-bottom:10px}
+.start p{
+  font-size:1.16rem;
+  color:#667085;
+  max-width:860px;
+  margin:auto;
+  line-height:1.55;
+}
+.instructions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin:25px 0;
+}
+.card{
+  background:#f7f9fc;
+  border:2px solid #e4eaf0;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+}
+.card strong{
+  display:block;
+  margin:7px 0;
+  font-size:1.15rem;
+}
+.btn{
+  border:0;
+  border-radius:14px;
+  padding:15px 24px;
+  font-size:1.1rem;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;
+}
+.btn:active{
+  transform:translateY(4px);
+  box-shadow:0 1px 0 rgba(0,0,0,.12);
+}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--azul);color:#fff}
+.green{background:var(--verde);color:#073b2f}
+.yellow{background:var(--amarillo);color:#3c3300}
+.red{background:var(--rojo);color:#fff}
+.morado{background:var(--morado);color:#fff}
+
+.game-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.badge{
+  background:#eef4ff;
+  color:#1550b5;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:800;
+}
+.type-badge{
+  background:#f1efff;
+  color:#5b21b6;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:800;
+}
+
+.scene{
+  margin:16px 0;
+  background:#fbfcfe;
+  border:3px solid #dfe7f0;
+  border-radius:22px;
+  padding:24px 20px;
+  text-align:center;
+}
+.scene-label{
+  color:#6b7280;
+  font-weight:800;
+  font-size:.95rem;
+  margin-bottom:8px;
+}
+.scene-emoji{
+  min-height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:6rem;
+  line-height:1.15;
+}
+.scene-caption{
+  max-width:900px;
+  margin:10px auto 0;
+  color:#667085;
+  font-size:1rem;
+}
+.question{
+  font-size:1.55rem;
+  font-weight:800;
+  text-align:center;
+  margin:18px 0 7px;
+}
+.question-help{
+  text-align:center;
+  color:#667085;
+  font-size:1rem;
+  margin-bottom:14px;
+}
+.audio-row{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin:16px 0 20px;
+}
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+.option{
+  background:#fff;
+  border:3px solid #cfd8e3;
+  border-radius:16px;
+  padding:18px;
+  font-size:1.24rem;
+  font-weight:750;
+  cursor:pointer;
+  text-align:center;
+  min-height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1.35;
+}
+.option:hover{border-color:var(--azul);background:#f7fbff}
+.option.correct{border-color:var(--verde);background:#e9fbf5}
+.option.wrong{border-color:var(--rojo);background:#fff0f3}
+.feedback{
+  text-align:center;
+  min-height:58px;
+  padding:12px;
+  font-size:1.2rem;
+  font-weight:800;
+}
+.next-wrap{text-align:center;margin-top:10px}
+.score{
+  text-align:center;
+  margin-top:18px;
+  font-size:1.18rem;
+  font-weight:800;
+  color:#344054;
+}
+.hint{
+  margin:14px auto 0;
+  max-width:900px;
+  background:#fff8dc;
+  border:2px solid #f5d96b;
+  border-radius:14px;
+  padding:14px;
+  font-size:1.03rem;
+  color:#665400;
+  display:none;
+}
+.hint.show{display:block}
+
+.final{text-align:center;padding:45px 15px}
+.trophy{font-size:6rem}
+.final h2{font-size:2.3rem;margin:10px 0}
+.final p{
+  font-size:1.3rem;
+  color:#667085;
+  margin-bottom:25px;
+}
+.final-score{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(180px,260px));
+  justify-content:center;
+  gap:18px;
+  margin:25px 0;
+}
+.result-box{
+  padding:22px;
+  border-radius:18px;
+  border:2px solid #dfe7f0;
+  background:#f8fafc;
+}
+.result-number{font-size:3rem;font-weight:900}
+.note{
+  text-align:center;
+  color:#94a3b8;
+  font-size:.9rem;
+  margin-top:22px;
+}
+
+@media(max-width:760px){
+  body{padding:8px}
+  .app{padding:14px;min-height:98vh}
+  .top{align-items:flex-start}
+  .title{text-align:left}
+  h1{font-size:1.65rem}
+  .subtitle{font-size:.95rem}
+  .instructions{grid-template-columns:1fr}
+  .scene{padding:18px 12px}
+  .scene-emoji{min-height:150px;font-size:4.5rem}
+  .options{grid-template-columns:1fr}
+  .option{font-size:1.1rem}
+  .game-head{flex-direction:column;align-items:stretch}
+  .final-score{grid-template-columns:1fr}
+  .home{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="top">
+    <a class="home" href="index.html">← Inicio</a>
+    <div class="title">
+      <h1>👀 Mira, piensa y elige</h1>
+      <div class="subtitle">Nivel 1 · Comprensión visual y razonamiento</div>
+    </div>
+    <div style="width:90px"></div>
+  </div>
+
+  <section id="start" class="start">
+    <div class="emoji-big">👀🧠✅</div>
+    <h2>Mira la escena y piensa antes de responder</h2>
+    <p>
+      En cada actividad verás una escena. Después tendrás que elegir la respuesta que mejor explica
+      lo que está ocurriendo. Primero observamos, luego pensamos y finalmente elegimos.
+    </p>
+
+    <div class="instructions">
+      <div class="card">
+        👀
+        <strong>1. Mira</strong>
+        Observa todos los detalles de la escena.
+      </div>
+      <div class="card">
+        🧠
+        <strong>2. Piensa</strong>
+        Relaciona los personajes, objetos y acciones.
+      </div>
+      <div class="card">
+        ✅
+        <strong>3. Elige</strong>
+        Selecciona la respuesta correcta.
+      </div>
+    </div>
+
+    <p style="font-size:1.02rem">
+      <strong>Consejo:</strong> algunas respuestas parecen posibles, pero solo una encaja con todas las pistas.
+    </p>
+
+    <button class="btn primary" onclick="startGame()" style="margin-top:24px">
+      Empezar ▶️
+    </button>
+
+    <div class="note">
+      Pensado para panel digital: botones grandes, audio y poca escritura.
+    </div>
+  </section>
+
+  <section id="game" class="hidden">
+
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badges">
+        <div class="badge" id="counter">Actividad 1 de 12</div>
+        <div class="type-badge" id="typeBadge">Observo</div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="btn yellow" onclick="speakQuestion()">🔊 Escuchar pregunta</button>
+        <button class="btn morado" onclick="toggleHint()">💡 Pista</button>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-label" id="sceneLabel">OBSERVA</div>
+      <div class="scene-emoji" id="sceneEmoji"></div>
+      <div class="scene-caption" id="sceneCaption"></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="question-help">Observa la escena y lee las cuatro opciones antes de elegir.</div>
+
+    <div id="hint" class="hint"></div>
+
+    <div class="audio-row">
+      <button class="btn primary" onclick="speakQuestion()">🔊 Escuchar</button>
+      <button class="btn green" onclick="speakQuestionSlow()">🗣️ Escuchar despacio</button>
+    </div>
+
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextItem()">Siguiente ➡️</button>
+    </div>
+
+    <div class="score" id="score">Aciertos: 0 · Errores: 0</div>
+  </section>
+
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Actividad terminada!</h2>
+    <p id="finalText"></p>
+
+    <div class="final-score">
+      <div class="result-box">
+        <div style="font-weight:800">Aciertos</div>
+        <div class="result-number" id="finalOk">0</div>
+      </div>
+      <div class="result-box">
+        <div style="font-weight:800">Errores</div>
+        <div class="result-number" id="finalBad">0</div>
+      </div>
+    </div>
+
+    <a class="btn primary" href="index.html">Volver al inicio</a>
+    <button class="btn green" onclick="restart()" style="margin-left:10px">Repetir 🔄</button>
+  </section>
+
+</div>
+
+<script>
+const items = [
+  {
+    emoji:'👦🎒🏫',
+    type:'Observo',
+    cap:'Un niño lleva una mochila y está delante del colegio.',
+    q:'¿Adónde parece que va el niño?',
+    o:['A la piscina','Al colegio','Al supermercado','Al parque'],
+    a:1,
+    h:'Fíjate en el lugar que aparece detrás del niño.'
+  },
+  {
+    emoji:'👧📖🛋️',
+    type:'Observo',
+    cap:'Una niña está sentada en un sofá y tiene un libro abierto entre las manos.',
+    q:'¿Qué está haciendo la niña?',
+    o:['Está cocinando','Está leyendo','Está durmiendo','Está corriendo'],
+    a:1,
+    h:'Observa qué tiene abierto delante de ella.'
+  },
+  {
+    emoji:'👦✏️📓',
+    type:'Relaciono',
+    cap:'Un niño tiene un lápiz en la mano y un cuaderno sobre la mesa.',
+    q:'¿Qué es más probable que esté haciendo?',
+    o:['Escribiendo','Nadando','Lavándose los dientes','Jugando al fútbol'],
+    a:0,
+    h:'Relaciona el lápiz con el cuaderno.'
+  },
+  {
+    emoji:'🌧️👧☂️',
+    type:'Relaciono',
+    cap:'Está lloviendo y una niña sale de casa con un paraguas abierto.',
+    q:'¿Por qué lleva un paraguas?',
+    o:['Porque hace mucho calor','Porque está nevando dentro de casa','Porque está lloviendo','Porque va a dormir'],
+    a:2,
+    h:'Piensa para qué sirve un paraguas cuando cae agua del cielo.'
+  },
+  {
+    emoji:'👦🍎🥪',
+    type:'Relaciono',
+    cap:'Un niño tiene una manzana y un bocadillo sobre la mesa. Es la hora del recreo.',
+    q:'¿Qué es más probable que haga con esos alimentos?',
+    o:['Comérselos','Guardarlos en un árbol','Usarlos para pintar','Tirarlos por la ventana'],
+    a:0,
+    h:'Es la hora del recreo y los objetos son alimentos.'
+  },
+  {
+    emoji:'👩‍🏫🧒✋',
+    type:'Interpreto',
+    cap:'La profesora está delante de la clase y un alumno levanta la mano.',
+    q:'¿Qué es más probable que quiera hacer el alumno?',
+    o:['Hacer una pregunta','Salir corriendo','Dormirse','Jugar al balón'],
+    a:0,
+    h:'¿Qué suelen hacer los alumnos cuando levantan la mano?'
+  },
+  {
+    emoji:'🧒🧥☀️',
+    type:'Interpreto',
+    cap:'Hace sol y calor. Un niño lleva un abrigo grueso.',
+    q:'¿Qué parece extraño en esta escena?',
+    o:['Que haya un niño','Que haga sol','Que lleve un abrigo muy grueso','Que esté de pie'],
+    a:2,
+    h:'Busca el elemento que no encaja con el tiempo.'
+  },
+  {
+    emoji:'🐶🥣💧',
+    type:'Infiero',
+    cap:'Un perro está junto a un cuenco de agua y otro cuenco vacío.',
+    q:'¿Qué necesita probablemente el perro?',
+    o:['Agua','Un lápiz','Una mochila','Un libro'],
+    a:0,
+    h:'Uno de los cuencos contiene algo que un perro necesita beber.'
+  },
+  {
+    emoji:'👧🩹🤕',
+    type:'Infiero',
+    cap:'Una niña tiene una pequeña tirita en la rodilla y está sentada mientras un adulto la ayuda.',
+    q:'¿Qué es probable que haya ocurrido antes?',
+    o:['Se ha hecho una pequeña herida','Ha ganado una carrera','Ha terminado de comer','Ha comprado un libro'],
+    a:0,
+    h:'La tirita nos da una pista.'
+  },
+  {
+    emoji:'🧒🧹🧻🏫',
+    type:'Resuelvo',
+    cap:'Después de una actividad, hay varios papeles en el suelo y un alumno recoge una escoba.',
+    q:'¿Qué intenta hacer el alumno?',
+    o:['Ensuciar más el suelo','Limpiar el aula','Irse de vacaciones','Preparar una comida'],
+    a:1,
+    h:'Piensa para qué sirve una escoba.'
+  },
+  {
+    emoji:'📚➡️👦🗄️',
+    type:'Resuelvo',
+    cap:'Hay libros sobre una mesa y un niño los lleva hacia una estantería vacía.',
+    q:'¿Qué es probable que haga después?',
+    o:['Colocará los libros en la estantería','Los meterá en el frigorífico','Los lanzará por la ventana','Los usará como zapatos'],
+    a:0,
+    h:'Observa hacia dónde lleva los libros.'
+  },
+  {
+    emoji:'👧🎈🎂👨‍👩‍👧',
+    type:'Infiero',
+    cap:'Hay una tarta, globos y varias personas alrededor de una mesa. Una niña sonríe.',
+    q:'¿Qué situación es más probable?',
+    o:['Una fiesta de cumpleaños','Una clase de Matemáticas','Un entrenamiento de fútbol','Una visita al dentista'],
+    a:0,
+    h:'Piensa qué suelen indicar una tarta y globos.'
+  }
+];
+
+let i=0,ok=0,bad=0,answered=false;
+const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+
+function say(text,rate=0.82){
+  if(!synth)return;
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='es-ES';
+  u.rate=rate;
+  const v=synth.getVoices().find(x=>x.lang && x.lang.toLowerCase().startsWith('es'));
+  if(v)u.voice=v;
+  synth.speak(u);
+}
+if(synth){
+  synth.getVoices();
+  synth.onvoiceschanged=()=>synth.getVoices();
+}
+
+function startGame(){
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i=0;ok=0;bad=0;load();
+}
+
+function load(){
+  answered=false;
+  const x=items[i];
+
+  document.getElementById('counter').textContent=`Actividad ${i+1} de ${items.length}`;
+  document.getElementById('typeBadge').textContent=x.type;
+  document.getElementById('bar').style.width=((i+1)/items.length*100)+'%';
+  document.getElementById('sceneEmoji').textContent=x.emoji;
+  document.getElementById('sceneCaption').textContent=x.cap;
+  document.getElementById('question').textContent=x.q;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;
+  document.getElementById('hint').textContent=x.h;
+  document.getElementById('hint').classList.remove('show');
+
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  x.o.forEach((txt,n)=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.textContent=txt;
+    b.onclick=()=>answer(n,b);
+    box.appendChild(b);
+  });
+}
+
+function answer(n,btn){
+  if(answered)return;
+  answered=true;
+
+  const x=items[i];
+  document.querySelectorAll('.option').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===x.a)b.classList.add('correct');
+  });
+
+  if(n===x.a){
+    ok++;
+    btn.classList.add('correct');
+    document.getElementById('feedback').textContent='✅ ¡Muy bien! Has observado y pensado antes de elegir.';
+    say('Muy bien. Has observado y pensado antes de elegir.',0.88);
+  }else{
+    bad++;
+    btn.classList.add('wrong');
+    document.getElementById('feedback').textContent=`❌ La respuesta correcta es: ${x.o[x.a]}`;
+    say(`La respuesta correcta es ${x.o[x.a]}.`,0.8);
+  }
+
+  document.getElementById('score').textContent=`Aciertos: ${ok} · Errores: ${bad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextItem(){
+  i++;
+  if(i<items.length)load();
+  else finish();
+}
+
+function finish(){
+  if(synth)synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  const pct=Math.round(ok/items.length*100);
+  document.getElementById('finalText').textContent=
+    `Has completado las ${items.length} actividades y has conseguido ${ok} aciertos (${pct}%).`;
+  document.getElementById('finalOk').textContent=ok;
+  document.getElementById('finalBad').textContent=bad;
+}
+
+function restart(){
+  if(synth)synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i=0;ok=0;bad=0;load();
+}
+
+function speakQuestion(){say(items[i].q,0.8)}
+function speakQuestionSlow(){say(items[i].q,0.55)}
+function toggleHint(){
+  if(answered)return;
+  document.getElementById('hint').classList.toggle('show');
+}
+</script>
+</body>
+</html>

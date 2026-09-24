@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎤 Pronuncia y repite - Nivel 1</title>
+<style>
+:root{--azul:#3a86ff;--verde:#06d6a0;--rojo:#ef476f;--amarillo:#ffd166;--fondo:#f4f6f9;--blanco:#fff;--texto:#263238;--gris:#e8edf3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--fondo);color:var(--texto);min-height:100vh;padding:18px}
+.app{width:100%;max-width:1100px;margin:auto;background:#fff;border-radius:22px;box-shadow:0 10px 35px rgba(0,0,0,.08);padding:24px;min-height:94vh}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.home{display:inline-block;text-decoration:none;background:#eef2f7;color:#263238;font-weight:700;padding:10px 15px;border-radius:12px}
+.title{text-align:center;flex:1} h1{font-size:2.15rem;margin-bottom:5px}.subtitle{color:#667085;font-size:1.05rem}
+.hidden{display:none!important}
+.progress{height:12px;background:var(--gris);border-radius:8px;overflow:hidden;margin:12px 0 22px}.progress>div{height:100%;width:0;background:var(--verde);transition:width .3s}
+.start{text-align:center;padding:20px 10px 40px}.emoji-big{font-size:5rem;margin:12px 0}
+.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}.card{background:#f7f9fc;border:2px solid #e4eaf0;border-radius:16px;padding:18px;text-align:center}.card strong{display:block;margin-bottom:7px;font-size:1.15rem}
+.btn{border:0;border-radius:14px;padding:15px 24px;font-size:1.15rem;font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);transition:.1s}.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--azul);color:#fff}.green{background:var(--verde);color:#073b2f}.yellow{background:var(--amarillo);color:#3c3300}.red{background:var(--rojo);color:#fff}
+.game-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.badge{background:#eef4ff;color:#1550b5;padding:8px 12px;border-radius:999px;font-weight:800}
+.word-card{border:3px solid #dfe7f0;border-radius:20px;padding:30px 20px;margin:16px 0;background:#fbfcfe;text-align:center}
+.word{font-size:4.5rem;font-weight:900;letter-spacing:.02em;margin:15px 0 25px}
+.audio-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.status{text-align:center;min-height:72px;padding:18px 10px;font-size:1.4rem;font-weight:800}
+.mic{font-size:5rem;margin:8px 0}
+.transcript{background:#f7f9fc;border-radius:14px;padding:14px;margin:10px auto;max-width:700px;font-size:1.2rem;min-height:50px}
+.feedback{text-align:center;min-height:58px;font-size:1.35rem;font-weight:800;padding:10px}
+.next{text-align:center;margin-top:10px}
+.score{text-align:center;margin-top:18px;font-size:1.3rem;font-weight:800}
+.final{text-align:center;padding:45px 15px}.final .trophy{font-size:6rem}.final h2{font-size:2.3rem;margin:10px 0}.final p{font-size:1.35rem;color:#667085;margin-bottom:25px}
+.small-note{text-align:center;color:#7b8794;font-size:.95rem;margin-top:18px}
+@media(max-width:760px){body{padding:8px}.app{padding:14px}.top{align-items:flex-start}.title{text-align:left}h1{font-size:1.65rem}.instructions{grid-template-columns:1fr}.word{font-size:3.2rem}.game-head{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+<a class="home" href="index.html">← Inicio</a>
+<div class="title"><h1>🎤 Pronuncia y repite</h1><div class="subtitle">Nivel 1 · Pronunciación</div></div>
+<div style="width:90px"></div>
+</div>
+
+<section id="start" class="start">
+<div class="emoji-big">👂🗣️</div>
+<h2 style="font-size:2rem;margin-bottom:10px">Escucha · Repite · Comprueba</h2>
+<p style="font-size:1.2rem;color:#667085;max-width:760px;margin:auto">Escucha una palabra, repítela en voz alta y deja que el ordenador compruebe si ha reconocido la palabra.</p>
+<div class="instructions">
+<div class="card">🔊<strong>1. Escucha</strong>Pulsa para oír la palabra.</div>
+<div class="card">🗣️<strong>2. Repite</strong>Habla al micrófono.</div>
+<div class="card">✅<strong>3. Comprueba</strong>Recibe una corrección inmediata.</div>
+</div>
+<button class="btn primary" onclick="startGame()">Empezar ▶️</button>
+<div class="small-note">🎤 El permiso se solicita una sola vez. Usa siempre la misma dirección de tu web de Netlify.</div>
+</section>
+
+<section id="game" class="hidden">
+<div class="progress"><div id="bar"></div></div>
+<div class="game-head">
+<div class="badge" id="counter">Palabra 1 de 15</div>
+<button class="btn yellow" onclick="speakWord()">🔊 Escuchar</button>
+</div>
+<div class="word-card">
+<div class="mic">🎤</div>
+<div class="word" id="word"></div>
+<div class="audio-row">
+<button class="btn primary" onclick="speakWord()">🔊 Escuchar palabra</button>
+<button class="btn green" onclick="listen()">🗣️ Repetir</button>
+</div>
+</div>
+<div class="status" id="status">Pulsa «Repetir» y di la palabra.</div>
+<div class="transcript" id="transcript">Aquí aparecerá lo que el ordenador ha entendido.</div>
+<div class="feedback" id="feedback"></div>
+<div class="next hidden" id="next"><button class="btn primary" onclick="nextWord()">Siguiente ➡️</button></div>
+<div class="score" id="score">Aciertos: 0 · Intentos: 0</div>
+</section>
+
+<section id="final" class="final hidden">
+<div class="trophy">🏆</div>
+<h2>¡Actividad terminada!</h2>
+<p id="finalText"></p>
+<a class="btn primary" href="index.html">Volver al inicio</a>
+<button class="btn green" onclick="restart()" style="margin-left:10px">Repetir 🔄</button>
+</section>
+</div>
+
+<script>
+const words=[
+"casa","mesa","libro","colegio","mochila","agua","amigo","familia","pelota","ventana",
+"profesora","patio","lápiz","comida","mariposa"
+];
+
+let gameWords=[],i=0,ok=0,attempts=0,answered=false,recognition=null,micStream=null;
+
+function shuffle(a){
+ const x=[...a];
+ for(let n=x.length-1;n>0;n--){const j=Math.floor(Math.random()*(n+1));[x[n],x[j]]=[x[j],x[n]]}
+ return x;
+}
+function norm(s){
+ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[¿?¡!.,;:]/g,'').trim();
+}
+function getRecognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR)return null;
+ const r=new SR();
+ r.lang='es-ES';r.continuous=false;r.interimResults=false;r.maxAlternatives=3;
+ return r;
+}
+async function requestMic(){
+  // El permiso pertenece a la dirección/origen de la web. Lo pedimos una vez
+  // y mantenemos el flujo del micrófono durante toda la actividad.
+  try{
+    if(navigator.permissions && navigator.permissions.query){
+      try{
+        const p=await navigator.permissions.query({name:'microphone'});
+        if(p.state==='denied'){
+          document.getElementById('status').textContent='⚠️ El micrófono está bloqueado para esta web. En Chrome: 🔒 → Micrófono → Permitir y recarga la página.';
+          return false;
+        }
+      }catch(e){}
+    }
+    if(micStream) return true;
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      document.getElementById('status').textContent='⚠️ Este navegador no permite usar el micrófono. Abre la web con Chrome.';
+      return false;
+    }
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    return true;
+  }catch(e){
+    document.getElementById('status').textContent='⚠️ Permite el micrófono una sola vez en esta web. Después no debería volver a pedirlo mientras uses la misma dirección.';
+    return false;
+  }
+}
+async function startGame(){
+ document.getElementById('start').classList.add('hidden');
+ document.getElementById('final').classList.add('hidden');
+ document.getElementById('game').classList.remove('hidden');
+ gameWords=shuffle(words);i=0;ok=0;attempts=0;load();
+ const allowed=await requestMic();
+ if(!allowed){
+   document.getElementById('status').textContent='🎤 Para practicar la pronunciación, permite el micrófono y pulsa «Repetir».';
+ }
+}
+function load(){
+ answered=false;
+ const w=gameWords[i];
+ document.getElementById('counter').textContent=`Palabra ${i+1} de ${gameWords.length}`;
+ document.getElementById('bar').style.width=((i+1)/gameWords.length*100)+'%';
+ document.getElementById('word').textContent=w;
+ document.getElementById('status').textContent='Pulsa «Repetir» y di la palabra.';
+ document.getElementById('transcript').textContent='Aquí aparecerá lo que el ordenador ha entendido.';
+ document.getElementById('feedback').textContent='';
+ document.getElementById('next').classList.add('hidden');
+ document.getElementById('score').textContent=`Aciertos: ${ok} · Intentos: ${attempts}`;
+ setTimeout(speakWord,350);
+}
+function speakWord(){
+ if(!('speechSynthesis' in window))return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(gameWords[i]);
+ u.lang='es-ES';u.rate=.72;
+ const voices=speechSynthesis.getVoices();
+ const v=voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith('es'));
+ if(v)u.voice=v;
+ speechSynthesis.speak(u);
+}
+
+let audioCtx=null;
+function tone(freq,duration,start=0){
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+    osc.type='sine'; osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.0001,audioCtx.currentTime+start);
+    gain.gain.exponentialRampToValueAtTime(0.18,audioCtx.currentTime+start+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+start+duration);
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime+start);osc.stop(audioCtx.currentTime+start+duration+0.03);
+  }catch(e){}
+}
+function applause(){
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    for(let n=0;n<18;n++){
+      const t=n*0.055;
+      const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.type='triangle';
+      osc.frequency.value=600+Math.random()*1000;
+      gain.gain.setValueAtTime(0.0001,audioCtx.currentTime+t);
+      gain.gain.exponentialRampToValueAtTime(0.12,audioCtx.currentTime+t+0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+t+0.045);
+      osc.connect(gain);gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime+t);osc.stop(audioCtx.currentTime+t+0.05);
+    }
+    tone(880,.12,.95); tone(1175,.16,1.08);
+  }catch(e){}
+}
+function sayFeedback(text,rate=.9){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='es-ES';u.rate=rate;
+  const voices=speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith('es'));
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+async function listen(){
+ if(answered)return;
+ if(!micStream){
+   const allowed=await requestMic();
+   if(!allowed)return;
+ }
+ try{ recognition=getRecognition(); }catch(e){ recognition=null; }
+ if(!recognition){
+   document.getElementById('status').textContent='⚠️ Este navegador no permite reconocimiento de voz. Usa Chrome en el portátil.';
+   return;
+ }
+ document.getElementById('status').textContent='🔴 Escuchando… di la palabra ahora.';
+ document.getElementById('transcript').textContent='Escuchando…';
+ document.getElementById('feedback').textContent='';
+ recognition.onresult=e=>{
+   const alternatives=[];
+   for(let k=0;k<e.results[0].length;k++) alternatives.push(e.results[0][k].transcript);
+   const heard=alternatives[0]||'';
+   document.getElementById('transcript').textContent=`Has dicho: «${heard}»`;
+   attempts++;
+   const target=norm(gameWords[i]);
+   const good=alternatives.some(x=>norm(x)===target);
+   if(good){
+     answered=true;
+     ok++;
+     document.getElementById('status').textContent='🟢 ¡Muy bien!';
+     document.getElementById('feedback').textContent='👏 ¡Muy bien! ¡Te he entendido!';
+     document.getElementById('feedback').style.color='var(--verde)';
+     applause();
+     sayFeedback('¡Muy bien! Te he entendido.',0.88);
+   }else{
+     answered=false;
+     document.getElementById('status').textContent='🟠 Repite, no te entiendo. Vuelve a intentarlo.';
+     document.getElementById('feedback').textContent='🔁 Repite, no te entiendo. Escucha otra vez y vuelve a intentarlo.';
+     document.getElementById('feedback').style.color='var(--rojo)';
+     sayFeedback('Repite, no te entiendo. Escucha otra vez y vuelve a intentarlo.',0.78);
+     document.getElementById('next').classList.add('hidden');
+   }
+   document.getElementById('score').textContent=`Aciertos: ${ok} · Intentos: ${attempts}`;
+   if(good) document.getElementById('next').classList.remove('hidden');
+ };
+ recognition.onerror=e=>{
+   document.getElementById('status').textContent=
+     e.error==='not-allowed'?'⚠️ Necesito permiso para usar el micrófono.':
+     '⚠️ No he podido escucharte. Pulsa «Repetir» otra vez.';
+ };
+ recognition.onend=()=>{
+   if(!answered && document.getElementById('status').textContent.includes('Escuchando')){
+     document.getElementById('status').textContent='No te he escuchado. Pulsa «Repetir» para intentarlo de nuevo.';
+     document.getElementById('feedback').textContent='🔁 Puedes volver a intentarlo.';
+     document.getElementById('next').classList.add('hidden');
+   }
+ };
+ try{recognition.start()}catch(e){}
+}
+function nextWord(){
+ i++;
+ if(i<gameWords.length)load(); else finish();
+}
+function finish(){
+ document.getElementById('game').classList.add('hidden');
+ document.getElementById('final').classList.remove('hidden');
+ document.getElementById('finalText').textContent=`Has pronunciado correctamente ${ok} de ${gameWords.length} palabras en ${attempts} intentos.`;
+}
+function restart(){
+ document.getElementById('final').classList.add('hidden');
+ document.getElementById('game').classList.remove('hidden');
+ gameWords=shuffle(words);i=0;ok=0;attempts=0;load();
+}
+</script>
+</body>
+</html>

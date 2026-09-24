@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronuncia y repite – Nivel 2</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#17324d}
+.wrap{max-width:1000px;margin:auto;padding:24px}.card{background:white;border-radius:24px;padding:28px;box-shadow:0 6px 22px #0001}
+h1{text-align:center;font-size:34px;margin:4px 0 10px}.intro{text-align:center;font-size:21px}
+.hidden{display:none}.word{text-align:center;font-size:52px;font-weight:800;margin:24px 0}
+button{border:0;border-radius:18px;padding:18px 24px;font-size:22px;font-weight:700;cursor:pointer;margin:7px}
+.primary{background:#1769aa;color:white}.listen{background:#e8f3ff;color:#1769aa}.repeat{background:#eaf8ed;color:#177245}.next{background:#fff0c9;color:#8a5b00}
+.center{text-align:center}.status{text-align:center;font-size:22px;min-height:60px;margin:14px 0}.heard{text-align:center;font-size:22px}
+.progress{height:16px;background:#dde6ef;border-radius:20px;overflow:hidden;margin:18px 0}.bar{height:100%;width:0;background:#1769aa;transition:.3s}
+.score{text-align:center;font-size:20px}.small{text-align:center;color:#5b6b79;font-size:17px}
+.good{color:#187a3d;font-weight:800}.bad{color:#b52b2b;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<section id="start">
+<h1>🗣️ Pronuncia y repite – Nivel 2</h1>
+<p class="intro">Escucha una palabra y repítela. Ahora las palabras son un poco más largas.</p>
+<div class="center"><button class="primary" onclick="startGame()">Empezar ▶️</button></div>
+<p class="small">🎤 El micrófono se activará al pulsar «Repetir».</p>
+</section>
+
+<section id="game" class="hidden">
+<h1>🗣️ Pronuncia la palabra</h1>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="counter" class="score"></div>
+<div id="word" class="word"></div>
+<div class="center">
+<button class="listen" onclick="speakWord()">🔊 Escuchar</button>
+<button class="repeat" onclick="listen()">🎤 Repetir</button>
+</div>
+<div id="status" class="status">Pulsa «Escuchar» y después «Repetir».</div>
+<div id="heard" class="heard"></div>
+<div class="center"><button id="next" class="next hidden" onclick="nextWord()">➡️ Siguiente</button></div>
+</section>
+
+<section id="final" class="hidden center">
+<h1>🎉 ¡Terminamos!</h1>
+<p id="finalText" class="intro"></p>
+<button class="primary" onclick="startGame()">🔄 Jugar otra vez</button>
+</section>
+</div></div>
+
+<script>
+const words=[
+"escuela","ventana","biblioteca","mariposa","profesora",
+"cuaderno","zapatos","familia","desayuno","teléfono",
+"bicicleta","ordenador","elefante","chocolate","primavera"
+];
+
+let gameWords=[],i=0,ok=0,attempts=0,answered=false,micStream=null,recognition=null;
+
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zñü\s]/g,"").trim()}
+function similar(a,b){
+  a=norm(a);b=norm(b);
+  if(a===b)return true;
+  if(a.includes(b)||b.includes(a))return true;
+  const max=Math.max(a.length,b.length);
+  if(!max)return false;
+  let prev=Array.from({length:b.length+1},(_,j)=>j);
+  for(let x=1;x<=a.length;x++){
+    let cur=[x];
+    for(let y=1;y<=b.length;y++)
+      cur[y]=Math.min(cur[y-1]+1,prev[y]+1,prev[y-1]+(a[x-1]===b[y-1]?0:1));
+    prev=cur;
+  }
+  return prev[b.length]/max<=0.25;
+}
+
+function speak(text,rate=0.88){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="es-ES";u.rate=rate;u.pitch=1;
+  speechSynthesis.speak(u);
+}
+function speakWord(){speak(gameWords[i]);}
+
+function applause(){
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+    const c=new C(), now=c.currentTime;
+    [523,659,784,1047].forEach((f,k)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,now+k*.12);
+      g.gain.exponentialRampToValueAtTime(.16,now+k*.12+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,now+k*.12+.18);
+      o.connect(g);g.connect(c.destination);o.start(now+k*.12);o.stop(now+k*.12+.2);
+    });
+  }catch(e){}
+}
+
+function startGame(){
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("final").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  gameWords=shuffle(words);i=0;ok=0;attempts=0;answered=false;
+  loadWord();
+}
+
+function loadWord(){
+  answered=false;
+  document.getElementById("word").textContent=gameWords[i];
+  document.getElementById("counter").textContent=`Palabra ${i+1} de ${gameWords.length} · Aciertos: ${ok}`;
+  document.getElementById("bar").style.width=((i)/gameWords.length*100)+"%";
+  document.getElementById("status").textContent="Pulsa «Escuchar» y después «Repetir».";
+  document.getElementById("heard").textContent="";
+  document.getElementById("next").classList.add("hidden");
+  setTimeout(speakWord,300);
+}
+
+async function requestMic(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    document.getElementById("status").textContent="⚠️ Este navegador no permite usar el micrófono aquí.";
+    return false;
+  }
+  if(micStream) return true;
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    return true;
+  }catch(e){
+    document.getElementById("status").textContent="🎤 No se ha podido activar el micrófono. Comprueba el permiso del navegador.";
+    return false;
+  }
+}
+
+async function listen(){
+  if(answered)return;
+  if(!SR){
+    document.getElementById("status").textContent="⚠️ Este navegador no admite reconocimiento de voz. Prueba con Chrome.";
+    return;
+  }
+  const allowed=await requestMic();
+  if(!allowed)return;
+  attempts++;
+  document.getElementById("status").textContent="🎤 Te escucho… di la palabra.";
+  document.getElementById("heard").textContent="";
+  try{
+    if(recognition){try{recognition.abort()}catch(e){}}
+    recognition=new SR();
+    recognition.lang="es-ES";
+    recognition.continuous=false;
+    recognition.interimResults=false;
+    recognition.maxAlternatives=3;
+
+    recognition.onresult=(event)=>{
+      let best="";
+      for(let k=0;k<event.results[0].length;k++){
+        const t=event.results[0][k].transcript;
+        if(similar(t,gameWords[i])){best=t;break}
+        if(!best)best=t;
+      }
+      document.getElementById("heard").textContent="Has dicho: «"+best+"»";
+      if(similar(best,gameWords[i])){
+        answered=true;ok++;
+        document.getElementById("status").innerHTML='<span class="good">👏 ¡Muy bien! Te he entendido.</span>';
+        applause();speak("¡Muy bien! Te he entendido.",.95);
+        document.getElementById("next").classList.remove("hidden");
+      }else{
+        document.getElementById("status").innerHTML='<span class="bad">🔁 Repite, no te entiendo.</span>';
+        speak("Repite, no te entiendo. Escucha otra vez y vuelve a intentarlo.",.9);
+      }
+    };
+    recognition.onerror=(event)=>{
+      const msgs={"not-allowed":"El micrófono no tiene permiso.","no-speech":"No te he oído. Habla un poco más fuerte.","network":"No se puede conectar con el reconocimiento de voz.","audio-capture":"No encuentro el micrófono."};
+      document.getElementById("status").textContent="🎤 "+(msgs[event.error]||"No he podido entenderte. Inténtalo otra vez.");
+    };
+    recognition.onend=()=>{
+      if(!answered && document.getElementById("status").textContent==="🎤 Te escucho… di la palabra.")
+        document.getElementById("status").textContent="🔁 No te he oído. Pulsa «Repetir» e inténtalo de nuevo.";
+    };
+    recognition.start();
+  }catch(e){
+    document.getElementById("status").textContent="⚠️ No se ha podido iniciar el reconocimiento. Inténtalo otra vez.";
+  }
+}
+
+function nextWord(){
+  if(!answered)return;
+  i++;
+  if(i>=gameWords.length){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+    const pct=Math.round(ok/gameWords.length*100);
+    document.getElementById("finalText").innerHTML=`Has acertado <strong>${ok} de ${gameWords.length}</strong> palabras (${pct}%).<br>¡Buen trabajo!`;
+    return;
+  }
+  loadWord();
+}
+</script>
+</body>
+</html>

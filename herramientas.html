@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Herramientas para el Profesorado - Chety Moirón</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primario: #10b981;
+      --primario-oscuro: #059669;
+      --fondo: #f4f6f9;
+      --blanco: #ffffff;
+      --texto: #2d3748;
+      --gris-suave: #e2e8f0;
+      --texto-secundario: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--fondo);
+      color: var(--texto);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px 15px 40px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Botón Volver */
+    .btn-volver {
+      align-self: flex-start;
+      background: var(--blanco);
+      color: #495057;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.95em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border: 1px solid var(--gris-suave);
+      transition: all 0.15s;
+    }
+    .btn-volver:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+    h1 {
+      font-size: 2.2em;
+      color: #1a202c;
+      margin-bottom: 6px;
+    }
+    .subtitulo {
+      color: var(--texto-secundario);
+      font-size: 1.1em;
+    }
+
+    /* Listado de recursos */
+    .grid-recursos {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+
+    .tarjeta-recurso {
+      background: var(--blanco);
+      border-radius: 18px;
+      padding: 25px 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      transition: all 0.2s ease;
+    }
+    .tarjeta-recurso:hover {
+      border-color: var(--primario);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+
+    .icono-recurso {
+      font-size: 3.2em;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .detalle-recurso {
+      flex-grow: 1;
+    }
+    .titulo-recurso {
+      font-size: 1.35em;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+    .desc-recurso {
+      color: var(--texto-secundario);
+      font-size: 1em;
+      line-height: 1.5;
+    }
+
+    .btn-enlace {
+      background-color: var(--primario);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95em;
+      padding: 12px 22px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      box-shadow: 0 4px 0 var(--primario-oscuro);
+      transition: all 0.1s;
+    }
+    .btn-enlace:hover {
+      filter: brightness(1.05);
+    }
+    .btn-enlace:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 transparent;
+    }
+
+    /* Adaptación móvil */
+    @media (max-width: 650px) {
+      .tarjeta-recurso {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
+      }
+      .btn-enlace {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    footer {
+      margin-top: auto;
+      color: #a0aec0;
+      font-weight: bold;
+      font-size: 0.95em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <a href="index.html" class="btn-volver">← Volver al Menú Principal</a>
+
+    <header>
+      <h1>🛠️ Herramientas para el Profesorado</h1>
+      <p class="subtitulo">Recursos y utilidades para la creación de material educativo</p>
+    </header>
+
+    <div class="grid-recursos">
+      <!-- Tarjeta 1: Audacity -->
+      <div class="tarjeta-recurso">
+        <div class="icono-recurso">🎙️</div>
+        <div class="detalle-recurso">
+          <div class="titulo-recurso">Audacity 4.0.0</div>
+          <div class="desc-recurso">
+            Aplicación informática multiplataforma libre que se puede usar para grabación y edición de audio.
+          </div>
+        </div>
+        <a href="https://github.com/audacity/audacity/releases/tag/Audacity-4.0.0" target="_blank" rel="noopener noreferrer" class="btn-enlace">
+          Descargar ⬇️
+        </a>
+      </div>
+
+      <!-- Tarjeta 2: Fuentes escolares -->
+      <div class="tarjeta-recurso">
+        <div class="icono-recurso">✍️</div>
+        <div class="detalle-recurso">
+          <div class="titulo-recurso">Fuentes Escolares</div>
+          <div class="desc-recurso">
+            Descarga un tipo de letra unido ideal para la elaboración de fichas y materiales de caligrafía escolar.
+          </div>
+        </div>
+        <a href="https://www.dafont.com/es/theme.php?cat=602" target="_blank" rel="noopener noreferrer" class="btn-enlace">
+          Ver Fuentes 🔤
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      App creada por Chety Moirón — Uso Educativo Libre
+    </footer>
+  </div>
+</body>
+</html>

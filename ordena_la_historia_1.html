@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordena la historia - Nivel 1</title>
+<style>
+:root{
+  --azul:#3a86ff;--verde:#06d6a0;--rojo:#ef476f;--amarillo:#ffd166;
+  --morado:#8338ec;--fondo:#f4f6f9;--blanco:#fff;--texto:#263238;
+  --gris:#e8edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);min-height:100vh;padding:18px
+}
+.app{
+  width:100%;max-width:1120px;margin:auto;background:var(--blanco);
+  border-radius:22px;box-shadow:0 10px 35px rgba(0,0,0,.08);
+  padding:24px;min-height:94vh
+}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.home{
+  display:inline-block;text-decoration:none;background:#eef2f7;color:#263238;
+  font-weight:700;padding:10px 15px;border-radius:12px;white-space:nowrap
+}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:5px}
+.subtitle{color:#667085;font-size:1.05rem}
+.hidden{display:none!important}
+
+.progress{height:12px;background:var(--gris);border-radius:8px;overflow:hidden;margin:12px 0 20px}
+.progress>div{height:100%;width:0;background:var(--verde);transition:width .3s}
+
+.start{text-align:center;padding:22px 10px 40px}
+.emoji-big{font-size:5rem;margin:10px 0 18px}
+.start h2{font-size:2rem;margin-bottom:10px}
+.start p{font-size:1.16rem;color:#667085;max-width:860px;margin:auto;line-height:1.55}
+.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}
+.card{background:#f7f9fc;border:2px solid #e4eaf0;border-radius:16px;padding:18px;text-align:center}
+.card strong{display:block;margin:7px 0;font-size:1.15rem}
+.btn{
+  border:0;border-radius:14px;padding:15px 24px;font-size:1.1rem;font-weight:800;
+  cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);transition:transform .1s,opacity .2s
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--azul);color:#fff}
+.green{background:var(--verde);color:#073b2f}
+.yellow{background:var(--amarillo);color:#3c3300}
+.red{background:var(--rojo);color:#fff}
+.morado{background:var(--morado);color:#fff}
+
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px
+}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.badge{background:#eef4ff;color:#1550b5;padding:8px 12px;border-radius:999px;font-weight:800}
+.type-badge{background:#f1efff;color:#5b21b6;padding:8px 12px;border-radius:999px;font-weight:800}
+
+.instruction{
+  text-align:center;font-size:1.35rem;font-weight:800;margin:12px auto 18px
+}
+.story-board{
+  background:#fbfcfe;border:3px solid #dfe7f0;border-radius:22px;padding:20px;margin:16px 0 20px
+}
+.slots{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px
+}
+.slot{
+  min-height:185px;border:3px dashed #b7c2cf;border-radius:18px;
+  background:#f7f9fc;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:12px;text-align:center;position:relative;
+}
+.slot-number{
+  position:absolute;top:8px;left:10px;width:34px;height:34px;border-radius:50%;
+  background:#e6edf5;color:#536170;display:flex;align-items:center;justify-content:center;
+  font-weight:900
+}
+.slot.dragover{border-color:var(--azul);background:#edf5ff}
+.slot .empty-text{color:#9aa6b2;font-weight:700}
+.story-card{
+  background:#fff;border:3px solid #cfd8e3;border-radius:16px;padding:12px;
+  min-height:165px;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;gap:8px;cursor:grab;user-select:none;touch-action:none;
+  box-shadow:0 4px 0 #cfd8e3
+}
+.story-card:active{cursor:grabbing}
+.story-card.selected{border-color:var(--azul);background:#edf5ff}
+.story-card.correct{border-color:var(--verde);background:#e9fbf5}
+.story-card.wrong{border-color:var(--rojo);background:#fff0f3}
+.scene-emoji{font-size:4.2rem}
+.scene-text{font-size:1.02rem;font-weight:750;line-height:1.35}
+.pool{
+  background:#eef2f7;border-radius:20px;padding:20px;margin-top:18px
+}
+.pool-title{text-align:center;font-size:1.15rem;font-weight:850;margin-bottom:14px}
+.cards-pool{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px
+}
+.help{
+  background:#fff8dc;border:2px solid #f5d96b;border-radius:14px;padding:14px;
+  margin:16px auto 0;max-width:900px;font-size:1.02rem;color:#665400;text-align:center
+}
+.controls{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:18px
+}
+.feedback{text-align:center;min-height:56px;padding:12px;font-size:1.2rem;font-weight:800}
+.score{text-align:center;margin-top:15px;font-size:1.18rem;font-weight:800;color:#344054}
+
+.final{text-align:center;padding:45px 15px}
+.trophy{font-size:6rem}
+.final h2{font-size:2.3rem;margin:10px 0}
+.final p{font-size:1.3rem;color:#667085;margin-bottom:25px}
+.final-score{
+  display:grid;grid-template-columns:repeat(2,minmax(180px,260px));
+  justify-content:center;gap:18px;margin:25px 0
+}
+.result-box{padding:22px;border-radius:18px;border:2px solid #dfe7f0;background:#f8fafc}
+.result-number{font-size:3rem;font-weight:900}
+.note{text-align:center;color:#94a3b8;font-size:.9rem;margin-top:22px}
+
+@media(max-width:850px){
+  .slots,.cards-pool{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+  body{padding:8px}.app{padding:14px;min-height:98vh}.top{align-items:flex-start}
+  .title{text-align:left}h1{font-size:1.65rem}.subtitle{font-size:.95rem}
+  .instructions{grid-template-columns:1fr}.slots,.cards-pool{grid-template-columns:1fr}
+  .slot{min-height:145px}.story-card{min-height:140px}.scene-emoji{font-size:3.4rem}
+  .game-head{flex-direction:column;align-items:stretch}
+  .final-score{grid-template-columns:1fr}.home{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="top">
+    <a class="home" href="index.html">← Inicio</a>
+    <div class="title">
+      <h1>🧩 Ordena la historia</h1>
+      <div class="subtitle">Nivel 1 · Secuencias y comprensión</div>
+    </div>
+    <div style="width:90px"></div>
+  </div>
+
+  <section id="start" class="start">
+    <div class="emoji-big">1️⃣➡️2️⃣➡️3️⃣➡️4️⃣</div>
+    <h2>Coloca cada escena en el orden correcto</h2>
+    <p>
+      Mira las cuatro escenas, piensa qué ocurre primero y arrástralas a los huecos.
+      Después comprueba la historia completa.
+    </p>
+
+    <div class="instructions">
+      <div class="card">👀<strong>1. Mira</strong>Observa qué ocurre en cada escena.</div>
+      <div class="card">🧠<strong>2. Ordena</strong>Piensa qué pasa primero, después y al final.</div>
+      <div class="card">📖<strong>3. Cuenta</strong>Cuando termines, podrás escuchar la historia ordenada.</div>
+    </div>
+
+    <div class="help">
+      <strong>Ayuda:</strong> busca palabras como <em>primero</em>, <em>después</em>, <em>luego</em> y <em>al final</em>.
+    </div>
+
+    <button class="btn primary" onclick="startGame()" style="margin-top:24px">Empezar ▶️</button>
+    <div class="note">Diseñado para panel digital y trabajo de comprensión temporal.</div>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badges">
+        <div class="badge" id="counter">Historia 1 de 10</div>
+        <div class="type-badge">Orden temporal</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="btn yellow" onclick="speakTask()">🔊 Escuchar</button>
+        <button class="btn morado" onclick="giveHint()">💡 Pista</button>
+      </div>
+    </div>
+
+    <div class="instruction" id="instruction">Coloca las 4 escenas en orden.</div>
+
+    <div class="story-board">
+      <div class="slots" id="slots"></div>
+
+      <div class="controls">
+        <button class="btn primary" onclick="checkOrder()">✅ Comprobar orden</button>
+        <button class="btn red" onclick="clearOrder()">↩️ Empezar de nuevo</button>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <div class="pool">
+      <div class="pool-title">Arrastra las escenas desde aquí a los huecos</div>
+      <div class="cards-pool" id="pool"></div>
+    </div>
+
+    <div id="hint" class="help hidden"></div>
+
+    <div class="controls">
+      <button class="btn green" onclick="speakStory()">🗣️ Escuchar la historia</button>
+      <button class="btn primary hidden" id="nextBtn" onclick="nextStory()">Siguiente ➡️</button>
+    </div>
+
+    <div class="score" id="score">Historias resueltas: 0 · Intentos con error: 0</div>
+  </section>
+
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Has ordenado las historias!</h2>
+    <p id="finalText"></p>
+
+    <div class="final-score">
+      <div class="result-box">
+        <div style="font-weight:800">Historias correctas</div>
+        <div class="result-number" id="finalOk">0</div>
+      </div>
+      <div class="result-box">
+        <div style="font-weight:800">Intentos con error</div>
+        <div class="result-number" id="finalBad">0</div>
+      </div>
+    </div>
+
+    <a class="btn primary" href="index.html">Volver al inicio</a>
+    <button class="btn green" onclick="restart()" style="margin-left:10px">Repetir 🔄</button>
+  </section>
+
+</div>
+
+<script>
+const stories=[
+{
+  title:'Prepararse para el colegio',
+  scenes:[
+    {e:'🛏️',t:'Leo se despierta por la mañana.'},
+    {e:'🥣',t:'Leo desayuna en casa.'},
+    {e:'🎒',t:'Leo prepara su mochila.'},
+    {e:'🏫',t:'Leo llega al colegio.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Piensa en lo que hace una persona desde que se despierta hasta que llega al colegio.'
+},
+{
+  title:'Un dibujo',
+  scenes:[
+    {e:'📄',t:'Ana coge una hoja de papel.'},
+    {e:'✏️',t:'Ana empieza a dibujar.'},
+    {e:'🎨',t:'Ana colorea el dibujo.'},
+    {e:'🖼️',t:'Ana enseña su dibujo en clase.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Primero necesita una hoja. Después dibuja, colorea y finalmente enseña el trabajo.'
+},
+{
+  title:'El almuerzo',
+  scenes:[
+    {e:'🍎',t:'Pablo saca una fruta de la mochila.'},
+    {e:'🪑',t:'Pablo se sienta en un banco.'},
+    {e:'😋',t:'Pablo se come la fruta.'},
+    {e:'🗑️',t:'Pablo tira el residuo en la papelera.'}
+  ],
+  order:[0,1,2,3],
+  hint:'No puede comerse la fruta antes de sacarla de la mochila.'
+},
+{
+  title:'Lavar las manos',
+  scenes:[
+    {e:'🚽',t:'Sara sale del baño.'},
+    {e:'🚰',t:'Sara abre el grifo.'},
+    {e:'🧼',t:'Sara usa jabón para lavarse las manos.'},
+    {e:'🧻',t:'Sara se seca las manos.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Después de abrir el grifo, usa jabón y al final se seca.'
+},
+{
+  title:'Una planta',
+  scenes:[
+    {e:'🪴',t:'Carlos coloca una semilla en la tierra.'},
+    {e:'💧',t:'Carlos riega la tierra.'},
+    {e:'☀️',t:'La planta recibe luz durante varios días.'},
+    {e:'🌱',t:'Aparece un pequeño brote.'}
+  ],
+  order:[0,1,2,3],
+  hint:'El brote aparece después de plantar y cuidar la semilla.'
+},
+{
+  title:'Ir a la biblioteca',
+  scenes:[
+    {e:'📚',t:'Marta busca un libro en la biblioteca.'},
+    {e:'🔎',t:'Marta encuentra un libro que le interesa.'},
+    {e:'👩‍🏫',t:'Marta pide el libro a la bibliotecaria.'},
+    {e:'📖',t:'Marta se sienta y empieza a leer.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Primero busca, después encuentra el libro, luego lo pide y al final lee.'
+},
+{
+  title:'El recreo',
+  scenes:[
+    {e:'🔔',t:'Suena el timbre del recreo.'},
+    {e:'🚶',t:'Los alumnos salen al patio.'},
+    {e:'⚽',t:'Un grupo juega con un balón.'},
+    {e:'🏫',t:'Los alumnos vuelven a clase.'}
+  ],
+  order:[0,1,2,3],
+  hint:'El timbre avisa de que comienza el recreo.'
+},
+{
+  title:'Preparar una mochila',
+  scenes:[
+    {e:'📋',t:'Nora mira el horario del día siguiente.'},
+    {e:'📕',t:'Nora mete los libros que necesita.'},
+    {e:'✏️',t:'Nora guarda el estuche.'},
+    {e:'🎒',t:'Nora cierra la mochila.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Primero mira qué necesita y después mete los materiales antes de cerrar la mochila.'
+},
+{
+  title:'Una merienda compartida',
+  scenes:[
+    {e:'🥪',t:'David abre su merienda.'},
+    {e:'👧',t:'Ve que su amiga no tiene comida.'},
+    {e:'🤲',t:'David comparte parte de su merienda.'},
+    {e:'😊',t:'Los dos terminan contentos.'}
+  ],
+  order:[0,1,2,3],
+  hint:'David tiene comida antes de poder compartirla.'
+},
+{
+  title:'Una visita al parque',
+  scenes:[
+    {e:'👟',t:'Lucía se pone las zapatillas.'},
+    {e:'🌳',t:'Lucía llega al parque con su padre.'},
+    {e:'🛝',t:'Lucía juega en el parque.'},
+    {e:'🏠',t:'Lucía vuelve a casa.'}
+  ],
+  order:[0,1,2,3],
+  hint:'Primero se prepara, después llega al parque, juega y al final vuelve a casa.'
+}
+];
+
+let storyIndex=0,solved=0,errors=0;
+let order=[];
+let dragging=null;
+
+const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+
+function say(text,rate=.82){
+  if(!synth)return;
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='es-ES';u.rate=rate;
+  const v=synth.getVoices().find(x=>x.lang && x.lang.toLowerCase().startsWith('es'));
+  if(v)u.voice=v;
+  synth.speak(u);
+}
+
+function startGame(){
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  storyIndex=0;solved=0;errors=0;loadStory();
+}
+
+function loadStory(){
+  order=[];
+  document.getElementById('counter').textContent=`Historia ${storyIndex+1} de ${stories.length}`;
+  document.getElementById('bar').style.width=((storyIndex+1)/stories.length*100)+'%';
+  document.getElementById('instruction').textContent='Coloca las 4 escenas en orden.';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('hint').classList.add('hidden');
+  document.getElementById('score').textContent=`Historias resueltas: ${solved} · Intentos con error: ${errors}`;
+
+  renderSlots();
+  renderPool();
+}
+
+function renderSlots(){
+  const slots=document.getElementById('slots');
+  slots.innerHTML='';
+  for(let i=0;i<4;i++){
+    const s=document.createElement('div');
+    s.className='slot';
+    s.dataset.slot=i;
+    s.innerHTML=`<div class="slot-number">${i+1}</div><div class="empty-text">Suelta aquí</div>`;
+    s.ondragover=(e)=>{e.preventDefault();s.classList.add('dragover')};
+    s.ondragleave=()=>s.classList.remove('dragover');
+    s.ondrop=(e)=>{
+      e.preventDefault();
+      s.classList.remove('dragover');
+      placeInSlot(Number(e.dataTransfer.getData('text/plain')),i);
+    };
+    slots.appendChild(s);
+  }
+  for(let slot=0;slot<order.length;slot++){
+    if(order[slot]!==undefined) drawCardInSlot(slot,order[slot]);
+  }
+}
+
+function makeCard(sceneIndex,fromSlot=null){
+  const scene=stories[storyIndex].scenes[sceneIndex];
+  const d=document.createElement('div');
+  d.className='story-card';
+  d.draggable=true;
+  d.dataset.index=sceneIndex;
+  d.innerHTML=`<div class="scene-emoji">${scene.e}</div><div class="scene-text">${scene.t}</div>`;
+  d.ondragstart=(e)=>{
+    dragging=sceneIndex;
+    e.dataTransfer.setData('text/plain',String(sceneIndex));
+  };
+  d.ondragend=()=>{dragging=null};
+  d.onclick=()=>{
+    if(fromSlot!==null){
+      order.splice(fromSlot,1);
+      renderSlots();renderPool();
+    }
+  };
+  return d;
+}
+
+function drawCardInSlot(slotIndex,sceneIndex){
+  const s=document.querySelector(`.slot[data-slot="${slotIndex}"]`);
+  if(!s)return;
+  s.innerHTML='';
+  s.appendChild(makeCard(sceneIndex,slotIndex));
+  s.classList.add('filled');
+}
+
+function renderPool(){
+  const pool=document.getElementById('pool');
+  pool.innerHTML='';
+  const used=new Set(order);
+  stories[storyIndex].scenes.forEach((_,idx)=>{
+    if(!used.has(idx))pool.appendChild(makeCard(idx));
+  });
+}
+
+function placeInSlot(sceneIndex,slotIndex){
+  const oldSlot=order.indexOf(sceneIndex);
+  if(oldSlot>=0)order.splice(oldSlot,1);
+  if(slotIndex<order.length){
+    order.splice(slotIndex,0,sceneIndex);
+  }else{
+    while(order.length<slotIndex)order.push(undefined);
+    order[slotIndex]=sceneIndex;
+  }
+  order=order.filter(x=>x!==undefined);
+  renderSlots();renderPool();
+}
+
+function clearOrder(){
+  order=[];
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  renderSlots();renderPool();
+}
+
+function checkOrder(){
+  if(order.length<4){
+    document.getElementById('feedback').textContent='ℹ️ Coloca las cuatro escenas antes de comprobar.';
+    return;
+  }
+
+  const ok=order.every((v,n)=>v===stories[storyIndex].order[n]);
+
+  if(ok){
+    solved++;
+    document.getElementById('feedback').textContent='✅ ¡Muy bien! Has ordenado la historia correctamente.';
+    document.querySelectorAll('.story-card').forEach(c=>c.classList.add('correct'));
+    document.getElementById('nextBtn').classList.remove('hidden');
+    say(`Muy bien. ${stories[storyIndex].title}.`,.9);
+  }else{
+    errors++;
+    document.getElementById('feedback').textContent='❌ Todavía no. Revisa qué ocurre primero, después y al final.';
+    document.querySelectorAll('.story-card').forEach(c=>c.classList.add('wrong'));
+    say('Revisa el orden de la historia.',.8);
+    setTimeout(()=>{
+      document.querySelectorAll('.story-card').forEach(c=>c.classList.remove('wrong'));
+    },700);
+  }
+  document.getElementById('score').textContent=`Historias resueltas: ${solved} · Intentos con error: ${errors}`;
+}
+
+function giveHint(){
+  const h=document.getElementById('hint');
+  h.textContent='💡 '+stories[storyIndex].hint;
+  h.classList.toggle('hidden');
+}
+
+function speakTask(){
+  say('Mira las cuatro escenas y colócalas en el orden correcto. Primero, después, luego y al final.',.76);
+}
+
+function speakStory(){
+  const s=stories[storyIndex];
+  const text=s.scenes.map(x=>x.t).join(' Después, ');
+  say(text,.72);
+}
+
+function nextStory(){
+  storyIndex++;
+  if(storyIndex<stories.length)loadStory();
+  else finish();
+}
+
+function finish(){
+  if(synth)synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  document.getElementById('finalText').textContent=
+    `Has completado las ${stories.length} historias.`;
+  document.getElementById('finalOk').textContent=solved;
+  document.getElementById('finalBad').textContent=errors;
+}
+
+function restart(){
+  if(synth)synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  storyIndex=0;solved=0;errors=0;loadStory();
+}
+</script>
+</body>
+</html>

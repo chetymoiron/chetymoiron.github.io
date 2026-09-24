@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estructuras Nivel 4: Cosas del Colegio - Chety Moirón</title>
+<style>
+  :root { 
+    --sujeto: #3a86ff; 
+    --verbo: #ff006e;  
+    --objeto: #8338ec; 
+    --tiempo: #ffbe0b; 
+    --fondo: #f8f9fa; 
+    --blanco: #ffffff; 
+    --gris-claro: #e9ecef;
+    --exito: #06d6a0;
+    --alerta: #ef233c;
+  }
+  
+  body { 
+    font-family: 'Segoe UI', system-ui, Roboto, sans-serif; 
+    background-color: var(--fondo); 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .app-container { 
+    width: 100%; 
+    max-width: 900px; 
+    background: var(--blanco); 
+    min-height: 85vh; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    padding: 30px; 
+    box-sizing: border-box; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative;
+  }
+
+  /* Botón Volver al Menú */
+  .btn-volver-menu {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--gris-claro);
+    color: #495057;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, transform 0.1s;
+    z-index: 5;
+  }
+  .btn-volver-menu:hover { background: #dee2e6; transform: translateY(-1px); }
+  .btn-volver-menu:active { transform: scale(0.97); }
+  
+  h1 { text-align: center; color: #333; margin-top: 20px; margin-bottom: 5px; font-size: 2em; }
+  .instruccion { text-align: center; color: #666; margin-bottom: 20px; }
+  .arabe { direction: rtl; font-size: 1.2em; color: #888; }
+
+  .progreso-barra { width: 100%; height: 10px; background: var(--gris-claro); border-radius: 5px; margin-bottom: 30px; overflow: hidden; }
+  .progreso-relleno { height: 100%; background: var(--exito); width: 0%; transition: width 0.3s ease; }
+
+  .zona-visual { font-size: 5em; text-align: center; margin: 10px 0; min-height: 100px; }
+  .zona-controles { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
+  
+  .btn-audio { border: none; border-radius: 15px; padding: 15px 30px; font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: transform 0.1s, opacity 0.2s; color: white; }
+  .btn-audio:active { transform: scale(0.95); }
+  .btn-audio:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-escuchar { background-color: var(--sujeto); box-shadow: 0 6px 0 #2a62c4; }
+  .btn-repetir { background-color: var(--tiempo); box-shadow: 0 6px 0 #d49d00; color: #333; }
+  
+  .constructor { background: var(--gris-claro); border-radius: 15px; padding: 25px; margin-bottom: 30px; min-height: 80px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+  .hueco { background: rgba(0,0,0,0.05); border: 3px dashed #bbb; border-radius: 10px; height: 75px; min-width: 110px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
+  .hueco.lleno { border: 3px solid transparent; background: transparent; }
+  
+  .piezas-disponibles { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; min-height: 80px; }
+  
+  .pieza { background: white; border: 3px solid #ccc; border-radius: 10px; padding: 8px 20px; cursor: pointer; box-shadow: 0 4px 0 #ccc; user-select: none; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 70px; }
+  .pieza:active { transform: translateY(4px); box-shadow: 0 0px 0 #ccc; }
+  
+  .texto-es { font-size: 1.4em; font-weight: bold; }
+  .texto-ar { font-size: 1.1em; color: #666; margin-top: 4px; direction: rtl; }
+
+  .pieza.sujeto { border-color: var(--sujeto); }
+  .pieza.sujeto .texto-es { color: var(--sujeto); }
+  .pieza.verbo { border-color: var(--verbo); }
+  .pieza.verbo .texto-es { color: var(--verbo); }
+  .pieza.objeto { border-color: var(--objeto); }
+  .pieza.objeto .texto-es { color: var(--objeto); }
+  .pieza.tiempo { border-color: var(--tiempo); }
+  .pieza.tiempo .texto-es { color: #d49d00; }
+
+  .oculto { display: none !important; }
+  .incorrecto { animation: vibrar 0.4s; }
+  @keyframes vibrar { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+
+  #overlay-exito { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; border-radius: 20px; }
+  .estrella { font-size: 8em; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+  .btn-empezar { background: var(--exito); color: white; border: none; padding: 20px 40px; font-size: 1.5em; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 6px 0 #04a57b; margin: 20px auto; display: block; text-decoration: none; text-align: center; }
+  
+  .resultados-grid { display: flex; justify-content: center; gap: 20px; margin: 30px 0; }
+  .caja-resultado { padding: 25px; border-radius: 15px; width: 40%; flex-grow: 1; max-width: 300px; }
+  .caja-resultado.acierto { background: #e8f5e9; border: 2px solid var(--exito); color: #2e7d32; }
+  .caja-resultado.error { background: #ffebee; border: 2px solid var(--alerta); color: #c62828; }
+  .caja-resultado h3 { margin: 0; font-size: 1.2em; }
+  .caja-resultado .subtitulo-arabe { font-size: 1em; color: #555; direction: rtl; margin-top: 5px; margin-bottom: 15px; }
+  .caja-resultado .numero { margin: 0; font-size: 3.5em; font-weight: bold; }
+
+  @media (max-width: 650px) {
+    .app-container { padding: 22px 16px; min-height: 92vh; }
+    h1 { font-size: 1.65em; margin-top: 35px; }
+    .zona-controles { flex-direction: column; gap: 12px; }
+    .btn-audio { width: 100%; justify-content: center; font-size: 1.05em; padding: 13px 18px; }
+    .constructor { padding: 18px 10px; gap: 10px; }
+    .piezas-disponibles { gap: 10px; }
+    .pieza { min-width: 85px; padding: 8px 14px; }
+    .texto-es { font-size: 1.15em; }
+    .texto-ar { font-size: 0.95em; }
+    .resultados-grid { flex-direction: column; align-items: center; }
+    .caja-resultado { width: 90%; }
+  }
+
+  .creditos { 
+    margin-top: auto; 
+    padding-top: 30px; 
+    font-size: 1em; 
+    color: #9aa5b1; 
+    text-align: center; 
+    font-weight: bold; 
+    border-top: 1px solid #e9ecef;
+  }
+</style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Enlace directo para regresar a la portada -->
+    <a href="index.html" class="btn-volver-menu">🏠 Inicio / الرئيسية</a>
+    
+    <!-- PANTALLA 1: INICIO -->
+    <div id="pantalla-inicio">
+      <h1>Nivel 4: Cosas del Colegio / أشياء في المدرسة</h1>
+      <p class="instruccion árabe">١. استمع | ٢. كرر | ٣. رتب الكلمات</p>
+      <p class="instruccion">1º Escucha | 2º Repite | 3º Ordena las palabras</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <p style="color: #666; font-size: 1.1em; line-height: 1.6;">
+          🔵 Azul (Quién / من)<br>
+          🔴 Rojo (Acción / ماذا يفعل)<br>
+          🟣 Morado (Cosa o lugar / الشيء أو المكان)<br>
+          🎒 Vocabulario del colegio / مفردات المدرسة
+        </p>
+      </div>
+      
+      <button class="btn-empezar" style="width: 80%;" onclick="iniciarAprendizaje()">Empezar / بدأ</button>
+    </div>
+
+    <!-- PANTALLA 2: ACTIVIDAD -->
+    <div id="pantalla-juego" class="oculto" style="position: relative; height: 100%;">
+      <div id="indicador-modo" style="text-align: center; font-weight: bold; color: var(--alerta); margin-bottom: 10px; font-size: 1.2em;" class="oculto">
+        MODO TEST (Solo Español)
+      </div>
+
+      <div class="progreso-barra"><div id="progreso" class="progreso-relleno"></div></div>
+      <div id="zona-visual" class="zona-visual">📚✏️🎒</div>
+
+      <div class="zona-controles">
+        <button id="btn-escuchar" class="btn-audio btn-escuchar" onclick="hablarNormal()">
+          🔊 Escuchar / استمع
+        </button>
+        <button id="btn-repetir" class="btn-audio btn-repetir" onclick="hablarLento()">
+          🗣️ Repetir / كرر
+        </button>
+      </div>
+
+      <div id="constructor" class="constructor"></div>
+      <div id="piezas" class="piezas-disponibles"></div>
+
+      <div id="overlay-exito" class="oculto">
+        <div class="estrella">⭐</div>
+        <h2 id="texto-exito" style="color: var(--exito); font-size: 2.5em;">¡Muy bien! ممتاز</h2>
+        <button class="btn-empezar" onclick="siguienteNivel()">Siguiente ➡️</button>
+      </div>
+    </div>
+    
+    <!-- PANTALLA 3: INTERMEDIA -->
+    <div id="pantalla-intermedia" class="oculto" style="text-align: center;">
+      <h1 style="font-size: 2.5em; color: var(--sujeto);">¡Nivel 4 completado!</h1>
+      <p class="arabe" style="font-size: 1.5em; margin-bottom: 30px;">اكتمل التدريب</p>
+      <p style="font-size: 5em; margin: 10px 0;">👏</p>
+      
+      <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px;">
+        <button class="btn-empezar" style="background: var(--tiempo); color: #333;" onclick="reiniciarAprendizaje()">
+          Repetir con ayuda<br><span style="font-size: 0.7em; font-weight: normal;">(Árabe/Español)</span>
+        </button>
+        <button class="btn-empezar" style="background: var(--alerta);" onclick="iniciarTest()">
+          Hacer Test Final<br><span style="font-size: 0.7em; font-weight: normal;">(Solo Español)</span>
+        </button>
+        <a href="nivel5.html" class="btn-empezar" style="background: var(--sujeto);">
+          Continuar al Nivel 5 ➡️
+        </a>
+        <a href="index.html" class="btn-empezar" style="background: #64748b;">
+          Volver al Menú Principal 🏠
+        </a>
+      </div>
+    </div>
+
+    <!-- PANTALLA 4: RESULTADOS -->
+    <div id="pantalla-final" class="oculto" style="text-align: center;">
+      <h1 style="font-size: 2.5em; color: #333;">Resultados del Test</h1>
+      
+      <div class="resultados-grid">
+        <div class="caja-resultado acierto">
+          <h3>Aciertos a la primera</h3>
+          <div class="subtitulo-arabe oculto-en-test" id="subtitulo-aciertos">إجابات صحيحة</div>
+          <div class="numero" id="texto-aciertos">0</div>
+        </div>
+        
+        <div class="caja-resultado error">
+          <h3>Errores cometidos</h3>
+          <div class="subtitulo-arabe oculto-en-test" id="subtitulo-errores">أخطاء</div>
+          <div class="numero" id="texto-errores">0</div>
+        </div>
+      </div>
+      
+      <a href="index.html" class="btn-empezar" style="width: 70%;">Terminar y volver al Menú Principal</a>
+    </div>
+
+    <div class="creditos">
+      App creada por Chety Moirón — Uso Educativo Libre
+    </div>
+  </div>
+
+<script>
+  const niveles = [
+    { visual: "📓", audioEs: "El cuaderno", audioAr: "الدفتر", piezas: [
+      {tEs:"El", tAr:"الـ", c:"sujeto"},
+      {tEs:"cuaderno", tAr:"دفتر", c:"objeto"}
+    ]},
+    { visual: "🟩🖊️", audioEs: "La pizarra", audioAr: "السبورة", piezas: [
+      {tEs:"La", tAr:"الـ", c:"sujeto"},
+      {tEs:"pizarra", tAr:"سبورة", c:"objeto"}
+    ]},
+    { visual: "✏️🔴", audioEs: "El lápiz rojo", audioAr: "القلم الأحمر", piezas: [
+      {tEs:"El", tAr:"الـ", c:"sujeto"},
+      {tEs:"lápiz", tAr:"قلم", c:"objeto"},
+      {tEs:"rojo", tAr:"أحمر", c:"objeto"}
+    ]},
+    { visual: "🎒🔵", audioEs: "La mochila azul", audioAr: "الحقيبة الزرقاء", piezas: [
+      {tEs:"La", tAr:"الـ", c:"sujeto"},
+      {tEs:"mochila", tAr:"حقيبة", c:"objeto"},
+      {tEs:"azul", tAr:"زرقاء", c:"objeto"}
+    ]},
+    { visual: "👦📖", audioEs: "Yo tengo un libro", audioAr: "لدي كتاب", piezas: [
+      {tEs:"Yo", tAr:"أنا", c:"sujeto"},
+      {tEs:"tengo", tAr:"لدي", c:"verbo"},
+      {tEs:"un", tAr:"واحد", c:"objeto"},
+      {tEs:"libro", tAr:"كتاب", c:"objeto"}
+    ]},
+    { visual: "👩‍🏫🟩", audioEs: "La profesora usa la pizarra", audioAr: "المعلمة تستخدم السبورة", piezas: [
+      {tEs:"La profesora", tAr:"المعلمة", c:"sujeto"},
+      {tEs:"usa", tAr:"تستخدم", c:"verbo"},
+      {tEs:"la", tAr:"الـ", c:"objeto"},
+      {tEs:"pizarra", tAr:"سبورة", c:"objeto"}
+    ]},
+    { visual: "👦📓", audioEs: "El alumno abre el cuaderno", audioAr: "الطالب يفتح الدفتر", piezas: [
+      {tEs:"El alumno", tAr:"الطالب", c:"sujeto"},
+      {tEs:"abre", tAr:"يفتح", c:"verbo"},
+      {tEs:"el", tAr:"الـ", c:"objeto"},
+      {tEs:"cuaderno", tAr:"دفتر", c:"objeto"}
+    ]},
+    { visual: "🙋‍♂️📏", audioEs: "Yo necesito una regla", audioAr: "أحتاج إلى مسطرة", piezas: [
+      {tEs:"Yo", tAr:"أنا", c:"sujeto"},
+      {tEs:"necesito", tAr:"أحتاج", c:"verbo"},
+      {tEs:"una", tAr:"واحدة", c:"objeto"},
+      {tEs:"regla", tAr:"مسطرة", c:"objeto"}
+    ]},
+    { visual: "👧✏️🎒", audioEs: "La niña guarda el lápiz", audioAr: "البنت تضع القلم في الحقيبة", piezas: [
+      {tEs:"La niña", tAr:"البنت", c:"sujeto"},
+      {tEs:"guarda", tAr:"تضع", c:"verbo"},
+      {tEs:"el", tAr:"الـ", c:"objeto"},
+      {tEs:"lápiz", tAr:"القلم", c:"objeto"}
+    ]},
+    { visual: "👧✂️📄", audioEs: "La niña usa las tijeras", audioAr: "البنت تستخدم المقص", piezas: [
+      {tEs:"La niña", tAr:"البنت", c:"sujeto"},
+      {tEs:"usa", tAr:"تستخدم", c:"verbo"},
+      {tEs:"las", tAr:"الـ", c:"objeto"},
+      {tEs:"tijeras", tAr:"المقص", c:"objeto"}
+    ]},
+    { visual: "🧑‍🎓🖊️📄", audioEs: "El alumno escribe con bolígrafo", audioAr: "الطالب يكتب بالقلم", piezas: [
+      {tEs:"El alumno", tAr:"الطالب", c:"sujeto"},
+      {tEs:"escribe", tAr:"يكتب", c:"verbo"},
+      {tEs:"con", tAr:"بـ", c:"objeto"},
+      {tEs:"bolígrafo", tAr:"قلم حبر", c:"objeto"}
+    ]},
+    { visual: "👩‍🏫📚🗂️", audioEs: "La profesora ordena los libros", audioAr: "المعلمة ترتب الكتب", piezas: [
+      {tEs:"La profesora", tAr:"المعلمة", c:"sujeto"},
+      {tEs:"ordena", tAr:"ترتب", c:"verbo"},
+      {tEs:"los", tAr:"الـ", c:"objeto"},
+      {tEs:"libros", tAr:"كتب", c:"objeto"}
+    ]}
+  ];
+
+  let nivelActual = 0;
+  let slotsOcupados = [];
+  let vocesDisponibles = [];
+  let modoTest = false; 
+  let aciertosPerfectos = 0; 
+  let totalErrores = 0;      
+  let erroresEnNivelActual = 0; 
+
+  if ('speechSynthesis' in window) {
+    vocesDisponibles = window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => { vocesDisponibles = window.speechSynthesis.getVoices(); };
+  }
+
+  function reproducirVozEspanol(textoEs, velocidadEs) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(textoEs);
+    msg.lang = 'es-ES';
+    msg.rate = velocidadEs;
+    const vozEs = vocesDisponibles.find(v => v.lang.startsWith('es'));
+    if (vozEs) msg.voice = vozEs;
+    window.speechSynthesis.speak(msg);
+  }
+
+  function reproducirVozBilingue(textoAr, textoEs, velocidadEs) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const btnEscuchar = document.getElementById("btn-escuchar");
+    const btnRepetir = document.getElementById("btn-repetir");
+    btnEscuchar.disabled = true; btnRepetir.disabled = true;
+
+    const msgAr = new SpeechSynthesisUtterance(textoAr);
+    msgAr.lang = 'ar-SA'; msgAr.rate = 0.9;
+    const vozAr = vocesDisponibles.find(v => v.lang.startsWith('ar'));
+    if (vozAr) msgAr.voice = vozAr;
+
+    const msgEs = new SpeechSynthesisUtterance(textoEs);
+    msgEs.lang = 'es-ES'; msgEs.rate = velocidadEs;
+    const vozEs = vocesDisponibles.find(v => v.lang.startsWith('es'));
+    if (vozEs) msgEs.voice = vozEs;
+
+    msgEs.onend = () => { btnEscuchar.disabled = false; btnRepetir.disabled = false; };
+    msgAr.onend = () => { setTimeout(() => window.speechSynthesis.speak(msgEs), 200); };
+    msgAr.onerror = () => { window.speechSynthesis.speak(msgEs); };
+
+    window.speechSynthesis.speak(msgAr);
+  }
+
+  function hablarNormal() {
+    const nivel = niveles[nivelActual];
+    if (modoTest) reproducirVozEspanol(nivel.audioEs, 0.85);
+    else reproducirVozBilingue(nivel.audioAr, nivel.audioEs, 0.85);
+  }
+
+  function hablarLento() {
+    const nivel = niveles[nivelActual];
+    if (modoTest) reproducirVozEspanol(nivel.audioEs, 0.4);
+    else reproducirVozBilingue(nivel.audioAr, nivel.audioEs, 0.4);
+  }
+
+  function ocultarTodo() {
+    document.getElementById("pantalla-inicio").classList.add("oculto");
+    document.getElementById("pantalla-juego").classList.add("oculto");
+    document.getElementById("pantalla-intermedia").classList.add("oculto");
+    document.getElementById("pantalla-final").classList.add("oculto");
+  }
+
+  function iniciarAprendizaje() {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+    }
+    modoTest = false;
+    nivelActual = 0;
+    
+    document.getElementById("indicador-modo").classList.add("oculto");
+    document.getElementById("btn-escuchar").innerHTML = "🔊 Escuchar / استمع";
+    document.getElementById("btn-repetir").innerHTML = "🗣️ Repetir / كرر";
+    document.getElementById("texto-exito").innerHTML = "¡Muy bien! ممتاز";
+
+    ocultarTodo();
+    document.getElementById("pantalla-juego").classList.remove("oculto");
+    cargarNivel();
+  }
+
+  function reiniciarAprendizaje() {
+    iniciarAprendizaje();
+  }
+
+  function iniciarTest() {
+    modoTest = true;
+    nivelActual = 0;
+    aciertosPerfectos = 0;
+    totalErrores = 0;
+
+    document.getElementById("indicador-modo").classList.remove("oculto");
+    document.getElementById("btn-escuchar").innerHTML = "🔊 Escuchar";
+    document.getElementById("btn-repetir").innerHTML = "🗣️ Repetir";
+    document.getElementById("texto-exito").innerHTML = "¡Muy bien!";
+
+    ocultarTodo();
+    document.getElementById("pantalla-juego").classList.remove("oculto");
+    cargarNivel();
+  }
+
+  function barajarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function cargarNivel() {
+    erroresEnNivelActual = 0; 
+    document.getElementById("progreso").style.width = (((nivelActual + 1) / niveles.length) * 100) + "%";
+    
+    const nivel = niveles[nivelActual];
+    document.getElementById("zona-visual").innerText = nivel.visual;
+    
+    const contenedorHuecos = document.getElementById("constructor");
+    const contenedorPiezas = document.getElementById("piezas");
+    
+    contenedorHuecos.innerHTML = "";
+    contenedorPiezas.innerHTML = "";
+    slotsOcupados = new Array(nivel.piezas.length).fill(null);
+
+    nivel.piezas.forEach((_, i) => {
+      const hueco = document.createElement("div");
+      hueco.className = "hueco";
+      if(modoTest) hueco.style.height = "60px";
+      hueco.id = "hueco-" + i;
+      hueco.onclick = () => devolverPieza(i);
+      contenedorHuecos.appendChild(hueco);
+    });
+
+    let piezasDesordenadas = barajarArray([...nivel.piezas].map((p, indexOriginal) => ({...p, indexOriginal})));
+    
+    piezasDesordenadas.forEach((pieza, idUI) => {
+      const div = document.createElement("div");
+      div.className = `pieza ${pieza.c}`;
+      div.id = "pieza-" + idUI;
+      
+      if (modoTest) {
+        div.innerHTML = `<span class="texto-es">${pieza.tEs}</span>`;
+        div.style.padding = "12px 25px";
+      } else {
+        div.innerHTML = `<span class="texto-es">${pieza.tEs}</span><span class="texto-ar">${pieza.tAr}</span>`;
+      }
+      
+      div.onclick = () => encajarPieza(pieza, div);
+      contenedorPiezas.appendChild(div);
+    });
+
+    setTimeout(hablarNormal, 800);
+  }
+
+  function encajarPieza(datosPieza, divPieza) {
+    const primerHuecoVacio = slotsOcupados.findIndex(s => s === null);
+    if (primerHuecoVacio === -1) return; 
+
+    const hueco = document.getElementById("hueco-" + primerHuecoVacio);
+    hueco.appendChild(divPieza);
+    hueco.classList.add("lleno");
+    
+    slotsOcupados[primerHuecoVacio] = { datos: datosPieza, div: divPieza };
+    divPieza.onclick = () => devolverPieza(primerHuecoVacio);
+
+    if (slotsOcupados.findIndex(s => s === null) === -1) {
+      setTimeout(comprobarResultado, 300);
+    }
+  }
+
+  function devolverPieza(indexHueco) {
+    if (slotsOcupados[indexHueco] === null) return;
+    const ocupante = slotsOcupados[indexHueco];
+    const contenedorPiezas = document.getElementById("piezas");
+    
+    contenedorPiezas.appendChild(ocupante.div);
+    ocupante.div.onclick = () => encajarPieza(ocupante.datos, ocupante.div);
+    document.getElementById("hueco-" + indexHueco).classList.remove("lleno");
+    slotsOcupados[indexHueco] = null;
+  }
+
+  function comprobarResultado() {
+    let correcto = true;
+    const nivel = niveles[nivelActual];
+    
+    for (let i = 0; i < slotsOcupados.length; i++) {
+      if (slotsOcupados[i].datos.tEs !== nivel.piezas[i].tEs) {
+        correcto = false;
+        break;
+      }
+    }
+
+    if (correcto) {
+      if (erroresEnNivelActual === 0 && modoTest) aciertosPerfectos++;
+      document.getElementById("overlay-exito").classList.remove("oculto");
+      
+      if (modoTest) {
+        reproducirVozEspanol("¡Muy bien!", 1);
+      } else {
+        const msgAr = new SpeechSynthesisUtterance("ممتاز"); 
+        msgAr.lang = 'ar-SA';
+        const msgEs = new SpeechSynthesisUtterance("¡Muy bien!");
+        msgEs.lang = 'es-ES';
+        msgAr.onend = () => window.speechSynthesis.speak(msgEs);
+        msgAr.onerror = () => window.speechSynthesis.speak(msgEs);
+        window.speechSynthesis.speak(msgAr);
+      }
+    } else {
+      if (modoTest) {
+        totalErrores++;
+        erroresEnNivelActual++;
+      }
+
+      const constructorDiv = document.getElementById("constructor");
+      constructorDiv.classList.add("incorrecto");
+      
+      if(modoTest) reproducirVozEspanol("Inténtalo de nuevo", 1);
+      else reproducirVozBilingue("حاول مرة أخرى", "Inténtalo de nuevo", 1); 
+      
+      setTimeout(() => {
+        constructorDiv.classList.remove("incorrecto");
+        for (let i = slotsOcupados.length - 1; i >= 0; i--) {
+          devolverPieza(i);
+        }
+      }, 800);
+    }
+  }
+
+  function siguienteNivel() {
+    document.getElementById("overlay-exito").classList.add("oculto");
+    nivelActual++;
+    
+    if (nivelActual < niveles.length) {
+      cargarNivel();
+    } else {
+      ocultarTodo();
+      if (!modoTest) {
+        document.getElementById("pantalla-intermedia").classList.remove("oculto");
+      } else {
+        document.getElementById("pantalla-final").classList.remove("oculto");
+        document.getElementById("texto-aciertos").innerText = aciertosPerfectos + " / " + niveles.length;
+        document.getElementById("texto-errores").innerText = totalErrores;
+        document.getElementById("subtitulo-aciertos").classList.add("oculto");
+        document.getElementById("subtitulo-errores").classList.add("oculto");
+      }
+    }
+  }
+</script>
+</body>
+</html>
