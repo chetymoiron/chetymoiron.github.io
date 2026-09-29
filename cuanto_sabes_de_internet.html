@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cuánto sabes de internet? · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#3a86ff; --verde:#06d6a0; --rojo:#ef476f; --amarillo:#ffd166;
+  --fondo:#f4f6f9; --blanco:#fff; --texto:#263238; --gris:#e8edf3;
+  --morado:#8338ec; --verde-oscuro:#073b2f; --rojo-oscuro:#5c0d1e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:18px;
+}
+.app{
+  width:100%;max-width:1000px;margin:auto;background:var(--blanco);
+  border-radius:22px;box-shadow:0 10px 35px rgba(0,0,0,.08);
+  padding:24px;min-height:92vh;position:relative;
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;margin-bottom:16px;
+}
+.home{
+  display:inline-block;text-decoration:none;background:#eef2f7;
+  color:#263238;font-weight:700;padding:10px 16px;border-radius:12px;
+  transition:background .2s;
+}
+.home:hover{background:#dfe6ef}
+.title{text-align:center;flex:1}
+h1{font-size:2.1rem;margin-bottom:4px;color:#123b7a}
+.subtitle{color:#667085;font-size:1.05rem;font-weight:600}
+.hidden{display:none!important}
+
+.progress{
+  height:12px;background:var(--gris);border-radius:8px;
+  overflow:hidden;margin:12px 0 20px;
+}
+.progress > div{
+  height:100%;width:0;background:var(--verde);
+  transition:width .3s ease;
+}
+
+.start{text-align:center;padding:25px 10px 40px}
+.emoji-big{font-size:5rem;margin:12px 0}
+.instructions{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  margin:25px 0;text-align:center;
+}
+.card{
+  background:#f7f9fc;border:2px solid #e4eaf0;border-radius:16px;
+  padding:18px;
+}
+.card strong{display:block;margin-bottom:7px;font-size:1.15rem;color:#123b7a}
+
+.btn{
+  border:0;border-radius:14px;padding:15px 24px;font-size:1.15rem;
+  font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--azul);color:#fff}
+.green{background:var(--verde);color:var(--verde-oscuro)}
+.yellow{background:var(--amarillo);color:#3c3300}
+.red{background:var(--rojo);color:#fff}
+
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:14px;
+}
+.badge{
+  background:#eef4ff;color:#1550b5;padding:8px 14px;
+  border-radius:999px;font-weight:800;font-size:1rem;
+}
+
+.question-box{
+  border:3px solid #dfe7f0;border-radius:20px;padding:30px 24px;
+  margin:16px 0;background:#fbfcfe;text-align:center;
+}
+.q-emoji{font-size:4.5rem;margin-bottom:12px}
+.q-statement{
+  font-size:1.65rem;line-height:1.5;font-weight:800;
+  max-width:850px;margin:auto;color:#1e293b;
+}
+
+.audio-controls{
+  display:flex;justify-content:center;gap:12px;margin:14px 0 20px;
+}
+
+.vf-options{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;
+  max-width:760px;margin:0 auto 18px;
+}
+.btn-choice{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  border:4px solid transparent;border-radius:18px;padding:22px;
+  font-size:1.6rem;font-weight:900;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12);
+  transition:all .12s ease;color:#fff;
+}
+.btn-choice:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.btn-choice.true{background:#22c55e;border-color:#16a34a}
+.btn-choice.false{background:#ef4444;border-color:#dc2626}
+.btn-choice.true:hover{background:#16a34a}
+.btn-choice.false:hover{background:#dc2626}
+
+.feedback-card{
+  border-radius:16px;padding:18px;margin:15px auto;
+  max-width:850px;text-align:center;font-size:1.25rem;
+  font-weight:750;line-height:1.45;display:none;
+}
+.feedback-card.show{display:block}
+.feedback-card.ok{background:#e8fbf3;border:2px solid #a4ebd0;color:#0b6343}
+.feedback-card.fail{background:#fff0f3;border:2px solid #fec5d1;color:#a81c3a}
+
+.next-wrap{text-align:center;margin-top:14px}
+.score{text-align:center;margin-top:18px;font-size:1.25rem;font-weight:800;color:#5b6b79}
+
+.final{text-align:center;padding:40px 15px}
+.final .trophy{font-size:6rem}
+.final h2{font-size:2.3rem;margin:10px 0}
+.final p{font-size:1.3rem;color:#667085;margin-bottom:25px}
+
+@media(max-width:760px){
+  body{padding:8px}
+  .app{padding:16px;min-height:96vh}
+  .top{align-items:flex-start}
+  .title{text-align:left}
+  h1{font-size:1.6rem}
+  .instructions{grid-template-columns:1fr}
+  .vf-options{grid-template-columns:1fr;gap:12px}
+  .btn-choice{padding:16px;font-size:1.35rem}
+  .q-statement{font-size:1.3rem}
+  .game-head{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="if(synth)synth.cancel()">← Inicio</a>
+    <div class="title">
+      <h1>🌐 ¿Cuánto sabes de internet?</h1>
+      <div class="subtitle">Cuestionario interactivo de Verdadero o Falso</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PANTALLA INICIAL -->
+  <section id="start" class="start">
+    <div class="emoji-big">🕵️‍♂️💻🔐</div>
+    <h2 style="font-size:1.9rem;margin-bottom:8px">Conviértete en un detective digital</h2>
+    <p style="font-size:1.2rem;color:#667085;max-width:760px;margin:auto">
+      Demuestra lo que sabes sobre ciberseguridad, datos personales, contraseñas y uso saludable de las pantallas.
+    </p>
+    <div class="instructions">
+      <div class="card">👀<strong>1. Lee o escucha</strong>Presta mucha atención a la afirmación.</div>
+      <div class="card">🤔<strong>2. Razona</strong>Piensa si lo que dice es verdad o mentira.</div>
+      <div class="card">👉<strong>3. Elige</strong>Pulsa Verde (Verdadero) o Rojo (Falso).</div>
+    </div>
+    <button class="btn primary" onclick="startGame()">Empezar Cuestionario ▶️</button>
+  </section>
+
+  <!-- PANTALLA DEL JUEGO -->
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+    
+    <div class="game-head">
+      <div class="badge" id="counter">Pregunta 1 de 10</div>
+      <button class="btn yellow" onclick="speakQuestion()">🔊 Escuchar frase</button>
+    </div>
+
+    <div class="question-box">
+      <div class="q-emoji" id="questionEmoji">🔒</div>
+      <div class="q-statement" id="questionText"></div>
+    </div>
+
+    <div class="vf-options" id="choiceContainer">
+      <button class="btn-choice true" onclick="checkAnswer(true)">
+        <span>✅</span> VERDADERO
+      </button>
+      <button class="btn-choice false" onclick="checkAnswer(false)">
+        <span>❌</span> FALSO
+      </button>
+    </div>
+
+    <div id="feedback" class="feedback-card"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextQuestion()">Siguiente pregunta ➡️</button>
+    </div>
+
+    <div class="score" id="score">Aciertos: 0 · Errores: 0</div>
+  </section>
+
+  <!-- PANTALLA FINAL -->
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Misión digital completada!</h2>
+    <p id="finalText"></p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn primary" href="index.html" onclick="if(synth)synth.cancel()">Volver al menú principal</a>
+      <button class="btn green" onclick="restart()">Repetir cuestionario 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const questions = [
+  {
+    emoji: "🔑",
+    text: "Usar contraseñas como '123456' o tu fecha de cumpleaños es muy seguro porque nunca se olvidan.",
+    answer: false,
+    explain: "¡FALSO! Las contraseñas sencillas son las primeras que descubren los atacantes. Deben combinar letras, números y símbolos."
+  },
+  {
+    emoji: "🏠",
+    text: "Tu dirección de casa, tu número de teléfono y el nombre de tu colegio son datos que nunca debes dar a desconocidos en internet.",
+    answer: true,
+    explain: "¡VERDADERO! Son datos personales muy sensibles que pertenecen a tu privacidad."
+  },
+  {
+    emoji: "🎁",
+    text: "Si una ventana en internet te dice que has ganado un móvil de última generación por sorpresa, es verdad y debes hacer clic rápido.",
+    answer: false,
+    explain: "¡FALSO! Es un engaño muy habitual (phishing). Nadie regala móviles ni premios a desconocidos por azar."
+  },
+  {
+    emoji: "📸",
+    text: "Antes de subir o enviar una foto donde aparezca un amigo o compañero, siempre debemos pedirle permiso.",
+    answer: true,
+    explain: "¡VERDADERO! Hay que respetar la imagen y la intimidad de las demás personas."
+  },
+  {
+    emoji: "🤖",
+    text: "Todo lo que leemos en internet o lo que nos responde una Inteligencia Artificial siempre es 100% real y cierto.",
+    answer: false,
+    explain: "¡FALSO! En la red hay muchas noticias falsas y la IA a veces comete errores o alucinaciones. Siempre hay que contrastar la información."
+  },
+  {
+    emoji: "🎮",
+    text: "Si alguien que no conoces en un juego online te pide ser tu amigo y que le des tu WhatsApp, lo mejor es no dárselo y contárselo a un adulto.",
+    answer: true,
+    explain: "¡VERDADERO! Detrás de un personaje de videojuego nunca sabemos quién está en realidad."
+  },
+  {
+    emoji: "⏰",
+    text: "Estar 5 o 6 horas seguidas jugando a videojuegos o viendo vídeos no afecta a nuestra salud, vista ni descanso.",
+    answer: false,
+    explain: "¡FALSO! El cuerpo y la mente necesitan pausas activas, hacer deporte, estar al aire libre y dormir bien."
+  },
+  {
+    emoji: "💬",
+    text: "Si en el grupo de clase se comparten bromas pesadas o memes para reírse de alguien, lo correcto es frenarlo o avisar al maestro o a la familia.",
+    answer: true,
+    explain: "¡VERDADERO! No apoyar el ciberacoso y actuar con valentía y empatía protege a todos los compañeros."
+  },
+  {
+    emoji: "📥",
+    text: "Podemos descargar juegos o programas de cualquier página desconocida porque ningún archivo tiene virus.",
+    answer: false,
+    explain: "¡FALSO! Descargar archivos de sitios desconocidos o no oficiales puede dañar el ordenador o la tableta con programas maliciosos."
+  },
+  {
+    emoji: "🤝",
+    text: "En internet debemos escribir y comportarnos con el mismo respeto y educación con el que tratamos a las personas cara a cara.",
+    answer: true,
+    explain: "¡VERDADERO! Detrás de cada pantalla siempre hay una persona real."
+  }
+];
+
+let currentIndex = 0;
+let scoreOk = 0;
+let scoreBad = 0;
+let answered = false;
+
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+
+function say(text, rate = 0.85) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = rate;
+  const voices = synth.getVoices();
+  const v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('es'));
+  if (v) u.voice = v;
+  synth.speak(u);
+}
+window.addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
+
+function startGame() {
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  currentIndex = 0;
+  scoreOk = 0;
+  scoreBad = 0;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  document.getElementById('counter').textContent = `Pregunta ${currentIndex + 1} de ${questions.length}`;
+  document.getElementById('bar').style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+  document.getElementById('questionEmoji').textContent = q.emoji;
+  document.getElementById('questionText').textContent = q.text;
+  
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback-card';
+  fb.textContent = '';
+  
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent = `Aciertos: ${scoreOk} · Errores: ${scoreBad}`;
+  
+  // Reactivar botones
+  const buttons = document.querySelectorAll('.btn-choice');
+  buttons.forEach(b => b.disabled = false);
+
+  setTimeout(() => say(q.text, 0.84), 400);
+}
+
+function checkAnswer(userChoice) {
+  if (answered) return;
+  answered = true;
+  
+  const q = questions[currentIndex];
+  const buttons = document.querySelectorAll('.btn-choice');
+  buttons.forEach(b => b.disabled = true);
+  
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  
+  if (userChoice === q.answer) {
+    scoreOk++;
+    fb.classList.add('ok');
+    fb.textContent = `✅ ¡Correcto! ${q.explain}`;
+    say(`¡Muy bien! ${q.explain}`, 0.9);
+  } else {
+    scoreBad++;
+    fb.classList.add('fail');
+    fb.textContent = `❌ ¡Cuidado! ${q.explain}`;
+    say(`Incorrecto. ${q.explain}`, 0.85);
+  }
+  
+  document.getElementById('score').textContent = `Aciertos: ${scoreOk} · Errores: ${scoreBad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    loadQuestion();
+  } else {
+    showFinalScreen();
+  }
+}
+
+function showFinalScreen() {
+  if (synth) synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  document.getElementById('finalText').textContent = `Has obtenido ${scoreOk} aciertos de un total de ${questions.length} preguntas.`;
+  say(`Cuestionario terminado. Has conseguido ${scoreOk} aciertos.`, 0.88);
+}
+
+function restart() {
+  if (synth) synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  currentIndex = 0;
+  scoreOk = 0;
+  scoreBad = 0;
+  loadQuestion();
+}
+
+function speakQuestion() {
+  say(questions[currentIndex].text, 0.82);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
