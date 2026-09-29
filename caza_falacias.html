@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caza-Falacias y Frases Trampa · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rojo-trampa:#e11d48; --rojo-oscuro:#9f1239; --verde:#059669; --dorado:#d97706;
+  --fondo:#f8fafc; --blanco:#ffffff; --texto:#0f172a; --panel-bg:#fff1f2;
+  --borde-trampa:#fecdd3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:16px;
+}
+.app{
+  width:100%;max-width:1050px;margin:auto;background:var(--blanco);
+  border-radius:24px;box-shadow:0 12px 40px rgba(15,23,42,.08);
+  padding:26px;min-height:92vh;position:relative;
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;margin-bottom:18px;
+}
+.home{
+  display:inline-block;text-decoration:none;background:#e2e8f0;
+  color:#1e293b;font-weight:700;padding:10px 16px;border-radius:12px;
+  transition:all .15s ease;
+}
+.home:hover{background:#cbd5e1}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:4px;color:var(--rojo-oscuro)}
+.subtitle{color:#64748b;font-size:1.05rem;font-weight:700}
+.hidden{display:none!important}
+
+.progress{
+  height:12px;background:#e2e8f0;border-radius:8px;
+  overflow:hidden;margin:12px 0 20px;
+}
+.progress > div{
+  height:100%;width:0;background:var(--rojo-trampa);
+  transition:width .35s ease;
+}
+
+.start{text-align:center;padding:25px 10px 40px}
+.badge-altas{
+  display:inline-block;background:#ffe4e6;color:var(--rojo-oscuro);
+  border:2px solid #fecdd3;font-weight:800;font-size:.95rem;
+  padding:6px 14px;border-radius:999px;margin-bottom:12px;
+}
+.emoji-big{font-size:4.8rem;margin:10px 0}
+.instructions{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin:25px 0;text-align:center;
+}
+.card{
+  background:#f8fafc;border:2px solid #e2e8f0;border-radius:18px;
+  padding:18px;
+}
+.card strong{display:block;margin-bottom:6px;font-size:1.15rem;color:var(--rojo-oscuro)}
+
+.btn{
+  border:0;border-radius:14px;padding:14px 24px;font-size:1.1rem;
+  font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--rojo-trampa);color:#fff}
+.green{background:var(--verde);color:#fff}
+.yellow{background:var(--dorado);color:#1f2937}
+
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;
+}
+.badge-case{
+  background:#ffe4e6;color:var(--rojo-oscuro);padding:8px 16px;
+  border-radius:999px;font-weight:900;font-size:1.05rem;
+}
+
+/* Panel del Desafío */
+.challenge-panel{
+  border:3px solid var(--borde-trampa);border-radius:22px;
+  padding:24px 26px;background:var(--panel-bg);margin-bottom:18px;
+}
+.challenge-title{
+  font-size:1.4rem;font-weight:900;color:var(--rojo-oscuro);
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.challenge-desc{
+  font-size:1.25rem;line-height:1.6;color:#334155;margin-bottom:14px;
+}
+
+.hint-box{
+  background:#fffbeb;border:2px solid #fef08a;border-radius:14px;
+  padding:14px;font-size:1.15rem;color:#854d0e;margin:14px 0;
+  display:none;font-weight:700;
+}
+.hint-box.show{display:block}
+
+.question{
+  font-size:1.4rem;font-weight:900;text-align:center;
+  margin:20px 0 16px;color:#0f172a;
+}
+.options{
+  display:flex;flex-direction:column;gap:12px;
+}
+.option{
+  background:#fff;border:3px solid #cbd5e1;border-radius:16px;
+  padding:18px 20px;font-size:1.2rem;font-weight:750;cursor:pointer;
+  text-align:left;line-height:1.45;transition:all .15s ease;color:#1e293b;
+  display:flex;align-items:center;gap:14px;
+}
+.option:hover{border-color:var(--rojo-trampa);background:#fff1f2}
+.option.correct{border-color:var(--verde);background:#ecfdf5;color:#065f46}
+.option.wrong{border-color:var(--rojo-trampa);background:#fef2f2;color:#991b1b}
+.option-bullet{
+  width:32px;height:32px;border-radius:50%;background:#e2e8f0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:1rem;color:#475569;flex-shrink:0;
+}
+
+.explanation-card{
+  border-radius:16px;padding:18px;margin:16px auto 0;
+  font-size:1.2rem;font-weight:750;line-height:1.5;display:none;
+}
+.explanation-card.show{display:block}
+.explanation-card.ok{background:#ecfdf5;border:2px solid #a7f3d0;color:#065f46}
+.explanation-card.fail{background:#fef2f2;border:2px solid #fecaca;color:#991b1b}
+
+.next-wrap{text-align:center;margin-top:16px}
+.score{text-align:center;margin-top:20px;font-size:1.25rem;font-weight:800;color:#64748b}
+
+.final{text-align:center;padding:45px 15px}
+.final .trophy{font-size:5.5rem}
+.final h2{font-size:2.3rem;margin:10px 0;color:var(--rojo-oscuro)}
+.final p{font-size:1.3rem;color:#64748b;margin-bottom:26px}
+
+@media(max-width:768px){
+  body{padding:8px}
+  .app{padding:16px;min-height:96vh}
+  .top{align-items:flex-start}
+  .title{text-align:left}
+  h1{font-size:1.6rem}
+  .instructions{grid-template-columns:1fr}
+  .option{font-size:1.05rem;padding:14px}
+  .challenge-desc{font-size:1.15rem}
+  .game-head{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="if(synth)synth.cancel()">← Inicio</a>
+    <div class="title">
+      <h1>🎯 Caza-Falacias y Frases Trampa</h1>
+      <div class="subtitle">Semántica · Rigor léxico · Detección de contradicciones</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PANTALLA INICIAL -->
+  <section id="start" class="start">
+    <div class="badge-altas">💡 Agudeza Semántica y Pensamiento Crítico</div>
+    <div class="emoji-big">🔍⚡🧠</div>
+    <h2 style="font-size:2rem;margin-bottom:10px;color:var(--rojo-oscuro)">No todo lo que suena bien es coherente</h2>
+    <p style="font-size:1.2rem;color:#64748b;max-width:780px;margin:auto;line-height:1.6">
+      En cada reto hay frases con contradicciones escondidas, generalizaciones absurdas o dobles sentidos falsos. 
+      Tu objetivo es identificar cuál es la única afirmación verdaderamente lógica y demostrable.
+    </p>
+
+    <div class="instructions">
+      <div class="card">⚠️<strong>1. Busca la trampa</strong>Sospecha de palabras como "siempre", "nunca" o "imposible".</div>
+      <div class="card">⚖️<strong>2. Contrasta el sentido</strong>Comprueba si la frase se contradice a sí misma.</div>
+      <div class="card">🎯<strong>3. Acierta con rigor</strong>Elige la única opción 100% lógica.</div>
+    </div>
+
+    <button class="btn primary" onclick="startGame()">Comenzar el entrenamiento ▶️</button>
+  </section>
+
+  <!-- PANTALLA DEL JUEGO -->
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badge-case" id="counter">Reto 1 de 6</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn yellow" onclick="speakChallenge()">🔊 Escuchar opciones</button>
+        <button class="btn primary" onclick="toggleHint()">💡 Pista lógica</button>
+      </div>
+    </div>
+
+    <div class="challenge-panel">
+      <div class="challenge-title" id="challengeTitle">Reto</div>
+      <div class="challenge-desc" id="challengeDesc"></div>
+      <div class="hint-box" id="hintBox"></div>
+    </div>
+
+    <div class="question" id="questionPrompt">¿Cuál de las siguientes afirmaciones es lógicamente correcta y sin trampa?</div>
+    <div class="options" id="optionsBox"></div>
+    <div class="explanation-card" id="explanationBox"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextChallenge()">Siguiente desafío ➡️</button>
+    </div>
+
+    <div class="score" id="score">Falacias esquivadas a la primera: 0 · Errores: 0</div>
+  </section>
+
+  <!-- PANTALLA FINAL -->
+  <section id="final" class="final hidden">
+    <div class="trophy">🥇</div>
+    <h2>¡Mente analítica demostrada!</h2>
+    <p id="finalText"></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn primary" href="index.html" onclick="if(synth)synth.cancel()">Volver al menú principal</a>
+      <button class="btn green" onclick="restart()">Repetir desafíos 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const challenges = [
+  {
+    title: "Reto 1: La trampa de la generalización",
+    desc: "Un periódico escolar publica titulares sobre los hábitos de lectura. Tres frases cometen errores lógicos habituales y solo una es impecable.",
+    hint: "Cuidado con los absolutos ('todos los alumnos', 'nadie', 'ningún'). Basta un solo caso en contra para anularlos por completo.",
+    options: [
+      "Todos los libros con ilustraciones son fáciles de entender para cualquier persona.",
+      "Si a un alumno le gusta la poesía, forzosamente detesta leer novelas largas.",
+      "Muchos lectores disfrutan de las historias de aventuras, aunque sus preferencias pueden cambiar con el tiempo.",
+      "Quien no lee todos los días jamás podrá comprender un texto complejo."
+    ],
+    answer: 2,
+    explain: "¡Exacto! La opción 3 es la única rigurosa: utiliza 'muchos' y reconoce la variabilidad ('pueden cambiar'). Las demás usan absolutos falsos ('todos', 'forzosamente', 'jamás')."
+  },
+  {
+    title: "Reto 2: La paradoja temporal",
+    desc: "Un viajero escribe apuntes en su cuaderno sobre su reloj y el tiempo transcurrido. Tres frases contienen contradicciones internas invisibles a primera vista.",
+    hint: "Analiza el significado exacto de 'adelantar', 'atrasar' y el tiempo transcurrido en cada frase.",
+    options: [
+      "Mi reloj se adelanta cinco minutos cada hora, por lo que ayer a medianoche marcaba una hora anterior a la real.",
+      "Si salgo de casa a las 8:00 y tardo 30 minutos andando, es físicamente imposible llegar a mi destino antes de las 8:30.",
+      "Como caminé el doble de rápido que ayer, tardé el doble de tiempo en llegar a la misma plaza.",
+      "Cuanto más tiempo pasa, más joven es el recuerdo que acabo de crear."
+    ],
+    answer: 1,
+    explain: "¡Brillante atención al detalle! Si sales a las 8:00 y tardas 30 minutos, llegar antes de las 8:30 es lógicamente imposible. Las otras opciones son contradictorias (un reloj que se adelanta marca una hora posterior, y caminar el doble de rápido reduce el tiempo a la mitad)."
+  },
+  {
+    title: "Reto 3: Falsa causa (Causa vs. Casualidad)",
+    desc: "En el laboratorio de ciencias los alumnos observan el clima y el patio del colegio. Detecta la única conclusión fundada en una relación real de causa y efecto.",
+    hint: "Que dos cosas ocurran a la vez no significa que una sea la causa de la otra.",
+    options: [
+      "Cada vez que suena la campana de recreo, los pájaros vuelan; por tanto, la campana les enseña a volar.",
+      "Ayer llovió mucho y el suelo se mojó; por lo tanto, mojar el suelo con una manguera hará que llueva.",
+      "El aumento prolongado de la temperatura ambiente aceleró la evaporación del agua acumulada en el suelo.",
+      "Siempre que me pongo calcetines rojos saco un 10 en el examen, así que los calcetines redactan las respuestas."
+    ],
+    answer: 2,
+    explain: "¡Excelente pensamiento científico! La evaporación del agua por calor es una relación causal física demostrada. Las otras tres opciones confunden coincidencia con causalidad (falacia 'post hoc ergo propter hoc')."
+  },
+  {
+    title: "Reto 4: La contradicción en los términos",
+    desc: "Se describen cuatro objetos encontrados en el desván del colegio. Tres descripciones encierran términos incompatibles entre sí.",
+    hint: "Comprueba si las características atribuidas a cada objeto pueden existir juntas al mismo tiempo.",
+    options: [
+      "Una caja metálica totalmente opaca que permite ver claramente su contenido sin necesidad de abrirla.",
+      "Un mapa de papel enrollado que representa caminos ya desaparecidos por el paso del tiempo.",
+      "Un círculo dibujado a mano cuyos puntos se encuentran a distinta distancia exacta del centro.",
+      "Un reloj de arena continuo que jamás detiene la caída de una cantidad limitada de arena sin darle la vuelta."
+    ],
+    answer: 1,
+    explain: "¡Razonamiento impecable! Un mapa antiguo puede representar caminos desaparecidos sin contradicción alguna. En cambio: algo opaco no puede dejar ver a través, un círculo por definición equidista del centro, y una arena limitada en caída libre no puede fluir eternamente sin retorno."
+  },
+  {
+    title: "Reto 5: La falacia de la autoridad inversa",
+    desc: "Cuatro afirmaciones sobre hábitos escolares y razonamientos. Solo una no incurre en un fallo argumentativo.",
+    hint: "El número de personas que apoyan una idea no determina que sea cierta o falsa.",
+    options: [
+      "Esta regla ortográfica debe ser incorrecta porque a la mayoría de mis amigos les cuesta recordarla.",
+      "Un razonamiento no se convierte en verdad simplemente porque lo repita una persona famosa.",
+      "Si todo el mundo cruza la calle con el semáforo en rojo, cruzar en rojo es una acción segura.",
+      "Como nadie ha podido demostrar que hay duendes en la biblioteca, queda confirmado que existen."
+    ],
+    answer: 1,
+    explain: "¡Deducción magistral! La opción 2 formula el principio contra la falacia 'ad verecundiam' (apelar a la autoridad o popularidad no demuestra la verdad). Las demás son falacias evidentes (ad populum y apelación a la ignorancia)."
+  },
+  {
+    title: "Reto 6: Condicionales y negaciones encubiertas",
+    desc: "Analiza con lupa esta regla de juego: 'Si llueve durante el recreo, los alumnos se quedan en el porche cubierto'. ¿Cuál es la única deducción estrictamente cierta?",
+    hint: "Que la lluvia obligue a ir al porche no significa que no se pueda estar en el porche por otros motivos sin que llueva.",
+    options: [
+      "Si los alumnos están en el porche, forzosamente está lloviendo en ese mismo instante.",
+      "Si no llueve durante el recreo, está absolutamente prohibido pisar el porche cubierto.",
+      "Si hoy está lloviendo durante el recreo, los alumnos no se quedarán en el patio descubierto.",
+      "La lluvia solo existe cuando los alumnos deciden salir al recreo."
+    ],
+    answer: 2,
+    explain: "¡Lógica formal de sobresaliente! La regla afirma que si llueve van al porche, lo que garantiza que no se quedarán bajo la lluvia descubierta. La opción 1 comete la falacia de afirmación del consecuente (podrían estar en el porche por sombra o juego sin llover)."
+  }
+];
+
+let i = 0, ok = 0, bad = 0, answered = false;
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+
+function say(text, rate = 0.85) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = rate;
+  const voices = synth.getVoices();
+  const v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('es'));
+  if (v) u.voice = v;
+  synth.speak(u);
+}
+window.addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
+
+function startGame() {
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadChallenge();
+}
+
+function loadChallenge() {
+  answered = false;
+  const ch = challenges[i];
+  document.getElementById('counter').textContent = `Reto ${i + 1} de ${challenges.length}`;
+  document.getElementById('bar').style.width = `${((i + 1) / challenges.length) * 100}%`;
+  document.getElementById('challengeTitle').textContent = `⚠️ ${ch.title}`;
+  document.getElementById('challengeDesc').textContent = ch.desc;
+  
+  const hintBox = document.getElementById('hintBox');
+  hintBox.className = 'hint-box';
+  hintBox.textContent = `💡 Pista semántica: ${ch.hint}`;
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.className = 'explanation-card';
+  expBox.textContent = '';
+
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent = `Falacias esquivadas a la primera: ${ok} · Errores: ${bad}`;
+
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  
+  const letters = ['A', 'B', 'C', 'D'];
+  ch.options.forEach((txt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-bullet">${letters[idx]}</span> <span>${txt}</span>`;
+    btn.onclick = () => answer(idx, btn);
+    optionsBox.appendChild(btn);
+  });
+
+  setTimeout(() => say(`${ch.title}. Elige la opción lógicamente correcta.`, 0.88), 350);
+}
+
+function toggleHint() {
+  if (answered) return;
+  document.getElementById('hintBox').classList.toggle('show');
+}
+
+function answer(selectedIdx, btn) {
+  if (answered) return;
+  answered = true;
+  const ch = challenges[i];
+
+  document.querySelectorAll('.option').forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === ch.answer) b.classList.add('correct');
+  });
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.classList.add('show');
+
+  if (selectedIdx === ch.answer) {
+    ok++;
+    btn.classList.add('correct');
+    expBox.classList.add('ok');
+    expBox.textContent = `✅ ${ch.explain}`;
+    say(`¡Correcto! ${ch.explain}`, 0.88);
+  } else {
+    bad++;
+    btn.classList.add('wrong');
+    expBox.classList.add('fail');
+    expBox.textContent = `❌ Caíste en la trampa. ${ch.explain}`;
+    say(`Esa opción contiene una falacia. ${ch.explain}`, 0.85);
+  }
+
+  document.getElementById('score').textContent = `Falacias esquivadas a la primera: ${ok} · Errores: ${bad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextChallenge() {
+  i++;
+  if (i < challenges.length) {
+    loadChallenge();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  if (synth) synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  document.getElementById('finalText').textContent = `Has detectado con éxito ${ok} de los ${challenges.length} retos semánticos al primer intento.`;
+  say(`Entrenamiento finalizado. Has superado ${ok} desafíos a la primera.`, 0.88);
+}
+
+function restart() {
+  if (synth) synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadChallenge();
+}
+
+function speakChallenge() {
+  const ch = challenges[i];
+  const list = ch.options.map((o, idx) => `Opción ${idx + 1}: ${o}`).join('. ');
+  say(`${ch.desc}. ${list}`, 0.84);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

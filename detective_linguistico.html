@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Detective Lingüístico · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#1d4ed8; --azul-claro:#3b82f6; --verde:#059669; --rojo:#dc2626;
+  --dorado:#d97706; --morado:#7c3aed; --fondo:#f8fafc; --blanco:#ffffff;
+  --texto:#0f172a; --borde:#cbd5e1; --tarjeta-fondo:#f1f5f9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:16px;
+}
+.app{
+  width:100%;max-width:1050px;margin:auto;background:var(--blanco);
+  border-radius:24px;box-shadow:0 12px 40px rgba(15,23,42,.08);
+  padding:26px;min-height:92vh;position:relative;
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;margin-bottom:18px;
+}
+.home{
+  display:inline-block;text-decoration:none;background:#e2e8f0;
+  color:#1e293b;font-weight:700;padding:10px 16px;border-radius:12px;
+  transition:all .15s ease;
+}
+.home:hover{background:#cbd5e1}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:4px;color:#1e3a8a}
+.subtitle{color:#64748b;font-size:1.05rem;font-weight:700}
+.hidden{display:none!important}
+
+.progress{
+  height:12px;background:#e2e8f0;border-radius:8px;
+  overflow:hidden;margin:12px 0 20px;
+}
+.progress > div{
+  height:100%;width:0;background:var(--azul-claro);
+  transition:width .35s ease;
+}
+
+.start{text-align:center;padding:25px 10px 40px}
+.badge-altas{
+  display:inline-block;background:#fef3c7;color:#92400e;
+  border:2px solid #fde68a;font-weight:800;font-size:.95rem;
+  padding:6px 14px;border-radius:999px;margin-bottom:12px;
+}
+.emoji-big{font-size:4.8rem;margin:10px 0}
+.instructions{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin:25px 0;text-align:center;
+}
+.card{
+  background:var(--tarjeta-fondo);border:2px solid #e2e8f0;border-radius:18px;
+  padding:18px;
+}
+.card strong{display:block;margin-bottom:6px;font-size:1.15rem;color:#1e3a8a}
+
+.btn{
+  border:0;border-radius:14px;padding:14px 24px;font-size:1.1rem;
+  font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--azul-claro);color:#fff}
+.green{background:var(--verde);color:#fff}
+.yellow{background:#f59e0b;color:#1f2937}
+.purple{background:var(--morado);color:#fff}
+
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;
+}
+.badge-case{
+  background:#eff6ff;color:#1d4ed8;padding:8px 16px;
+  border-radius:999px;font-weight:900;font-size:1.05rem;
+}
+
+/* Panel del enigma */
+.case-panel{
+  border:3px solid #cbd5e1;border-radius:22px;padding:26px 28px;
+  background:#f8fafc;margin-bottom:18px;
+}
+.case-title{
+  font-size:1.45rem;font-weight:900;color:#0f172a;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.case-text{
+  font-size:1.35rem;line-height:1.65;color:#334155;margin-bottom:18px;
+}
+.clues-box{
+  background:#ffffff;border:2px solid #e2e8f0;border-radius:16px;
+  padding:16px 20px;margin-bottom:8px;
+}
+.clues-title{
+  font-size:1.1rem;font-weight:900;color:#1e40af;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.clue-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.clue-item{
+  font-size:1.2rem;line-height:1.5;font-weight:700;color:#1e293b;
+  display:flex;align-items:flex-start;gap:8px;
+}
+
+.hint-box{
+  background:#fefce8;border:2px solid #fef08a;border-radius:14px;
+  padding:14px;font-size:1.15rem;color:#854d0e;margin:14px 0;
+  display:none;font-weight:700;
+}
+.hint-box.show{display:block}
+
+.question{
+  font-size:1.45rem;font-weight:900;text-align:center;
+  margin:20px 0 16px;color:#0f172a;
+}
+.options{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+}
+.option{
+  background:#fff;border:3px solid #cbd5e1;border-radius:16px;
+  padding:18px;font-size:1.22rem;font-weight:800;cursor:pointer;
+  text-align:center;min-height:76px;display:flex;align-items:center;
+  justify-content:center;transition:all .15s ease;color:#1e293b;
+}
+.option:hover{border-color:var(--azul-claro);background:#f0f7ff}
+.option.correct{border-color:var(--verde);background:#ecfdf5;color:#065f46}
+.option.wrong{border-color:var(--rojo);background:#fef2f2;color:#991b1b}
+
+.explanation-card{
+  border-radius:16px;padding:18px;margin:16px auto 0;
+  font-size:1.2rem;font-weight:750;line-height:1.5;display:none;
+}
+.explanation-card.show{display:block}
+.explanation-card.ok{background:#ecfdf5;border:2px solid #a7f3d0;color:#065f46}
+.explanation-card.fail{background:#fef2f2;border:2px solid #fecaca;color:#991b1b}
+
+.next-wrap{text-align:center;margin-top:16px}
+.score{text-align:center;margin-top:20px;font-size:1.25rem;font-weight:800;color:#64748b}
+
+.final{text-align:center;padding:45px 15px}
+.final .trophy{font-size:5.5rem}
+.final h2{font-size:2.3rem;margin:10px 0;color:#1e3a8a}
+.final p{font-size:1.3rem;color:#64748b;margin-bottom:26px}
+
+@media(max-width:768px){
+  body{padding:8px}
+  .app{padding:16px;min-height:96vh}
+  .top{align-items:flex-start}
+  .title{text-align:left}
+  h1{font-size:1.6rem}
+  .instructions{grid-template-columns:1fr}
+  .options{grid-template-columns:1fr}
+  .case-text{font-size:1.15rem}
+  .clue-item{font-size:1.05rem}
+  .game-head{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="if(synth)synth.cancel()">← Inicio</a>
+    <div class="title">
+      <h1>🔎 El Detective Lingüístico</h1>
+      <div class="subtitle">Deducción lógica · Pistas cruzadas · Pensamiento crítico</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PANTALLA DE INICIO -->
+  <section id="start" class="start">
+    <div class="badge-altas">💡 Reto de Alta Capacidad y Razonamiento</div>
+    <div class="emoji-big">🕵️‍♀️🧠📜</div>
+    <h2 style="font-size:2rem;margin-bottom:10px;color:#1e3a8a">Descubre lo que el texto no dice directamente</h2>
+    <p style="font-size:1.2rem;color:#64748b;max-width:780px;margin:auto;line-height:1.6">
+      Los datos explícitos no son suficientes. Tendrás que relacionar pistas temporales, 
+      espaciales y dobles negaciones para resolver cada caso mediante deducción pura.
+    </p>
+
+    <div class="instructions">
+      <div class="card">📑<strong>1. Analiza el caso</strong>Lee con cautela la situación general.</div>
+      <div class="card">🧩<strong>2. Cruza las pistas</strong>Descarta hipótesis imposibles.</div>
+      <div class="card">🎯<strong>3. Deduce</strong>Elige la conclusión exacta demostrable.</div>
+    </div>
+
+    <button class="btn primary" onclick="startGame()">Comenzar la investigación ▶️</button>
+  </section>
+
+  <!-- PANTALLA DEL JUEGO -->
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badge-case" id="counter">Caso 1 de 6</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn yellow" onclick="speakCase()">🔊 Escuchar pistas</button>
+        <button class="btn purple" onclick="toggleHint()">💡 Pista de razonamiento</button>
+      </div>
+    </div>
+
+    <div class="case-panel">
+      <div class="case-title" id="caseTitle">Caso</div>
+      <p class="case-text" id="caseContext"></p>
+
+      <div class="clues-box">
+        <div class="clues-title">🔍 Pistas registradas:</div>
+        <ul class="clue-list" id="cluesList"></ul>
+      </div>
+
+      <div class="hint-box" id="hintBox"></div>
+    </div>
+
+    <div class="question" id="questionText">¿Cuál es la deducción correcta?</div>
+    <div class="options" id="optionsBox"></div>
+    <div class="explanation-card" id="explanationBox"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextCase()">Siguiente caso ➡️</button>
+    </div>
+
+    <div class="score" id="score">Casos resueltos a la primera: 0 · Errores: 0</div>
+  </section>
+
+  <!-- PANTALLA FINAL -->
+  <section id="final" class="final hidden">
+    <div class="trophy">🏅</div>
+    <h2>¡Expedientes resueltos con éxito!</h2>
+    <p id="finalText"></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn primary" href="index.html" onclick="if(synth)synth.cancel()">Volver al menú principal</a>
+      <button class="btn green" onclick="restart()">Repetir casos 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const cases = [
+  {
+    title: "Caso 1: Las taquillas misteriosas",
+    context: "Cuatro alumnos (Álvaro, Blanca, Carla y Daniel) guardan sus cosas en cuatro taquillas contiguas numeradas del 1 al 4 de izquierda a derecha.",
+    clues: [
+      "Carla no ocupa ninguna de las taquillas de los extremos (ni la 1 ni la 4).",
+      "La taquilla de Álvaro tiene un número superior a la de Blanca.",
+      "Daniel está en la taquilla 1.",
+      "Blanca no está pegada a Daniel."
+    ],
+    hint: "Si Daniel está en la 1, quedan la 2, 3 y 4. Carla solo puede estar en la 2 o en la 3. Si Blanca no está pegada a Daniel, no puede estar en la 2...",
+    question: "¿En qué taquilla guarda sus pertenencias Álvaro?",
+    options: ["En la taquilla 2", "En la taquilla 3", "En la taquilla 4", "Es imposible saberlo"],
+    answer: 2,
+    explain: "¡Exacto! Daniel está en la 1. Como Blanca no está pegada a Daniel, no está en la 2. Como Álvaro tiene un número mayor que Blanca, Blanca debe estar en la 3 y Álvaro obligatoriamente en la 4. Carla queda en la 2."
+  },
+  {
+    title: "Caso 2: Los tres proyectos de ciencias",
+    context: "Tres parejas presentan proyectos sobre Robótica, Energías y Ecosistemas en tres mesas alineadas. Cada proyecto tiene una maqueta de un color distinto (Roja, Azul o Verde).",
+    clues: [
+      "El proyecto sobre Ecosistemas está inmediatamente a la derecha de la maqueta Roja.",
+      "La maqueta Verde no es la de Ecosistemas ni está en el extremo derecho.",
+      "El proyecto de Robótica tiene la maqueta Verde."
+    ],
+    hint: "La maqueta verde solo puede estar en la primera o segunda posición. Si la maqueta roja tiene a su derecha los ecosistemas, deduce la posición de la maqueta verde...",
+    question: "¿De qué color es la maqueta del proyecto sobre Energías?",
+    options: ["Verde", "Roja", "Azul", "No hay datos suficientes"],
+    answer: 1,
+    explain: "¡Brillante deducción! Robótica es Verde y no está a la derecha, por lo que está en la mesa 1. La mesa 2 tiene la maqueta Roja y la mesa 3 es Ecosistemas (Azul). Por tanto, la maqueta Roja corresponde a Energías."
+  },
+  {
+    title: "Caso 3: El enigma del horario escalonado",
+    context: "Cuatro profesores (Mateo, Nuria, Olga y Pablo) llegan al colegio a horas distintas entre las 8:15 y las 8:45, con intervalos exactos de 10 minutos (8:15, 8:25, 8:35 y 8:45).",
+    clues: [
+      "Pablo llegó exactamente 20 minutos antes que la profesora Nuria.",
+      "Mateo no fue el primero en entrar al colegio.",
+      "Olga llegó después de Mateo."
+    ],
+    hint: "Si Pablo llegó 20 minutos antes que Nuria, sus horas solo pueden ser (8:15 y 8:35) o (8:25 y 8:45). Comprueba quién pudo llegar a las 8:15...",
+    question: "¿A qué hora exacta llegó Mateo?",
+    options: ["A las 8:15", "A las 8:25", "A las 8:35", "A las 8:45"],
+    answer: 1,
+    explain: "¡Impecable! Si Mateo no fue el primero (8:15) y Olga llegó después que él, el primero fue Pablo (8:15). Nuria llegó 20 minutos después (8:35). Como Mateo llegó antes que Olga, Mateo llegó a las 8:25 y Olga a las 8:45."
+  },
+  {
+    title: "Caso 4: Los libros de la biblioteca",
+    context: "En la mesa de préstamos hay cuatro libros apilados: Historia, Naturaleza, Arte y Matemáticas.",
+    clues: [
+      "El libro de Arte está debajo del libro de Matemáticas, pero no inmediatamente debajo.",
+      "El libro de Historia está en la base (el más bajo de la pila).",
+      "Naturaleza no está en la parte superior."
+    ],
+    hint: "El libro de Historia es el 1 (abajo). Para que Arte esté debajo de Matemáticas sin tocarse, Matemáticas tiene que estar en la posición más alta...",
+    question: "¿Qué libro está en la segunda posición (justo encima de Historia)?",
+    options: ["Matemáticas", "Arte", "Naturaleza", "Cualquiera de los dos"],
+    answer: 1,
+    explain: "¡Excelente lógica! Posición 1 (abajo): Historia. Para que Matemáticas y Arte no estén pegados y Matemáticas esté arriba, Matemáticas debe ser el 4 (arriba del todo) y Arte el 2. Así Naturaleza queda en el 3."
+  },
+  {
+    title: "Caso 5: La carrera de relevos",
+    context: "En la final escolar de relevos compitieron cuatro equipos identificados por los colores de sus camisetas: Azul, Verde, Amarillo y Rojo.",
+    clues: [
+      "El equipo Verde no ganó, pero llegó antes que el equipo Azul.",
+      "El equipo Rojo cruzó la meta inmediatamente después del equipo Amarillo.",
+      "El equipo Azul no quedó en último lugar."
+    ],
+    hint: "Si el equipo Azul no fue último, y Verde llegó antes que él, Azul solo puede ser el 3º...",
+    question: "¿Qué equipo se proclamó ganador de la carrera?",
+    options: ["El equipo Verde", "El equipo Amarillo", "El equipo Rojo", "El equipo Azul"],
+    answer: 0,
+    explain: "¡Razonamiento perfecto! Como el Verde llegó antes que Azul, y Azul no es el último, Azul fue 3º y Verde 2º o 1º. Pero como Amarillo y Rojo llegaron consecutivos, solo caben en los puestos 3º y 4º o 1º y 2º. La única combinación que encaja es: 1º Verde, 2º Amarillo (o Amarillo 1º y Rojo 2º). Pero la pista dice: 'Verde no ganó', por lo que 1º Amarillo, 2º Rojo, 3º Verde... no, Verde llegó antes que Azul: 1º Amarillo, 2º Rojo, 3º Verde, 4º Azul."
+  },
+  {
+    title: "Caso 6: Las cuatro lecturas preferidas",
+    context: "Cuatro amigos leen cada uno un género distinto: Cómic, Novela histórica, Misterio y Poesía.",
+    clues: [
+      "A quien lee Poesía no le gustan las historias con texto largo.",
+      "Lucía y el lector de Novela histórica son primos.",
+      "Marcos lee Cómic.",
+      "Ni Lucía ni David leen Misterio.",
+      "La cuarta amiga se llama Sara."
+    ],
+    hint: "Descarta quién no puede leer cada género usando las negaciones.",
+    question: "¿Quién lee la Novela histórica?",
+    options: ["David", "Sara", "Lucía", "Marcos"],
+    answer: 0,
+    explain: "¡Deducción magistral! Marcos lee Cómic. Ni Lucía ni David leen Misterio, así que Misterio lo lee Sara. Lucía no lee Novela histórica (son primos), por lo que Lucía lee Poesía. La Novela histórica solo puede pertenecer a David."
+  }
+];
+
+let i = 0, ok = 0, bad = 0, answered = false;
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+
+function say(text, rate = 0.85) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = rate;
+  const voices = synth.getVoices();
+  const v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('es'));
+  if (v) u.voice = v;
+  synth.speak(u);
+}
+window.addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
+
+function startGame() {
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadCase();
+}
+
+function loadCase() {
+  answered = false;
+  const c = cases[i];
+  document.getElementById('counter').textContent = `Caso ${i + 1} de ${cases.length}`;
+  document.getElementById('bar').style.width = `${((i + 1) / cases.length) * 100}%`;
+  document.getElementById('caseTitle').textContent = `📂 ${c.title}`;
+  document.getElementById('caseContext').textContent = c.context;
+  
+  const cluesEl = document.getElementById('cluesList');
+  cluesEl.innerHTML = '';
+  c.clues.forEach(clue => {
+    const li = document.createElement('li');
+    li.className = 'clue-item';
+    li.innerHTML = `<span>🔹</span> <span>${clue}</span>`;
+    cluesEl.appendChild(li);
+  });
+
+  const hintBox = document.getElementById('hintBox');
+  hintBox.className = 'hint-box';
+  hintBox.textContent = `💡 Pista deductiva: ${c.hint}`;
+
+  document.getElementById('questionText').textContent = c.question;
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.className = 'explanation-card';
+  expBox.textContent = '';
+
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent = `Casos resueltos a la primera: ${ok} · Errores: ${bad}`;
+
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  c.options.forEach((txt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = txt;
+    btn.onclick = () => answer(idx, btn);
+    optionsBox.appendChild(btn);
+  });
+
+  setTimeout(() => say(`${c.title}. ${c.question}`, 0.88), 350);
+}
+
+function toggleHint() {
+  if (answered) return;
+  document.getElementById('hintBox').classList.toggle('show');
+}
+
+function answer(selectedIdx, btn) {
+  if (answered) return;
+  answered = true;
+  const c = cases[i];
+
+  document.querySelectorAll('.option').forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === c.answer) b.classList.add('correct');
+  });
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.classList.add('show');
+
+  if (selectedIdx === c.answer) {
+    ok++;
+    btn.classList.add('correct');
+    expBox.classList.add('ok');
+    expBox.textContent = `✅ ${c.explain}`;
+    say(`¡Correcto! ${c.explain}`, 0.88);
+  } else {
+    bad++;
+    btn.classList.add('wrong');
+    expBox.classList.add('fail');
+    expBox.textContent = `❌ Conclusión errónea. ${c.explain}`;
+    say(`Respuesta no deductiva. ${c.explain}`, 0.85);
+  }
+
+  document.getElementById('score').textContent = `Casos resueltos a la primera: ${ok} · Errores: ${bad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextCase() {
+  i++;
+  if (i < cases.length) {
+    loadCase();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  if (synth) synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  document.getElementById('finalText').textContent = `Has resuelto ${ok} de los ${cases.length} enigmas lógicos a la primera.`;
+  say(`Investigación terminada. Has resuelto ${ok} casos a la primera.`, 0.88);
+}
+
+function restart() {
+  if (synth) synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadCase();
+}
+
+function speakCase() {
+  const c = cases[i];
+  say(`${c.context}. Pistas: ${c.clues.join('. ')}. Pregunta: ${c.question}`, 0.84);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

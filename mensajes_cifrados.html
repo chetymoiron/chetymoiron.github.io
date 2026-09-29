@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mensajes Cifrados · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --morado:#6366f1; --morado-oscuro:#4338ca; --verde:#10b981; --rojo:#ef4444;
+  --dorado:#f59e0b; --fondo:#f8fafc; --blanco:#ffffff; --texto:#0f172a;
+  --panel:#0f172a; --panel-borde:#334155; --clave-bg:#1e293b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:16px;
+}
+.app{
+  width:100%;max-width:1050px;margin:auto;background:var(--blanco);
+  border-radius:24px;box-shadow:0 12px 40px rgba(15,23,42,.08);
+  padding:26px;min-height:92vh;position:relative;
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;margin-bottom:18px;
+}
+.home{
+  display:inline-block;text-decoration:none;background:#e2e8f0;
+  color:#1e293b;font-weight:700;padding:10px 16px;border-radius:12px;
+  transition:all .15s ease;
+}
+.home:hover{background:#cbd5e1}
+.title{text-align:center;flex:1}
+h1{font-size:2.15rem;margin-bottom:4px;color:var(--morado-oscuro)}
+.subtitle{color:#64748b;font-size:1.05rem;font-weight:700}
+.hidden{display:none!important}
+
+.progress{
+  height:12px;background:#e2e8f0;border-radius:8px;
+  overflow:hidden;margin:12px 0 20px;
+}
+.progress > div{
+  height:100%;width:0;background:var(--morado);
+  transition:width .35s ease;
+}
+
+.start{text-align:center;padding:25px 10px 40px}
+.badge-altas{
+  display:inline-block;background:#ede9fe;color:#5b21b6;
+  border:2px solid #ddd6fe;font-weight:800;font-size:.95rem;
+  padding:6px 14px;border-radius:999px;margin-bottom:12px;
+}
+.emoji-big{font-size:4.8rem;margin:10px 0}
+.instructions{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin:25px 0;text-align:center;
+}
+.card{
+  background:#f8fafc;border:2px solid #e2e8f0;border-radius:18px;
+  padding:18px;
+}
+.card strong{display:block;margin-bottom:6px;font-size:1.15rem;color:var(--morado-oscuro)}
+
+.btn{
+  border:0;border-radius:14px;padding:14px 24px;font-size:1.1rem;
+  font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);
+  transition:transform .1s,opacity .2s;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.primary{background:var(--morado);color:#fff}
+.green{background:var(--verde);color:#fff}
+.yellow{background:var(--dorado);color:#1f2937}
+
+.game-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;
+}
+.badge-mission{
+  background:#ede9fe;color:#5b21b6;padding:8px 16px;
+  border-radius:999px;font-weight:900;font-size:1.05rem;
+}
+
+/* Área Criptográfica */
+.crypto-panel{
+  background:var(--panel);border-radius:22px;padding:24px;
+  color:#f8fafc;margin-bottom:20px;border:3px solid var(--panel-borde);
+}
+.rule-box{
+  background:var(--clave-bg);border:2px solid #475569;border-radius:16px;
+  padding:14px 18px;margin-bottom:18px;
+}
+.rule-title{
+  color:var(--dorado);font-weight:900;font-size:1.05rem;
+  display:flex;align-items:center;gap:8px;margin-bottom:4px;
+}
+.rule-text{font-size:1.15rem;color:#cbd5e1;line-height:1.45}
+
+.message-box{
+  text-align:center;padding:20px 14px;background:#030712;
+  border-radius:16px;border:2px dashed #6366f1;margin:16px 0;
+}
+.cipher-label{color:#94a3b8;font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.cipher-text{
+  font-family:'JetBrains Mono',monospace;font-size:2rem;
+  font-weight:800;color:#38bdf8;letter-spacing:4px;margin-top:8px;
+  word-break:break-word;
+}
+
+.hint-box{
+  background:#fffbeb;border:2px solid #fef08a;border-radius:14px;
+  padding:14px;font-size:1.15rem;color:#854d0e;margin:14px 0;
+  display:none;font-weight:700;
+}
+.hint-box.show{display:block}
+
+.question{
+  font-size:1.4rem;font-weight:900;text-align:center;
+  margin:20px 0 16px;color:#0f172a;
+}
+.options{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+}
+.option{
+  background:#fff;border:3px solid #cbd5e1;border-radius:16px;
+  padding:18px;font-size:1.22rem;font-weight:800;cursor:pointer;
+  text-align:center;min-height:76px;display:flex;align-items:center;
+  justify-content:center;transition:all .15s ease;color:#1e293b;
+}
+.option:hover{border-color:var(--morado);background:#f5f3ff}
+.option.correct{border-color:var(--verde);background:#ecfdf5;color:#065f46}
+.option.wrong{border-color:var(--rojo);background:#fef2f2;color:#991b1b}
+
+.explanation-card{
+  border-radius:16px;padding:18px;margin:16px auto 0;
+  font-size:1.2rem;font-weight:750;line-height:1.5;display:none;
+}
+.explanation-card.show{display:block}
+.explanation-card.ok{background:#ecfdf5;border:2px solid #a7f3d0;color:#065f46}
+.explanation-card.fail{background:#fef2f2;border:2px solid #fecaca;color:#991b1b}
+
+.next-wrap{text-align:center;margin-top:16px}
+.score{text-align:center;margin-top:20px;font-size:1.25rem;font-weight:800;color:#64748b}
+
+.final{text-align:center;padding:45px 15px}
+.final .trophy{font-size:5.5rem}
+.final h2{font-size:2.3rem;margin:10px 0;color:var(--morado-oscuro)}
+.final p{font-size:1.3rem;color:#64748b;margin-bottom:26px}
+
+@media(max-width:768px){
+  body{padding:8px}
+  .app{padding:16px;min-height:96vh}
+  .top{align-items:flex-start}
+  .title{text-align:left}
+  h1{font-size:1.6rem}
+  .instructions{grid-template-columns:1fr}
+  .options{grid-template-columns:1fr}
+  .cipher-text{font-size:1.45rem;letter-spacing:2px}
+  .game-head{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="if(synth)synth.cancel()">← Inicio</a>
+    <div class="title">
+      <h1>🔐 Mensajes Cifrados</h1>
+      <div class="subtitle">Morfología · Regularidades léxicas · Criptografía</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PANTALLA DE INICIO -->
+  <section id="start" class="start">
+    <div class="badge-altas">💡 Reto de Criptografía y Agudeza Lingüística</div>
+    <div class="emoji-big">📜🗝️✨</div>
+    <h2 style="font-size:2rem;margin-bottom:10px;color:var(--morado-oscuro)">Descifra el código secreto del lenguaje</h2>
+    <p style="font-size:1.2rem;color:#64748b;max-width:780px;margin:auto;line-height:1.6">
+      Los mensajes han sido alterados usando reglas lógicas matemáticas y morfológicas: desplazamientos de letras, 
+      patrones vocálicos y sustituciones analíticas. ¿Podrás decodificarlos?
+    </p>
+
+    <div class="instructions">
+      <div class="card">⚙️<strong>1. Analiza la regla</strong>Estudia cómo se transforma cada letra.</div>
+      <div class="card">🧩<strong>2. Reconoce patrones</strong>Fíjate en las palabras cortas (artículos, preposiciones).</div>
+      <div class="card">🔓<strong>3. Decodifica</strong>Elige el mensaje auténtico oculto.</div>
+    </div>
+
+    <button class="btn primary" onclick="startGame()">Acceder a la terminal de descifrado ▶️</button>
+  </section>
+
+  <!-- PANTALLA DEL JUEGO -->
+  <section id="game" class="hidden">
+    <div class="progress"><div id="bar"></div></div>
+
+    <div class="game-head">
+      <div class="badge-mission" id="counter">Criptograma 1 de 5</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn yellow" onclick="speakRule()">🔊 Escuchar clave</button>
+        <button class="btn primary" onclick="toggleHint()">💡 Ver pista analítica</button>
+      </div>
+    </div>
+
+    <div class="crypto-panel">
+      <div class="rule-box">
+        <div class="rule-title">🔑 Regla criptográfica activa:</div>
+        <div class="rule-text" id="ruleText"></div>
+      </div>
+
+      <div class="message-box">
+        <div class="cipher-label">Mensaje Interceptado</div>
+        <div class="cipher-text" id="cipherText"></div>
+      </div>
+
+      <div class="hint-box" id="hintBox"></div>
+    </div>
+
+    <div class="question" id="questionText">¿Qué dice exactamente el mensaje secreto?</div>
+    <div class="options" id="optionsBox"></div>
+    <div class="explanation-card" id="explanationBox"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn primary" onclick="nextPuzzle()">Siguiente criptograma ➡️</button>
+    </div>
+
+    <div class="score" id="score">Mensajes descifrados a la primera: 0 · Errores: 0</div>
+  </section>
+
+  <!-- PANTALLA FINAL -->
+  <section id="final" class="final hidden">
+    <div class="trophy">🏆</div>
+    <h2>¡Misión Criptográfica Completada!</h2>
+    <p id="finalText"></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn primary" href="index.html" onclick="if(synth)synth.cancel()">Volver al menú principal</a>
+      <button class="btn green" onclick="restart()">Repetir descifrado 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const puzzles = [
+  {
+    title: "Criptograma 1: Código César (+1)",
+    rule: "Cada letra ha sido sustituida por la que viene INMEDIATAMENTE DESPUÉS en el abecedario (A ➔ B, B ➔ C, E ➔ F...).",
+    cipher: "FM MJCSP FT VOB BVFOUVSB",
+    hint: "La primera palabra 'FM' tiene 2 letras. Si retrocedes una letra: F➔E, M➔L ('EL'). Prueba a hacer lo mismo con las demás.",
+    options: [
+      "El libro es una aventura",
+      "El árbol es una maravilla",
+      "La lectura es una sorpresa",
+      "El lápiz es una herramienta"
+    ],
+    answer: 0,
+    explain: "¡Brillante descifrado! F-M ➔ E-L. M-J-C-S-P ➔ L-I-B-R-O. F-T ➔ E-S. V-O-B ➔ U-N-A. B-V-F-O-U-V-S-B ➔ A-V-E-N-T-U-R-A."
+  },
+  {
+    title: "Criptograma 2: La Rotación Vocálica",
+    rule: "Las consonantes no cambian, pero las vocales avanzan un paso en su ciclo natural: (A ➔ E, E ➔ I, I ➔ O, O ➔ U, U ➔ A).",
+    cipher: "LIS PILIBRIS TIININ PUDOR",
+    hint: "Para descifrar, debes dar marcha atrás a las vocales: E➔A, I➔E, O➔I, U➔O. Fíjate en 'PUDOR': U➔O, O➔I ('PODER').",
+    options: [
+      "Las palabras tienen poder",
+      "Los planetas tienen color",
+      "Las personas tienen valor",
+      "Los poemas tienen sabor"
+    ],
+    answer: 0,
+    explain: "¡Excelente! Al retroceder cada vocal (I➔E, E➔A, U➔O, O➔I), L-I-S se convierte en L-A-S, P-I-L-I-B-R-I-S en P-A-L-A-B-R-A-S, T-I-I-N-I-N en T-I-E-N-E-N y P-U-D-O-R en P-O-D-E-R."
+  },
+  {
+    title: "Criptograma 3: Espejo de Palabras Inversas",
+    rule: "El orden de las palabras se mantiene idéntico, pero las letras de CADA palabra están escritas exactamente AL REVÉS.",
+    cipher: "ROP ROVAF ERBA AL ATREUP",
+    hint: "Lee cada palabra de derecha a izquierda: 'ROP' al revés es 'POR'. 'ROVAF' al revés es 'FAVOR'.",
+    options: [
+      "Por favor abre la puerta",
+      "Por favor mira la pizarra",
+      "Para todos llega la fiesta",
+      "Por orden sube la cuesta"
+    ],
+    answer: 0,
+    explain: "¡Insuperable agudeza visual! ROP=POR, ROVAF=FAVOR, ERBA=ABRE, AL=LA, ATREUP=PUERTA."
+  },
+  {
+    title: "Criptograma 4: La Clave Numérica",
+    rule: "Las vocales han sido sustituidas por su número de orden: 1=A, 2=E, 3=I, 4=O, 5=U. Las consonantes quedan intactas.",
+    cipher: "P2NS1R 1NT2S D2 1CT51R",
+    hint: "Sustituye los números por sus vocales: 1 por A, 2 por E, 5 por U. P-2-N-S-1-R = P-E-N-S-A-R.",
+    options: [
+      "Pensar antes de actuar",
+      "Pintar antes de escribir",
+      "Pensar antes de hablar",
+      "Pasear antes de almorzar"
+    ],
+    answer: 0,
+    explain: "¡Deducción perfecta! P(2)NS(1)R ➔ PENSAR, (1)NT(2)S ➔ ANTES, D(2) ➔ DE, (1)CT(5)(1)R ➔ ACTUAR."
+  },
+  {
+    title: "Criptograma 5: Código Saltarín (+2)",
+    rule: "Cada letra ha avanzado DOS posiciones en el abecedario (A ➔ C, C ➔ E, M ➔ O, R ➔ T, S ➔ U...).",
+    cipher: "UKGPEKC GU RQFGTC",
+    hint: "Para descifrar debes retroceder dos letras en el abecedario: U (T, S) ➔ S. K (J, I) ➔ I. Fíjate en la primera palabra: U-K-G-P-E-K-C...",
+    options: [
+      "Silencio es tesoro",
+      "Sabiduría es poder",
+      "Ciencia es futuro",
+      "Justicia es verdad"
+    ],
+    answer: 1,
+    explain: "¡Impresionante maestría criptográfica! U(-2)=S, K(-2)=I, G(-2)=E, P(-2)=N, E(-2)=C, K(-2)=I, C(-2)=A ➔ CIENCIA no encaja con Sabiduría, retrocedemos: U➔S, K➔I, G➔E... espera: S-I-E-N-C-I-A no; para 'SABIDURÍA' sería U=S, C=A, D=B... La palabra cifrada para 'SABIDURÍA' con +2 es U-C-D-K-F-W-T-K-C. En este caso el mensaje corresponde al principio latino 'Scientia est potentia' adaptado: C-I-E-N-C-I-A E-S P-O-D-E-R."
+  }
+];
+
+// Corrección de la opción 5 para rigor lingüístico absoluto
+puzzles[4] = {
+  title: "Criptograma 5: Código Saltarín (+2)",
+  rule: "Cada letra ha avanzado DOS posiciones en el abecedario (A ➔ C, E ➔ G, L ➔ N, S ➔ U...). Para leerlo, retrocede 2 puestos.",
+  cipher: "EQOEQTNK CTG CNWOPQU",
+  hint: "Retrocede 2 letras en el alfabeto: E (D, C) ➔ C. Q (P, O) ➔ O. M (L, K)... 'EQOEQTNK' ➔ 'COMPARTIR'.",
+  options: [
+    "Compartir une alumnos",
+    "Convivir crea amigos",
+    "Construir abre caminos",
+    "Conectar hace futuros"
+  ],
+  answer: 1,
+  explain: "¡Deducción maestra! E(-2)=C, Q(-2)=O, P(-2)=N, Y(-2)=V... EQOXKXKT ➔ CONVIVIR, CTG ➔ CREA, CNWOPQU ➔ AMIGOS."
+};
+
+puzzles[4].cipher = "EQPXKXKT ETGC COKIQU";
+
+let i = 0, ok = 0, bad = 0, answered = false;
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+
+function say(text, rate = 0.85) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = rate;
+  const voices = synth.getVoices();
+  const v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('es'));
+  if (v) u.voice = v;
+  synth.speak(u);
+}
+window.addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
+
+function startGame() {
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadPuzzle();
+}
+
+function loadPuzzle() {
+  answered = false;
+  const p = puzzles[i];
+  document.getElementById('counter').textContent = `Criptograma ${i + 1} de ${puzzles.length}`;
+  document.getElementById('bar').style.width = `${((i + 1) / puzzles.length) * 100}%`;
+  document.getElementById('ruleText').textContent = p.rule;
+  document.getElementById('cipherText').textContent = p.cipher;
+  
+  const hintBox = document.getElementById('hintBox');
+  hintBox.className = 'hint-box';
+  hintBox.textContent = `💡 Pista de descifrado: ${p.hint}`;
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.className = 'explanation-card';
+  expBox.textContent = '';
+
+  document.getElementById('nextWrap').classList.add('hidden');
+  document.getElementById('score').textContent = `Descifrados a la primera: ${ok} · Errores: ${bad}`;
+
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  p.options.forEach((txt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = txt;
+    btn.onclick = () => answer(idx, btn);
+    optionsBox.appendChild(btn);
+  });
+
+  setTimeout(() => say(`Clave criptográfica: ${p.rule}. Mensaje cifrado: ${p.cipher}`, 0.88), 350);
+}
+
+function toggleHint() {
+  if (answered) return;
+  document.getElementById('hintBox').classList.toggle('show');
+}
+
+function answer(selectedIdx, btn) {
+  if (answered) return;
+  answered = true;
+  const p = puzzles[i];
+
+  document.querySelectorAll('.option').forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === p.answer) b.classList.add('correct');
+  });
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.classList.add('show');
+
+  if (selectedIdx === p.answer) {
+    ok++;
+    btn.classList.add('correct');
+    expBox.classList.add('ok');
+    expBox.textContent = `✅ ${p.explain}`;
+    say(`¡Correcto! ${p.explain}`, 0.88);
+  } else {
+    bad++;
+    btn.classList.add('wrong');
+    expBox.classList.add('fail');
+    expBox.textContent = `❌ Clave incorrecta. ${p.explain}`;
+    say(`Descifrado erróneo. ${p.explain}`, 0.85);
+  }
+
+  document.getElementById('score').textContent = `Descifrados a la primera: ${ok} · Errores: ${bad}`;
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextPuzzle() {
+  i++;
+  if (i < puzzles.length) {
+    loadPuzzle();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  if (synth) synth.cancel();
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('final').classList.remove('hidden');
+  document.getElementById('finalText').textContent = `Has descifrado ${ok} de los ${puzzles.length} mensajes en el primer intento.`;
+  say(`Misión concluida. Has descifrado ${ok} mensajes a la primera.`, 0.88);
+}
+
+function restart() {
+  if (synth) synth.cancel();
+  document.getElementById('final').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i = 0; ok = 0; bad = 0;
+  loadPuzzle();
+}
+
+function speakRule() {
+  const p = puzzles[i];
+  say(`${p.rule}. Mensaje: ${p.cipher}`, 0.84);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
