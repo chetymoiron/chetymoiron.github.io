@@ -26,6 +26,32 @@ h1{margin:0;font-size:clamp(2.15rem,4vw,3.5rem);font-weight:900;color:#123b7a;le
 .tagline{font-size:clamp(1rem,2vw,1.35rem);font-weight:700;color:#5b789a;margin-top:2px}
 .ar{font-family:Cairo,sans-serif;direction:rtl;color:#3a86ff;font-size:1rem}
 
+/* Panel destacado superior: Primeras lecturas */
+.primeras-lecturas-section{
+  margin-bottom:14px;
+  background:#f0fdf4;
+  border:3px solid #86efac;
+  border-radius:24px;
+  padding:16px 18px;
+  box-shadow:0 6px 20px rgba(16,185,129,.1);
+}
+.primeras-lecturas-section .panel-title h2{color:#15803d}
+.primeras-lecturas-section .cards{
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.primeras-lecturas-section a.card{
+  background:#ffffff;
+  border:2px solid #86efac;
+  min-height:96px;
+}
+.primeras-lecturas-section a.card:hover{
+  border-color:#16a34a;
+  box-shadow:0 7px 18px rgba(22,163,74,.18);
+  transform:translateY(-2px);
+}
+.primeras-lecturas-section .card-title{color:#166534;font-size:1.05rem}
+
 .grid{
   display:grid; grid-template-columns:1fr 1fr; gap:12px;
 }
@@ -39,23 +65,16 @@ h1{margin:0;font-size:clamp(2.15rem,4vw,3.5rem);font-weight:900;color:#123b7a;le
 .pron{background:var(--rose);border-color:#f4c1d5}
 .activities{background:var(--sky);border-color:#b9ddf5}
 
-/* Sección destacada: Retos de Ingenio */
-.ingenio{
-  margin-top:12px; background:var(--amber); border:2px solid var(--amber-border);
-  border-radius:24px; padding:16px; box-shadow:0 6px 20px rgba(180,130,20,.08);
-}
-.ingenio .panel-title h2{color:#92400e}
-.ingenio .cards{grid-template-columns:repeat(3,1fr)}
-
 .panel-title{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .big-icon{font-size:2.7rem;line-height:1}
 .panel-title h2{font-size:clamp(1.35rem,2.3vw,2rem);margin:0;color:#123b7a}
 .panel-sub{font-size:.9rem;color:#547495;margin-top:1px}
+
 .cards{display:grid;gap:8px}
 .reading .cards{grid-template-columns:repeat(3,1fr)}
 .foreign .cards{grid-template-columns:repeat(5,1fr)}
 .pron .cards{grid-template-columns:repeat(2,1fr)}
-.activities .cards{grid-template-columns:repeat(4,1fr)}
+.activities .cards{grid-template-columns:repeat(2,1fr)}
 
 a.card{
   text-decoration:none;color:var(--ink);background:rgba(255,255,255,.92);
@@ -70,6 +89,8 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 7px 15px rgba(20,60,100,.12
 .card-sub{font-family:Cairo,sans-serif;direction:rtl;font-size:.7rem;color:#71859d;margin-top:2px}
 .card-desc{font-size:.72rem;color:#5c7189;margin-top:3px;line-height:1.15}
 .level{font-size:1.35rem;font-weight:900}
+
+/* Estilos de niveles de español para extranjeros */
 .l1{background:#ffe5ef!important}.l2{background:#e4f7e9!important}.l3{background:#e4efff!important}
 .l4{background:#eee8ff!important}.l5{background:#fff0da!important}
 .pron a.card{min-height:98px}
@@ -77,6 +98,13 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 7px 15px rgba(20,60,100,.12
 .activities a.card{min-height:96px}
 .activities .card-icon{font-size:2.15rem}
 
+/* Retos de Ingenio */
+.ingenio{
+  margin-top:12px; background:var(--amber); border:2px solid var(--amber-border);
+  border-radius:24px; padding:16px; box-shadow:0 6px 20px rgba(180,130,20,.08);
+}
+.ingenio .panel-title h2{color:#92400e}
+.ingenio .cards{grid-template-columns:repeat(3,1fr)}
 .ingenio a.card{border-color:#fde68a;background:#ffffff}
 .ingenio a.card:hover{border-color:#d97706}
 .ingenio .card-title{color:#78350f}
@@ -109,7 +137,8 @@ footer{text-align:center;color:#8b9bae;font-size:.75rem;font-weight:700;margin-t
   .activities .cards{grid-template-columns:repeat(2,1fr)}
   .ingenio .cards{grid-template-columns:1fr}
 }
-@media(max-width:560px){
+@media(max-width:600px){
+  .primeras-lecturas-section .cards{grid-template-columns:1fr}
   .reading .cards,.foreign .cards,.activities .cards{grid-template-columns:repeat(2,1fr)}
   .pron .cards{grid-template-columns:1fr}
   .panel-title h2{font-size:1.35rem}
@@ -128,18 +157,58 @@ footer{text-align:center;color:#8b9bae;font-size:.75rem;font-weight:700;margin-t
   <div class="ar">تعلم اللغة الإسبانية</div>
 </header>
 
+<!-- NUEVO APARTADO DESTACADO: PRIMERAS LECTURAS -->
+<section class="primeras-lecturas-section">
+  <div class="panel-title">
+    <div class="big-icon">🔤</div>
+    <div>
+      <h2>Primeras lecturas</h2>
+      <div class="panel-sub">Iniciación a la lectura comprensiva con soporte de audio dual (Español / Árabe)</div>
+    </div>
+  </div>
+  <div class="cards">
+    <!-- Enlace 1: Solo M y P (varias preguntas por lectura) -->
+    <a class="card" href="primeras_lecturas2.html">
+      <div class="card-icon">👶</div>
+      <div class="card-title">Mis primeras palabras</div>
+      <div class="card-sub">كلماتي الأولى</div>
+      <div class="card-desc">Frases cortas con M y P · Varias preguntas</div>
+    </a>
+
+    <!-- Enlace 2: Recorrido completo P, M, L, S, T, D, N -->
+    <a class="card" href="primeras_lecturas.html">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Paso a paso: P, M, L, S, T, D, N</div>
+      <div class="card-sub">خطوة بخطوة: قراءة وفهم</div>
+      <div class="card-desc">25 retos progresivos · Método escolar</div>
+    </a>
+  </div>
+</section>
+
 <div class="grid">
 
-<!-- 1. LECTURA COMPRENSIVA -->
+<!-- 1. LECTURA COMPRENSIVA (NIVELES CONTINUOS) -->
 <section class="panel reading">
   <div class="panel-title">
     <div class="big-icon">📖</div>
     <div><h2>Lectura comprensiva</h2><div class="panel-sub">Lee, comprende y responde</div></div>
   </div>
   <div class="cards">
-    <a class="card" href="comprension_lectora_1.html"><div class="card-icon">📗</div><div class="card-title">Nivel 1</div><div class="card-desc">Textos breves</div></a>
-    <a class="card" href="comprension_lectora_2.html"><div class="card-icon">📚</div><div class="card-title">Nivel 2</div><div class="card-desc">Lecturas más largas</div></a>
-    <a class="card" href="comprension_lectora_3.html"><div class="card-icon">🔎</div><div class="card-title">Nivel 3</div><div class="card-desc">Comprendo e infiero</div></a>
+    <a class="card" href="comprension_lectora_1.html">
+      <div class="card-icon">📗</div>
+      <div class="card-title">Nivel 1</div>
+      <div class="card-desc">Textos breves</div>
+    </a>
+    <a class="card" href="comprension_lectora_2.html">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Nivel 2</div>
+      <div class="card-desc">Lecturas más largas</div>
+    </a>
+    <a class="card" href="comprension_lectora_3.html">
+      <div class="card-icon">🔎</div>
+      <div class="card-title">Nivel 3</div>
+      <div class="card-desc">Comprendo e infiero</div>
+    </a>
   </div>
 </section>
 
@@ -190,7 +259,7 @@ footer{text-align:center;color:#8b9bae;font-size:.75rem;font-weight:700;margin-t
 
 </div>
 
-<!-- 5. NUEVA SECCIÓN: RETOS DE INGENIO Y LÓGICA (ALTAS CAPACIDADES) -->
+<!-- 5. RETOS DE INGENIO Y LÓGICA (ALTAS CAPACIDADES) -->
 <section class="ingenio">
   <div class="panel-title">
     <div class="big-icon">💡</div>
