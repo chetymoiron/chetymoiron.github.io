@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprende a Leer Paso a Paso · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Comic+Neue:wght@700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primario:#0284c7; --verde:#10b981; --rojo:#ef4444; --amarillo:#f59e0b;
+  --morado:#8b5cf6; --fondo:#f0f9ff; --blanco:#ffffff; --texto:#0f172a; --borde:#bae6fd;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:14px;
+}
+.app{
+  width:100%;max-width:980px;margin:auto;background:var(--blanco);
+  border-radius:26px;box-shadow:0 12px 35px rgba(2,132,199,.12);
+  padding:24px;min-height:92vh;position:relative;border:4px solid var(--borde);
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:14px;
+}
+.home{
+  text-decoration:none;background:#e0f2fe;color:#0369a1;
+  font-weight:900;padding:10px 18px;border-radius:14px;
+  font-size:1.1rem;transition:background .2s;
+}
+.home:hover{background:#bae6fd}
+.title{text-align:center;flex:1}
+h1{font-size:2.2rem;color:#0369a1;font-weight:900}
+.subtitle{color:#64748b;font-size:1.05rem;font-weight:700}
+.hidden{display:none!important}
+
+.progress-wrap{
+  display:flex;align-items:center;gap:12px;margin:14px 0 20px;
+}
+.progress{
+  flex:1;height:14px;background:#e2e8f0;border-radius:999px;
+  overflow:hidden;
+}
+.progress > div{
+  height:100%;width:4%;background:linear-gradient(90deg,#38bdf8,#0284c7);
+  transition:width .35s ease;
+}
+.counter-badge{
+  font-weight:900;font-size:1.05rem;color:#0284c7;background:#e0f2fe;
+  padding:4px 12px;border-radius:999px;white-space:nowrap;
+}
+
+/* Portada inicial */
+.start-screen{text-align:center;padding:35px 15px}
+.start-icon{font-size:5rem;margin-bottom:10px}
+.start-screen h2{font-size:2.3rem;color:#0369a1;margin-bottom:10px}
+.start-screen p{font-size:1.25rem;color:#64748b;max-width:760px;margin:0 auto 24px;line-height:1.6}
+.feature-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  max-width:820px;margin:0 auto 30px;text-align:center;
+}
+.feature-item{
+  background:#f8fafc;border:2px solid #e2e8f0;border-radius:18px;padding:16px;
+}
+.feature-item strong{display:block;margin-bottom:6px;color:#0284c7;font-size:1.15rem}
+
+/* Panel de lectura */
+.reading-box{
+  background:#fffbeb;border:4px dashed #fde047;border-radius:24px;
+  padding:26px 20px;text-align:center;margin-bottom:16px;position:relative;
+}
+.phonics-tag{
+  display:inline-block;background:#fef08a;color:#854d0e;
+  font-weight:900;font-size:.95rem;padding:4px 14px;border-radius:999px;
+  margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;
+}
+.reading-text{
+  font-family:'Comic Neue',cursive,sans-serif;
+  font-size:clamp(2.4rem,5.5vw,3.8rem);
+  font-weight:700;color:#0f172a;line-height:1.35;
+  margin:8px 0;letter-spacing:1px;
+}
+.reading-subtext{
+  font-family:'Comic Neue',cursive,sans-serif;
+  font-size:clamp(1.6rem,3.2vw,2.2rem);
+  color:#334155;margin-top:6px;line-height:1.4;
+}
+
+/* Audio de la lectura */
+.audio-bar{
+  display:flex;justify-content:center;gap:12px;margin-bottom:20px;
+}
+.btn-sound{
+  background:#f59e0b;color:#fff;border:0;border-radius:14px;
+  padding:11px 22px;font-size:1.15rem;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 0 #b45309;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .1s;
+}
+.btn-sound:active{transform:translateY(3px);box-shadow:0 1px 0 #b45309}
+
+/* Pregunta bilingüe con soporte dual */
+.question-panel{
+  background:#f8fafc;border:3px solid #e2e8f0;border-radius:20px;
+  padding:16px 20px;margin-bottom:20px;text-align:center;
+}
+.question-es{
+  font-size:1.45rem;font-weight:900;color:#0369a1;margin-bottom:4px;
+}
+.question-ar{
+  font-family:'Cairo',sans-serif;direction:rtl;
+  font-size:1.4rem;font-weight:900;color:#7c3aed;margin-bottom:12px;
+}
+.question-audio-bar{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+}
+.btn-ask-es{
+  background:#0284c7;color:#fff;border:0;border-radius:12px;
+  padding:8px 16px;font-size:1rem;font-weight:900;cursor:pointer;
+  box-shadow:0 3px 0 #0369a1;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-ask-ar{
+  background:#8b5cf6;color:#fff;border:0;border-radius:12px;
+  padding:8px 16px;font-size:1rem;font-weight:900;cursor:pointer;
+  box-shadow:0 3px 0 #6d28d9;display:inline-flex;align-items:center;gap:6px;
+  font-family:'Cairo',sans-serif;direction:rtl;
+}
+.btn-ask-es:active,.btn-ask-ar:active{transform:translateY(2px);box-shadow:none}
+
+/* Opciones de respuesta */
+.options-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+  max-width:820px;margin:auto;
+}
+.opt-card{
+  background:#ffffff;border:4px solid #e2e8f0;border-radius:20px;
+  padding:16px 20px;font-size:1.35rem;font-weight:900;cursor:pointer;
+  display:flex;align-items:center;justify-content:flex-start;
+  gap:16px;min-height:92px;transition:all .15s ease;color:#1e293b;
+  box-shadow:0 4px 0 #cbd5e1;text-align:left;
+}
+.opt-card .emoji{font-size:3rem;flex-shrink:0}
+.opt-card:hover{border-color:#38bdf8;background:#f0f9ff;transform:translateY(-2px)}
+.opt-card.correct{border-color:#10b981;background:#ecfdf5;color:#065f46;box-shadow:0 4px 0 #059669}
+.opt-card.wrong{border-color:#ef4444;background:#fef2f2;color:#991b1b;box-shadow:0 4px 0 #dc2626}
+
+.feedback-msg{
+  max-width:820px;margin:18px auto 0;padding:16px 20px;border-radius:16px;
+  text-align:center;font-size:1.3rem;font-weight:900;display:none;line-height:1.4;
+}
+.feedback-msg.show{display:block}
+.feedback-msg.ok{background:#ecfdf5;color:#065f46;border:2px solid #a7f3d0}
+.feedback-msg.fail{background:#fef2f2;color:#991b1b;border:2px solid #fecaca}
+
+.next-wrap{text-align:center;margin-top:20px}
+.btn-next{
+  background:#0284c7;color:#fff;border:0;border-radius:16px;
+  padding:16px 36px;font-size:1.35rem;font-weight:900;cursor:pointer;
+  box-shadow:0 5px 0 #0369a1;
+}
+.btn-next:active{transform:translateY(4px);box-shadow:0 1px 0 #0369a1}
+
+/* Pantalla final */
+.final-screen{text-align:center;padding:45px 15px}
+.final-trophy{font-size:6.5rem;margin-bottom:12px}
+.final-screen h2{font-size:2.5rem;color:#0284c7;margin-bottom:10px}
+.final-screen p{font-size:1.35rem;color:#64748b;margin-bottom:26px}
+
+@media(max-width:680px){
+  h1{font-size:1.6rem}
+  .options-grid{grid-template-columns:1fr}
+  .feature-grid{grid-template-columns:1fr}
+  .opt-card{padding:12px 14px;font-size:1.18rem}
+  .opt-card .emoji{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="stopAllAudio()">← Volver al inicio</a>
+    <div class="title">
+      <h1>📖 Mis Primeras Lecturas</h1>
+      <div class="subtitle">Sesión guiada bilingüe (Español / Árabe) con autocorrección</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PORTADA INICIAL -->
+  <section class="start-screen" id="startScreen">
+    <div class="start-icon">🎒🔤⭐</div>
+    <h2>¡Aprende a leer y a comprender!</h2>
+    <p>
+      25 actividades secuenciales según el método escolar. Solo leerás palabras con las letras que ya conocemos. 
+      Podrás escuchar la lectura y la pregunta despacio tanto en <strong>español</strong> como en <strong>árabe</strong>.
+    </p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>1. Letra a letra</strong>
+        P ➔ M ➔ L ➔ S ➔ T ➔ D ➔ N
+      </div>
+      <div class="feature-item">
+        <strong>2. Pregunta hablada</strong>
+        Escucha despacito la pregunta en tu idioma para responder seguro.
+      </div>
+      <div class="feature-item">
+        <strong>3. Autocorrección</strong>
+        Comprobación instantánea con explicaciones visuales.
+      </div>
+    </div>
+    <button class="btn-next" onclick="startSession()">Empezar la sesión (25 retos) ▶️</button>
+  </section>
+
+  <!-- PANTALLA PRINCIPAL DE JUEGO -->
+  <main class="hidden" id="gameArea">
+    <div class="progress-wrap">
+      <div class="progress"><div id="progressBar"></div></div>
+      <span class="counter-badge" id="counterBadge">Lectura 1 de 25</span>
+    </div>
+
+    <!-- Lectura a realizar -->
+    <div class="reading-box">
+      <span class="phonics-tag" id="phonicsTag">Fase 1: P</span>
+      <div class="reading-text" id="mainText">Papá y Pepe.</div>
+      <div class="reading-subtext hidden" id="subText"></div>
+    </div>
+
+    <!-- Botón para escuchar la frase -->
+    <div class="audio-bar">
+      <button class="btn-sound" onclick="speakCurrentText()">🔊 Escuchar frase despacito</button>
+    </div>
+
+    <!-- Pregunta bilingüe -->
+    <div class="question-panel">
+      <div class="question-es" id="questionEs">¿Quiénes están juntos?</div>
+      <div class="question-ar" id="questionAr">من معاً؟</div>
+      <div class="question-audio-bar">
+        <button class="btn-ask-es" onclick="speakQuestion('es')">🇪🇸 Pregunta en español</button>
+        <button class="btn-ask-ar" onclick="speakQuestion('ar')">🇸🇦 السؤال بالعربية</button>
+      </div>
+    </div>
+
+    <!-- Opciones -->
+    <div class="options-grid" id="optionsBox"></div>
+
+    <div class="feedback-msg" id="feedback"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn-next" onclick="nextStep()">Siguiente reto ➡️</button>
+    </div>
+  </main>
+
+  <!-- PANTALLA DE LOGRO FINAL -->
+  <section class="final-screen hidden" id="finalScreen">
+    <div class="final-trophy">🏆🎉🥇</div>
+    <h2>¡Reto de lectura superado!</h2>
+    <p id="finalMsg">Has completado las 25 actividades de lectura comprensiva.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="home" href="index.html" style="font-size:1.2rem;padding:14px 24px" onclick="stopAllAudio()">Volver al menú principal</a>
+      <button class="btn-sound" style="background:#10b981;box-shadow:0 4px 0 #059669" onclick="startSession()">Volver a empezar 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const steps = [
+  // FASE 1: P
+  {
+    tag: "Fase 1 · La letra P",
+    text: "Papá y Pepe.",
+    subtext: "",
+    qEs: "¿Quiénes están juntos?",
+    qAr: "من معاً؟",
+    options: [
+      { text: "Papá y Pepe", emoji: "👨‍👦", correct: true },
+      { text: "Una pipa", emoji: "🪵", correct: false }
+    ],
+    explain: "¡Muy bien! Leíste que papá y Pepe están juntos."
+  },
+  {
+    tag: "Fase 1 · La letra P",
+    text: "Pepa mima a Popi.",
+    subtext: "",
+    qEs: "¿A quién mima Pepa?",
+    qAr: "من تدلل بيبا؟",
+    options: [
+      { text: "A Popi el perrito", emoji: "🐶", correct: true },
+      { text: "A un pato", emoji: "🦆", correct: false }
+    ],
+    explain: "¡Exacto! Pepa cuida y mima con cariño a Popi."
+  },
+  {
+    tag: "Fase 1 · La letra P",
+    text: "Epi tiene pupa en el pie.",
+    subtext: "",
+    qEs: "¿Dónde tiene pupa Epi?",
+    qAr: "أين جرح إيبي؟",
+    options: [
+      { text: "En el pie", emoji: "🦶", correct: true },
+      { text: "En la mano", emoji: "✋", correct: false }
+    ],
+    explain: "¡Eso es! La pupa de Epi está en el pie."
+  },
+
+  // FASE 2: P + M
+  {
+    tag: "Fase 2 · Añadimos la M",
+    text: "Mi mamá me ama.",
+    subtext: "",
+    qEs: "¿Qué hace mamá?",
+    qAr: "ماذا تفعل أمي؟",
+    options: [
+      { text: "Me ama y me quiere", emoji: "❤️", correct: true },
+      { text: "Pisa la pipa", emoji: "👟", correct: false }
+    ],
+    explain: "¡Precioso! El texto dice: Mi mamá me ama."
+  },
+  {
+    tag: "Fase 2 · Añadimos la M",
+    text: "El puma mira el mapa.",
+    subtext: "",
+    qEs: "¿Qué animal mira el mapa?",
+    qAr: "أي حيوان ينظر إلى الخريطة؟",
+    options: [
+      { text: "El puma", emoji: "🐆", correct: true },
+      { text: "La momia", emoji: "🧟", correct: false }
+    ],
+    explain: "¡Genial! Es el puma quien observa el mapa."
+  },
+  {
+    tag: "Fase 2 · Añadimos la M",
+    text: "Mamá mima a mi papá.",
+    subtext: "",
+    qEs: "¿A quién mima mamá?",
+    qAr: "من تدلل أمي؟",
+    options: [
+      { text: "A papá", emoji: "👨", correct: true },
+      { text: "A Popi", emoji: "🐶", correct: false }
+    ],
+    explain: "¡Muy bien leído! Mamá mima a papá."
+  },
+
+  // FASE 3: L
+  {
+    tag: "Fase 3 · Añadimos la L",
+    text: "La mula lame la miel.",
+    subtext: "",
+    qEs: "¿Qué come la mula?",
+    qAr: "ماذا تأكل البغلة؟",
+    options: [
+      { text: "La miel rica", emoji: "🍯", correct: true },
+      { text: "Un limón", emoji: "🍋", correct: false }
+    ],
+    explain: "¡Qué rico! La mula lame la miel dulce."
+  },
+  {
+    tag: "Fase 3 · Añadimos la L",
+    text: "Paloma lame el polo de lima.",
+    subtext: "",
+    qEs: "¿Qué toma Paloma?",
+    qAr: "ماذا تتناول بالوما؟",
+    options: [
+      { text: "Un polo fresquito", emoji: "🍧", correct: true },
+      { text: "Una pala", emoji: "🪏", correct: false }
+    ],
+    explain: "¡Muy bien! Paloma toma un polo de lima."
+  },
+  {
+    tag: "Fase 3 · Añadimos la L",
+    text: "El león pasea por la loma.",
+    subtext: "",
+    qEs: "¿Quién pasea por la colina?",
+    qAr: "من يتجول على التل؟",
+    options: [
+      { text: "El león", emoji: "🦁", correct: true },
+      { text: "La paloma", emoji: "🕊️", correct: false }
+    ],
+    explain: "¡Estupendo! Es el león paseando por la loma."
+  },
+  {
+    tag: "Fase 3 · Añadimos la L",
+    text: "Lola mira la luna con la lupa.",
+    subtext: "",
+    qEs: "¿Con qué mira la luna Lola?",
+    qAr: "بماذا تنظر لولا إلى القمر؟",
+    options: [
+      { text: "Con la lupa", emoji: "🔍", correct: true },
+      { text: "Con un palo", emoji: "🦯", correct: false }
+    ],
+    explain: "¡Correcto! Lola usa su lupa para ver la luna."
+  },
+
+  // FASE 4: S
+  {
+    tag: "Fase 4 · Añadimos la S",
+    text: "El oso pisa el suelo.",
+    subtext: "",
+    qEs: "¿Quién pisa el suelo?",
+    qAr: "من يطأ الأرض؟",
+    options: [
+      { text: "El oso", emoji: "🐻", correct: true },
+      { text: "El sapo", emoji: "🐸", correct: false }
+    ],
+    explain: "¡Fenomenal! Es el oso pisando el suelo."
+  },
+  {
+    tag: "Fase 4 · Añadimos la S",
+    text: "Susi puso sal a la sopa.",
+    subtext: "",
+    qEs: "¿Qué echó Susi a la sopa?",
+    qAr: "ماذا وضعت سوزي في الحساء؟",
+    options: [
+      { text: "La sal", emoji: "🧂", correct: true },
+      { text: "Miel", emoji: "🍯", correct: false }
+    ],
+    explain: "¡Muy bien! Susi puso sal a la sopa."
+  },
+  {
+    tag: "Fase 4 · Añadimos la S",
+    text: "Ismael pesa la masa.",
+    subtext: "",
+    qEs: "¿Qué pesa Ismael?",
+    qAr: "ماذا يزن إسماعيل؟",
+    options: [
+      { text: "La masa de pan", emoji: "🍞", correct: true },
+      { text: "Una mesa", emoji: "🪑", correct: false }
+    ],
+    explain: "¡Exacto! Ismael pesa la masa en la báscula."
+  },
+  {
+    tag: "Fase 4 · Añadimos la S",
+    text: "El sol sale en la isla.",
+    subtext: "",
+    qEs: "¿Qué sale en la isla?",
+    qAr: "ماذا يشرق على الجزيرة؟",
+    options: [
+      { text: "El sol", emoji: "☀️", correct: true },
+      { text: "Una nube", emoji: "☁️", correct: false }
+    ],
+    explain: "¡Brillante! El sol calienta la isla."
+  },
+
+  // FASE 5: T
+  {
+    tag: "Fase 5 · Añadimos la T",
+    text: "Leti tose mucho. Está malita.",
+    subtext: "",
+    qEs: "¿Cómo está Leti?",
+    qAr: "كيف حال ليتي؟",
+    options: [
+      { text: "Está malita y tose", emoji: "🤒", correct: true },
+      { text: "Está contenta", emoji: "💃", correct: false }
+    ],
+    explain: "¡Muy bien! Leti tose porque está malita."
+  },
+  {
+    tag: "Fase 5 · Añadimos la T",
+    text: "El topo asoma el hocico.",
+    subtext: "",
+    qEs: "¿Qué animal asoma?",
+    qAr: "أي حيوان يطل برأسه؟",
+    options: [
+      { text: "El topo", emoji: "🦡", correct: true },
+      { text: "El pato", emoji: "🦆", correct: false }
+    ],
+    explain: "¡Eso es! El topo sale de su madriguera."
+  },
+  {
+    tag: "Fase 5 · Añadimos la T",
+    text: "Matías es atleta y corre rápido.",
+    subtext: "",
+    qEs: "¿Qué es Matías?",
+    qAr: "ما هي مهنة أو رياضة ماتياس؟",
+    options: [
+      { text: "Es atleta veloz", emoji: "🏃‍♂️", correct: true },
+      { text: "Es piloto", emoji: "✈️", correct: false }
+    ],
+    explain: "¡Perfecto! Matías es atleta y corre veloz."
+  },
+  {
+    tag: "Fase 5 · Añadimos la T",
+    text: "Tito toma patatas y tomates.",
+    subtext: "",
+    qEs: "¿Qué come Tito?",
+    qAr: "ماذا يأكل تيتو؟",
+    options: [
+      { text: "Patatas y tomates", emoji: "🥔🍅", correct: true },
+      { text: "Sopa", emoji: "🍲", correct: false }
+    ],
+    explain: "¡Delicioso! Tito toma patatas y tomates."
+  },
+
+  // FASE 6: D
+  {
+    tag: "Fase 6 · Añadimos la D",
+    text: "Delia se despide de Dimas.",
+    subtext: "",
+    qEs: "¿Qué hace Delia?",
+    qAr: "ماذا تفعل ديليا؟",
+    options: [
+      { text: "Dice adiós con la mano", emoji: "👋", correct: true },
+      { text: "Come un helado", emoji: "🍦", correct: false }
+    ],
+    explain: "¡Estupendo! Delia se despide de Dimas."
+  },
+  {
+    tag: "Fase 6 · Añadimos la D",
+    text: "Edu le da el dado a Adela.",
+    subtext: "",
+    qEs: "¿Qué le da Edu a Adela?",
+    qAr: "ماذا يعطي إيدو لأديلا؟",
+    options: [
+      { text: "El dado para jugar", emoji: "🎲", correct: true },
+      { text: "Una pelota", emoji: "⚽", correct: false }
+    ],
+    explain: "¡Correcto! Edu le da el dado a Adela."
+  },
+  {
+    tag: "Fase 6 · Añadimos la D",
+    text: "El dálmata salta al lodo.",
+    subtext: "",
+    qEs: "¿Quién salta al barro?",
+    qAr: "من يقفز في الطين؟",
+    options: [
+      { text: "El perro dálmata", emoji: "🐕", correct: true },
+      { text: "La mula", emoji: "🫏", correct: false }
+    ],
+    explain: "¡Sí! El dálmata juguetón salta al lodo."
+  },
+
+  // FASE 7: N
+  {
+    tag: "Fase 7 · Añadimos la N",
+    text: "La luna ilumina el nido.",
+    subtext: "",
+    qEs: "¿Qué alumbra la luna?",
+    qAr: "ماذا يضيء القمر؟",
+    options: [
+      { text: "El nido", emoji: "🪺", correct: true },
+      { text: "Una moto", emoji: "🛵", correct: false }
+    ],
+    explain: "¡Excelente! La luna ilumina el nido."
+  },
+  {
+    tag: "Fase 7 · Añadimos la N",
+    text: "Inma canta una dulce nana al nene.",
+    subtext: "",
+    qEs: "¿Qué canta Inma?",
+    qAr: "ماذا تغني إنما؟",
+    options: [
+      { text: "Una nana para dormir", emoji: "🎶👶", correct: true },
+      { text: "Un cuento", emoji: "👻", correct: false }
+    ],
+    explain: "¡Qué bonito! Inma canta una nana dulce."
+  },
+
+  // FASE 8: HISTORIAS
+  {
+    tag: "Fase 8 · Microlectura 1",
+    text: "La mona Lisa es muy lista.",
+    subtext: "Estudia y estudia. Todo lo apunta y lee poesía todos los días.",
+    qEs: "¿Cómo es la mona Lisa?",
+    qAr: "كيف هي القردة ليزا؟",
+    options: [
+      { text: "Estudiosa y lista", emoji: "🐒📚", correct: true },
+      { text: "Dormilona", emoji: "😴", correct: false }
+    ],
+    explain: "¡Grandísima comprensión! La mona Lisa estudia y no se despista."
+  },
+  {
+    tag: "Fase 8 · Microlectura 2",
+    text: "La pomada del topo.",
+    subtext: "Al topo le duele una patita. El oso lo tapa y le pone pomada. ¡El topo salta contento!",
+    qEs: "¿Quién cura al topo con pomada?",
+    qAr: "من يعالج الخلد بالمرهم؟",
+    options: [
+      { text: "El oso bueno", emoji: "🐻🩺", correct: true },
+      { text: "El león", emoji: "🦁", correct: false }
+    ],
+    explain: "¡Fantástico! El oso bondadoso cura la patita del topo."
+  }
+];
+
+let currentIndex = 0;
+let answered = false;
+let currentOnlineAudio = null;
+
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+let voicesList = [];
+
+function updateVoices() {
+  if (!synth) return;
+  voicesList = synth.getVoices();
+}
+if (synth) {
+  updateVoices();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = updateVoices;
+  }
+}
+
+function stopAllAudio() {
+  if (synth) synth.cancel();
+  if (currentOnlineAudio) {
+    currentOnlineAudio.pause();
+    currentOnlineAudio = null;
+  }
+}
+window.addEventListener('beforeunload', stopAllAudio);
+
+// Reproductor online con fallback garantizado (Google Translate TTS)
+function playOnlineTTS(text, langCode) {
+  stopAllAudio();
+  const clean = encodeURIComponent(text.trim());
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${clean}&tl=${langCode}&client=tw-ob`;
+  
+  currentOnlineAudio = new Audio(url);
+  currentOnlineAudio.play().catch(e => {
+    // Si la red bloquea la solicitud de audio, recurre al sintetizador del navegador
+    if (synth) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = langCode;
+      synth.speak(u);
+    }
+  });
+}
+
+// Reproductor híbrido (intenta voz local; si falta para árabe, pasa a online)
+function sayLang(text, lang = 'es-ES', rate = 0.72) {
+  stopAllAudio();
+
+  if (!voicesList || voicesList.length === 0) {
+    updateVoices();
+  }
+
+  const langPrefix = lang.toLowerCase().slice(0, 2);
+  const matchedVoice = voicesList.find(v => 
+    v.lang && (v.lang.toLowerCase() === lang.toLowerCase() || v.lang.toLowerCase().startsWith(langPrefix))
+  );
+
+  // Si existe voz nativa en el sistema para ese idioma, la usa directamente
+  if (matchedVoice && synth) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = matchedVoice;
+    u.lang = matchedVoice.lang;
+    u.rate = rate;
+    synth.speak(u);
+    return;
+  }
+
+  // Si no está instalada la voz (muy común con el árabe en Windows/Chrome), usa online TTS
+  playOnlineTTS(text, langPrefix);
+}
+
+function startSession() {
+  stopAllAudio();
+  currentIndex = 0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('finalScreen').classList.add('hidden');
+  document.getElementById('gameArea').classList.remove('hidden');
+  loadCard();
+}
+
+function loadCard() {
+  answered = false;
+  const c = steps[currentIndex];
+
+  const progressPercent = ((currentIndex + 1) / steps.length) * 100;
+  document.getElementById('progressBar').style.width = `${progressPercent}%`;
+  document.getElementById('counterBadge').textContent = `Lectura ${currentIndex + 1} de ${steps.length}`;
+
+  document.getElementById('phonicsTag').textContent = c.tag;
+  document.getElementById('mainText').textContent = c.text;
+  
+  const subEl = document.getElementById('subText');
+  if (c.subtext) {
+    subEl.textContent = c.subtext;
+    subEl.classList.remove('hidden');
+  } else {
+    subEl.textContent = "";
+    subEl.classList.add('hidden');
+  }
+
+  document.getElementById('questionEs').textContent = c.qEs;
+  document.getElementById('questionAr').textContent = c.qAr;
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback-msg';
+  fb.textContent = '';
+  document.getElementById('nextWrap').classList.add('hidden');
+
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  const shuffled = [...c.options].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-card';
+    btn.innerHTML = `<span class="emoji">${opt.emoji}</span><span>${opt.text}</span>`;
+    btn.onclick = () => handleChoice(opt.correct, btn, c.explain);
+    box.appendChild(btn);
+  });
+}
+
+function speakCurrentText() {
+  const c = steps[currentIndex];
+  const full = c.subtext ? `${c.text}. ${c.subtext}` : c.text;
+  sayLang(full, 'es-ES', 0.72);
+}
+
+function speakQuestion(lang) {
+  const c = steps[currentIndex];
+  if (lang === 'es') {
+    sayLang(c.qEs, 'es-ES', 0.74);
+  } else {
+    sayLang(c.qAr, 'ar-SA', 0.76);
+  }
+}
+
+function handleChoice(isCorrect, btnEl, explainText) {
+  if (answered) return;
+  answered = true;
+
+  document.querySelectorAll('.opt-card').forEach(c => c.disabled = true);
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+
+  if (isCorrect) {
+    btnEl.classList.add('correct');
+    fb.classList.add('ok');
+    fb.textContent = `⭐ ¡Muy bien! ${explainText}`;
+    sayLang(`¡Muy bien! ${explainText}`, 'es-ES', 0.80);
+  } else {
+    btnEl.classList.add('wrong');
+    fb.classList.add('fail');
+    fb.textContent = `👀 ¡Casi! Vuelve a escuchar la frase despacio.`;
+    sayLang(`Casi. Vuelve a escuchar y a leer la frase con calma.`, 'es-ES', 0.80);
+  }
+
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextStep() {
+  currentIndex++;
+  if (currentIndex < steps.length) {
+    loadCard();
+  } else {
+    showCompleted();
+  }
+}
+
+function showCompleted() {
+  stopAllAudio();
+  document.getElementById('gameArea').classList.add('hidden');
+  document.getElementById('finalScreen').classList.remove('hidden');
+  sayLang("¡Enhorabuena! Has completado todas las lecturas con éxito. ¡Eres un gran lector!", 'es-ES', 0.82);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

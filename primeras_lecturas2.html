@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Primeras Palabras: M y P · Chety Moirón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Comic+Neue:wght@700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primario:#0284c7; --verde:#10b981; --rojo:#ef4444; --amarillo:#f59e0b;
+  --morado:#8b5cf6; --fondo:#f0fdf4; --blanco:#ffffff; --texto:#0f172a; --borde:#bbf7d0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--fondo);color:var(--texto);
+  min-height:100vh;padding:14px;
+}
+.app{
+  width:100%;max-width:960px;margin:auto;background:var(--blanco);
+  border-radius:26px;box-shadow:0 12px 35px rgba(16,185,129,.12);
+  padding:24px;min-height:92vh;position:relative;border:4px solid var(--borde);
+}
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:14px;
+}
+.home{
+  text-decoration:none;background:#dcfce7;color:#15803d;
+  font-weight:900;padding:10px 18px;border-radius:14px;
+  font-size:1.1rem;transition:background .2s;
+}
+.home:hover{background:#bbf7d0}
+.title{text-align:center;flex:1}
+h1{font-size:2.2rem;color:#15803d;font-weight:900}
+.subtitle{color:#64748b;font-size:1.05rem;font-weight:700}
+.hidden{display:none!important}
+
+.progress-wrap{
+  display:flex;align-items:center;gap:12px;margin:14px 0 20px;
+}
+.progress{
+  flex:1;height:14px;background:#e2e8f0;border-radius:999px;
+  overflow:hidden;
+}
+.progress > div{
+  height:100%;width:0;background:linear-gradient(90deg,#4ade80,#16a34a);
+  transition:width .35s ease;
+}
+.counter-badge{
+  font-weight:900;font-size:1.05rem;color:#15803d;background:#dcfce7;
+  padding:4px 12px;border-radius:999px;white-space:nowrap;
+}
+
+/* Portada inicial */
+.start-screen{text-align:center;padding:35px 15px}
+.start-icon{font-size:5rem;margin-bottom:10px}
+.start-screen h2{font-size:2.3rem;color:#15803d;margin-bottom:10px}
+.start-screen p{font-size:1.25rem;color:#64748b;max-width:760px;margin:0 auto 24px;line-height:1.6}
+.feature-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  max-width:820px;margin:0 auto 30px;text-align:center;
+}
+.feature-item{
+  background:#f8fafc;border:2px solid #e2e8f0;border-radius:18px;padding:16px;
+}
+.feature-item strong{display:block;margin-bottom:6px;color:#15803d;font-size:1.15rem}
+
+/* Panel de lectura constante */
+.reading-box{
+  background:#fefce8;border:4px dashed #facc15;border-radius:24px;
+  padding:24px 20px;text-align:center;margin-bottom:16px;position:relative;
+}
+.story-badge{
+  display:inline-block;background:#fef08a;color:#854d0e;
+  font-weight:900;font-size:.95rem;padding:4px 14px;border-radius:999px;
+  margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;
+}
+.reading-text{
+  font-family:'Comic Neue',cursive,sans-serif;
+  font-size:clamp(2.4rem,5.5vw,3.6rem);
+  font-weight:700;color:#0f172a;line-height:1.35;
+  margin:6px 0;letter-spacing:1px;
+}
+
+/* Barra de audio de la frase */
+.audio-bar{
+  display:flex;justify-content:center;gap:12px;margin-bottom:16px;
+}
+.btn-sound{
+  background:#f59e0b;color:#fff;border:0;border-radius:14px;
+  padding:10px 20px;font-size:1.1rem;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 0 #b45309;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .1s;
+}
+.btn-sound:active{transform:translateY(3px);box-shadow:0 1px 0 #b45309}
+
+/* Pregunta bilingüe */
+.question-panel{
+  background:#f8fafc;border:3px solid #e2e8f0;border-radius:20px;
+  padding:16px 20px;margin-bottom:18px;text-align:center;
+}
+.q-sub-badge{
+  font-size:.9rem;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:4px;
+}
+.question-es{
+  font-size:1.45rem;font-weight:900;color:#15803d;margin-bottom:4px;
+}
+.question-ar{
+  font-family:'Cairo',sans-serif;direction:rtl;
+  font-size:1.4rem;font-weight:900;color:#7c3aed;margin-bottom:12px;
+}
+.question-audio-bar{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+}
+.btn-ask-es{
+  background:#15803d;color:#fff;border:0;border-radius:12px;
+  padding:8px 16px;font-size:1rem;font-weight:900;cursor:pointer;
+  box-shadow:0 3px 0 #166534;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-ask-ar{
+  background:#8b5cf6;color:#fff;border:0;border-radius:12px;
+  padding:8px 16px;font-size:1rem;font-weight:900;cursor:pointer;
+  box-shadow:0 3px 0 #6d28d9;display:inline-flex;align-items:center;gap:6px;
+  font-family:'Cairo',sans-serif;direction:rtl;
+}
+.btn-ask-es:active,.btn-ask-ar:active{transform:translateY(2px);box-shadow:none}
+
+/* Opciones de respuesta */
+.options-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+  max-width:820px;margin:auto;
+}
+.opt-card{
+  background:#ffffff;border:4px solid #e2e8f0;border-radius:20px;
+  padding:16px 20px;font-size:1.4rem;font-weight:900;cursor:pointer;
+  display:flex;align-items:center;justify-content:flex-start;
+  gap:16px;min-height:92px;transition:all .15s ease;color:#1e293b;
+  box-shadow:0 4px 0 #cbd5e1;text-align:left;
+}
+.opt-card .emoji{font-size:3.2rem;flex-shrink:0}
+.opt-card:hover{border-color:#4ade80;background:#f0fdf4;transform:translateY(-2px)}
+.opt-card.correct{border-color:#16a34a;background:#dcfce7;color:#14532d;box-shadow:0 4px 0 #15803d}
+.opt-card.wrong{border-color:#ef4444;background:#fef2f2;color:#991b1b;box-shadow:0 4px 0 #dc2626}
+
+.feedback-msg{
+  max-width:820px;margin:18px auto 0;padding:16px 20px;border-radius:16px;
+  text-align:center;font-size:1.3rem;font-weight:900;display:none;line-height:1.4;
+}
+.feedback-msg.show{display:block}
+.feedback-msg.ok{background:#dcfce7;color:#14532d;border:2px solid #86efac}
+.feedback-msg.fail{background:#fef2f2;color:#991b1b;border:2px solid #fecaca}
+
+.next-wrap{text-align:center;margin-top:20px}
+.btn-next{
+  background:#16a34a;color:#fff;border:0;border-radius:16px;
+  padding:16px 36px;font-size:1.35rem;font-weight:900;cursor:pointer;
+  box-shadow:0 5px 0 #15803d;
+}
+.btn-next:active{transform:translateY(4px);box-shadow:0 1px 0 #15803d}
+
+.final-screen{text-align:center;padding:45px 15px}
+.final-trophy{font-size:6.5rem;margin-bottom:12px}
+.final-screen h2{font-size:2.5rem;color:#15803d;margin-bottom:10px}
+.final-screen p{font-size:1.35rem;color:#64748b;margin-bottom:26px}
+
+@media(max-width:680px){
+  h1{font-size:1.6rem}
+  .options-grid{grid-template-columns:1fr}
+  .feature-grid{grid-template-columns:1fr}
+  .opt-card{padding:12px 14px;font-size:1.2rem}
+  .opt-card .emoji{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="home" href="index.html" onclick="stopAllAudio()">← Volver al inicio</a>
+    <div class="title">
+      <h1>🔤 Mis Primeras Palabras</h1>
+      <div class="subtitle">Lecturas sencillas con M y P · Varias preguntas por texto</div>
+    </div>
+    <div style="width:75px"></div>
+  </div>
+
+  <!-- PORTADA INICIAL -->
+  <section class="start-screen" id="startScreen">
+    <div class="start-icon">👶📖🌟</div>
+    <h2>¡Aprende a leer sólo con P y M!</h2>
+    <p>
+      Leemos frases muy cortitas formadas únicamente con vocales y las letras <strong>P</strong> y <strong>M</strong>. 
+      Sobre cada frase responderás 2 o 3 preguntas para demostrar que la has comprendido al 100%.
+    </p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>1. Letras fáciles</strong>
+        Pa, pe, pi, po, pu / Ma, me, mi, mo, mu.
+      </div>
+      <div class="feature-item">
+        <strong>2. Varios retos</strong>
+        Comprobamos bien la frase antes de pasar a otra.
+      </div>
+      <div class="feature-item">
+        <strong>3. Audio dual</strong>
+        Escucha despacio la pregunta en español o árabe.
+      </div>
+    </div>
+    <button class="btn-next" onclick="startSession()">Empezar los retos ▶️</button>
+  </section>
+
+  <!-- PANTALLA PRINCIPAL DE JUEGO -->
+  <main class="hidden" id="gameArea">
+    <div class="progress-wrap">
+      <div class="progress"><div id="progressBar"></div></div>
+      <span class="counter-badge" id="counterBadge">Pregunta 1</span>
+    </div>
+
+    <!-- Lectura del alumno (permanece visible) -->
+    <div class="reading-box">
+      <span class="story-badge" id="storyBadge">Lectura 1</span>
+      <div class="reading-text" id="mainText">Pepe mima a Popi.</div>
+    </div>
+
+    <!-- Escuchar la frase -->
+    <div class="audio-bar">
+      <button class="btn-sound" onclick="speakCurrentText()">🔊 Escuchar frase despacito</button>
+    </div>
+
+    <!-- Pregunta bilingüe actual -->
+    <div class="question-panel">
+      <div class="q-sub-badge" id="qSubBadge">Pregunta 1 de 2</div>
+      <div class="question-es" id="questionEs">¿Quién mima a Popi?</div>
+      <div class="question-ar" id="questionAr">من يدلل بوبي؟</div>
+      <div class="question-audio-bar">
+        <button class="btn-ask-es" onclick="speakQuestion('es')">🇪🇸 Pregunta en español</button>
+        <button class="btn-ask-ar" onclick="speakQuestion('ar')">🇸🇦 السؤال بالعربية</button>
+      </div>
+    </div>
+
+    <!-- Opciones -->
+    <div class="options-grid" id="optionsBox"></div>
+
+    <div class="feedback-msg" id="feedback"></div>
+
+    <div class="next-wrap hidden" id="nextWrap">
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()">Siguiente ➡️</button>
+    </div>
+  </main>
+
+  <!-- PANTALLA DE LOGRO FINAL -->
+  <section class="final-screen hidden" id="finalScreen">
+    <div class="final-trophy">🏆🌟👏</div>
+    <h2>¡Completado con éxito!</h2>
+    <p id="finalMsg">¡Has demostrado que comprendes perfectamente lo que lees!</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="home" href="index.html" style="font-size:1.2rem;padding:14px 24px" onclick="stopAllAudio()">Volver al menú principal</a>
+      <button class="btn-sound" style="background:#10b981;box-shadow:0 4px 0 #059669" onclick="startSession()">Repetir 🔄</button>
+    </div>
+  </section>
+</div>
+
+<script>
+// Historias basadas SOLO en vocales + M + P, cada una con varias preguntas
+const stories = [
+  {
+    title: "Lectura 1",
+    text: "Pepe mima a Popi.",
+    questions: [
+      {
+        qEs: "¿Quién mima al perrito Popi?",
+        qAr: "من يدلل الكلب بوبي؟",
+        options: [
+          { text: "Pepe", emoji: "👦", correct: true },
+          { text: "Mamá", emoji: "👩", correct: false }
+        ],
+        explain: "¡Exacto! Pepe es quien le da mimitos a Popi."
+      },
+      {
+        qEs: "¿A quién mima Pepe?",
+        qAr: "من يدلل بيبي؟",
+        options: [
+          { text: "A Popi", emoji: "🐶", correct: true },
+          { text: "Al puma", emoji: "🐆", correct: false }
+        ],
+        explain: "¡Muy bien! Pepe mima a su perrito Popi."
+      }
+    ]
+  },
+  {
+    title: "Lectura 2",
+    text: "Mi mamá me ama.",
+    questions: [
+      {
+        qEs: "¿Quién me ama mucho?",
+        qAr: "من يحبني كثيراً؟",
+        options: [
+          { text: "Mi mamá", emoji: "👩❤️", correct: true },
+          { text: "El puma", emoji: "🐆", correct: false }
+        ],
+        explain: "¡Muy bien leído! Es mamá quien me ama."
+      },
+      {
+        qEs: "¿Qué siente mamá por mí?",
+        qAr: "ماذا تشعر أمي نحوي؟",
+        options: [
+          { text: "Me ama", emoji: "❤️", correct: true },
+          { text: "Tiene miedo", emoji: "😱", correct: false }
+        ],
+        explain: "¡Eso es! El texto dice: Mi mamá me ama."
+      }
+    ]
+  },
+  {
+    title: "Lectura 3",
+    text: "Epi pisa una pipa.",
+    questions: [
+      {
+        qEs: "¿Quién pisa la pipa?",
+        qAr: "من يدوس على الغليون أو البذرة؟",
+        options: [
+          { text: "Epi", emoji: "👦", correct: true },
+          { text: "Popi", emoji: "🐶", correct: false }
+        ],
+        explain: "¡Genial! Epi es quien pisa la pipa."
+      },
+      {
+        qEs: "¿Qué pisa Epi en el suelo?",
+        qAr: "ماذا يدوس إيبي؟",
+        options: [
+          { text: "Una pipa", emoji: "🪵", correct: true },
+          { text: "Un mapa", emoji: "🗺️", correct: false }
+        ],
+        explain: "¡Correcto! Epi pisa una pipa."
+      }
+    ]
+  },
+  {
+    title: "Lectura 4",
+    text: "El puma mira el mapa.",
+    questions: [
+      {
+        qEs: "¿Qué animal está mirando?",
+        qAr: "أي حيوان ينظر؟",
+        options: [
+          { text: "El puma", emoji: "🐆", correct: true },
+          { text: "Popi", emoji: "🐶", correct: false }
+        ],
+        explain: "¡Estupendo! Es el gran puma."
+      },
+      {
+        qEs: "¿Qué mira con atención el puma?",
+        qAr: "إلى ماذا ينظر البوما؟",
+        options: [
+          { text: "El mapa", emoji: "🗺️", correct: true },
+          { text: "Una momia", emoji: "🧟", correct: false }
+        ],
+        explain: "¡Muy bien! El puma mira el mapa."
+      }
+    ]
+  },
+  {
+    title: "Lectura 5",
+    text: "Pepa tiene pupa en el pie.",
+    questions: [
+      {
+        qEs: "¿Quién se ha hecho daño?",
+        qAr: "من أصيب بجرح؟",
+        options: [
+          { text: "Pepa", emoji: "👧", correct: true },
+          { text: "Pepe", emoji: "👦", correct: false }
+        ],
+        explain: "¡Eso es! Pepa tiene una pupita."
+      },
+      {
+        qEs: "¿Dónde tiene la pupa Pepa?",
+        qAr: "أين الجرح عند بيبا؟",
+        options: [
+          { text: "En el pie", emoji: "🦶", correct: true },
+          { text: "En la mano", emoji: "✋", correct: false }
+        ],
+        explain: "¡Exacto! Le duele el pie."
+      },
+      {
+        qEs: "¿Qué tiene Pepa en el pie?",
+        qAr: "ماذا يوجد في قدم بيبا؟",
+        options: [
+          { text: "Una pupa", emoji: "🩹", correct: true },
+          { text: "Una pipa", emoji: "🪵", correct: false }
+        ],
+        explain: "¡Fenomenal! Tiene una pupa y necesita mimos."
+      }
+    ]
+  },
+  {
+    title: "Lectura 6",
+    text: "Papá mima a mamá.",
+    questions: [
+      {
+        qEs: "¿Quién da los mimos?",
+        qAr: "من يقدم الدلال والحنان؟",
+        options: [
+          { text: "Papá", emoji: "👨", correct: true },
+          { text: "Popi", emoji: "🐶", correct: false }
+        ],
+        explain: "¡Correcto! Papá es quien da los mimos."
+      },
+      {
+        qEs: "¿A quién mima papá con cariño?",
+        qAr: "من يدلل أبي؟",
+        options: [
+          { text: "A mamá", emoji: "👩❤️", correct: true },
+          { text: "A la momia", emoji: "🧟", correct: false }
+        ],
+        explain: "¡Muy bien! Papá mima a mamá."
+      }
+    ]
+  }
+];
+
+// Aplanar la lista de preguntas manteniendo referencia a la historia
+let flatQuiz = [];
+stories.forEach((st, sIdx) => {
+  st.questions.forEach((q, qIdx) => {
+    flatQuiz.push({
+      storyTitle: st.title,
+      storyText: st.text,
+      qNumber: qIdx + 1,
+      totalQ: st.questions.length,
+      qEs: q.qEs,
+      qAr: q.qAr,
+      options: q.options,
+      explain: q.explain
+    });
+  });
+});
+
+let currentIdx = 0;
+let answered = false;
+let currentAudio = null;
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+let voicesList = [];
+
+function updateVoices() {
+  if (!synth) return;
+  voicesList = synth.getVoices();
+}
+if (synth) {
+  updateVoices();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = updateVoices;
+  }
+}
+
+function stopAllAudio() {
+  if (synth) synth.cancel();
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+}
+window.addEventListener('beforeunload', stopAllAudio);
+
+function playOnlineTTS(text, langCode) {
+  stopAllAudio();
+  const clean = encodeURIComponent(text.trim());
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${clean}&tl=${langCode}&client=tw-ob`;
+  currentAudio = new Audio(url);
+  currentAudio.play().catch(e => {
+    if (synth) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = langCode;
+      synth.speak(u);
+    }
+  });
+}
+
+function sayLang(text, lang = 'es-ES', rate = 0.72) {
+  stopAllAudio();
+  if (!voicesList || voicesList.length === 0) updateVoices();
+
+  const langPrefix = lang.toLowerCase().slice(0, 2);
+  const matchedVoice = voicesList.find(v => 
+    v.lang && (v.lang.toLowerCase() === lang.toLowerCase() || v.lang.toLowerCase().startsWith(langPrefix))
+  );
+
+  if (matchedVoice && synth) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = matchedVoice;
+    u.lang = matchedVoice.lang;
+    u.rate = rate;
+    synth.speak(u);
+    return;
+  }
+
+  playOnlineTTS(text, langPrefix);
+}
+
+function startSession() {
+  stopAllAudio();
+  currentIdx = 0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('finalScreen').classList.add('hidden');
+  document.getElementById('gameArea').classList.remove('hidden');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const item = flatQuiz[currentIdx];
+
+  const percent = ((currentIdx + 1) / flatQuiz.length) * 100;
+  document.getElementById('progressBar').style.width = `${percent}%`;
+  document.getElementById('counterBadge').textContent = `Reto ${currentIdx + 1} de ${flatQuiz.length}`;
+
+  document.getElementById('storyBadge').textContent = item.storyTitle;
+  document.getElementById('mainText').textContent = item.storyText;
+  document.getElementById('qSubBadge').textContent = `Pregunta ${item.qNumber} de ${item.totalQ}`;
+
+  document.getElementById('questionEs').textContent = item.qEs;
+  document.getElementById('questionAr').textContent = item.qAr;
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback-msg';
+  fb.textContent = '';
+  document.getElementById('nextWrap').classList.add('hidden');
+
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  const shuffled = [...item.options].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-card';
+    btn.innerHTML = `<span class="emoji">${opt.emoji}</span><span>${opt.text}</span>`;
+    btn.onclick = () => handleChoice(opt.correct, btn, item.explain);
+    box.appendChild(btn);
+  });
+}
+
+function speakCurrentText() {
+  const item = flatQuiz[currentIdx];
+  sayLang(item.storyText, 'es-ES', 0.72);
+}
+
+function speakQuestion(lang) {
+  const item = flatQuiz[currentIdx];
+  if (lang === 'es') {
+    sayLang(item.qEs, 'es-ES', 0.74);
+  } else {
+    sayLang(item.qAr, 'ar-SA', 0.76);
+  }
+}
+
+function handleChoice(isCorrect, btnEl, explainText) {
+  if (answered) return;
+  answered = true;
+
+  document.querySelectorAll('.opt-card').forEach(c => c.disabled = true);
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+
+  if (isCorrect) {
+    btnEl.classList.add('correct');
+    fb.classList.add('ok');
+    fb.textContent = `⭐ ¡Muy bien! ${explainText}`;
+    sayLang(`¡Muy bien! ${explainText}`, 'es-ES', 0.80);
+  } else {
+    btnEl.classList.add('wrong');
+    fb.classList.add('fail');
+    fb.textContent = `👀 ¡Casi! Vuelve a mirar la frase despacio.`;
+    sayLang(`Casi. Vuelve a escuchar y a leer la frase con calma.`, 'es-ES', 0.80);
+  }
+
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx < flatQuiz.length) {
+    loadQuestion();
+  } else {
+    showCompleted();
+  }
+}
+
+function showCompleted() {
+  stopAllAudio();
+  document.getElementById('gameArea').classList.add('hidden');
+  document.getElementById('finalScreen').classList.remove('hidden');
+  sayLang("¡Enhorabuena! Has leído y respondido todas las preguntas muy bien. ¡Eres un campeón!", 'es-ES', 0.82);
+}
+</script>
+
+  <!-- GoatCounter: estadísticas de visitas -->
+  <script data-goatcounter="https://chetymoiron.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
